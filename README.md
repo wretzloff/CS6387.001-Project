@@ -7,9 +7,11 @@
 	&nbsp;&nbsp;&nbsp;&nbsp; npm install express --save
 4. Install Cheerio using command line: <br>
 	&nbsp;&nbsp;&nbsp;&nbsp; npm install cheerio
-5. Start the web server. In my case, I ran the command below. <br>
+5. Install SQLite3 using command line: <br>
+	&nbsp;&nbsp;&nbsp;&nbsp; npm install sqlite3	
+6. Start the web server. In my case, I ran the command below. <br>
 	&nbsp;&nbsp;&nbsp;&nbsp; node C:\Users\wretz\Desktop\CS6387.001-Project\trunk\Backend\server.js <br>
 	&nbsp;&nbsp;&nbsp;&nbsp; It will say “server is listening on 3000”.
-6. Navigate to one of the example endpoints. In your browser, go to: <br>
+7. Navigate to one of the example endpoints. In your browser, go to: <br>
 	&nbsp;&nbsp;&nbsp;&nbsp; http://localhost:3000 <br>
 	&nbsp;&nbsp;&nbsp;&nbsp; http://localhost:3000/GetBooksForClass/?class=CS1336.001.17S
