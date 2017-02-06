@@ -1,12 +1,25 @@
 var http = require('http');
 var https = require('https');
 var express = require('express');
-var cheerio = require('cheerio'); 
+var cheerio = require('cheerio');
+var sqlite3 = require('sqlite3').verbose();
+const dbFile = './database/textbookExchange.db';
 const app = express()  
 const port = 3000
 
 app.get('/', (request, response) => 
 { 
+	//Print the web server log to the console, as an example.
+	var db = new sqlite3.Database(dbFile);
+	db.serialize(function() 
+	{
+		db.each("SELECT rowid AS id, * FROM webserver_log", function(err, row) 
+		{
+			console.log(row.id + ": " + row.logMessage);
+		});
+	});
+	db.close();
+	
 	response.send('UTD Book Exchange');
 })
 
@@ -70,13 +83,41 @@ app.get('/GetBooksForClass', (request, response) =>
 
 app.listen(port, (err) => 
 {  
-  if (err) 
-  {
-    return console.log('something bad happened', err)
-  }
-
-  console.log(`server is listening on ${port}`)
+	if (err) 
+	{
+		return console.log('something bad happened', err)
+	}
+	
+	prepareDatabase();
+	console.log(`server is listening on ${port}`)
 })
+
+function prepareDatabase()
+{
+	var currentdate = new Date();
+	var dd = currentdate.getDate();
+	var mm = currentdate.getMonth()+1; //January is 0!
+	var yyyy = currentdate.getFullYear();
+	if(dd<10) {
+		dd='0'+dd
+	} 
+	if(mm<10) {
+		mm='0'+mm
+	} 
+	var datetime = mm+'/'+dd+'/'+yyyy + " @ " 
+	+ currentdate.getHours() + ":" 
+	+ currentdate.getMinutes() + ":" + currentdate.getSeconds();
+	
+	console.log('Preparing database at: ' + dbFile);
+	var db = new sqlite3.Database(dbFile);
+	db.serialize(function() 
+	{
+		db.run('CREATE TABLE if not exists webserver_log (logMessage TEXT)');
+		var stmt = db.prepare("INSERT INTO webserver_log VALUES (?)");
+		stmt.run("Server started at "+datetime);
+		stmt.finalize();
+	});
+}
 
 function parseBookHTML(html)
 {
