@@ -3,9 +3,10 @@ var https = require('https');
 var express = require('express');
 var cheerio = require('cheerio');
 var sqlite3 = require('sqlite3').verbose();
+var server_port = process.env.OPENSHIFT_NODEJS_PORT || 3000
+var server_ip_address = process.env.OPENSHIFT_NODEJS_IP || '127.0.0.1'
 const dbFile = './database/textbookExchange.db';
 const app = express()  
-const port = 3000
 
 app.get('/', (request, response) => 
 { 
@@ -81,7 +82,7 @@ app.get('/GetBooksForClass', (request, response) =>
     get_req.end();
 })
 
-app.listen(port, (err) => 
+app.listen(server_port, server_ip_address, (err) => 
 {  
 	if (err) 
 	{
@@ -89,7 +90,7 @@ app.listen(port, (err) =>
 	}
 	
 	prepareDatabase();
-	console.log(`server is listening on ${port}`)
+	console.log(`server is listening on ${server_port}`)
 })
 
 function prepareDatabase()
