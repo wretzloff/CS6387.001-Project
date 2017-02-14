@@ -12,106 +12,203 @@ var mysql_host 			= process.env.OPENSHIFT_MYSQL_DB_HOST || 'sql3.freemysqlhostin
 var mysql_username		= process.env.OPENSHIFT_MYSQL_DB_USERNAME || 'sql3158842';
 var mysql_password		= process.env.OPENSHIFT_MYSQL_DB_PASSWORD || 'MHTv71vnZa';
 var mysql_database_name	= process.env.OPENSHIFT_APP_NAME || 'sql3158842'; //When running on OpenShift, this will be the name of the application, and conveniently, also the name of the database.
-const app = express()  
 
-app.get('/', (request, response) => 
-{ 
-	response.send('UTD Book Exchange');
-})
+var utdtextbookexchange_app = function() {
+    var self = this;
+    
+	/*  ================================================================  */
+    /*  App server functions (main app logic here).                       */
+    /*  ================================================================  */
+    self.createRoutes = function() {
+        self.routes = { };
 
-app.post('/', (request, response) => 
-{  
-	response.send('UTD Book Exchange: POST');
-})
-
-app.get('/dbtest', (request, response) => 
-{ 
-
-	var connection = mysql.createConnection({
+        self.routes['/'] = function(request, response) 
+		{
+            response.setHeader('Content-Type', 'text/html');
+            response.send('UTD Book Exchange');
+        };
+		
+		self.routes['/dbtest'] = function(request, response) 
+		{
+            var connection = mysql.createConnection(
+			{
 				host     	: mysql_host,
 				port		: mysql_port,
 				user     	: mysql_username,
 				password 	: mysql_password,
 				database 	: mysql_database_name
-	});
-	connection.connect();
-
-	connection.query('SELECT * from User', function(err, rows, fields) {
-		if (!err)
-		{
-			console.log('Results: ', rows);
-			response.json(rows);
-		}
-		else
-		{
-			console.log('Error while performing Query.');
-		}
-	});
-	connection.end();
-})
-
-app.get('/GetBooksForClass', (request, response) => 
-{
-	var classFromQueryString = request.query.class;
-	var coursebookCookie;
-
-	var optionsForGet = 
-	{
-		host: 'coursebook.utdallas.edu'
-	};
-
-	var callbackForGet = function(resp) 
-	{
-		//Get the value of ptgsessid from the set-cookie header of the response.
-		var setCookieHeader = String(resp.headers["set-cookie"]);
-		var ptgsessid = setCookieHeader.split(";")[0];
-		coursebookCookie = ptgsessid.split("=")[1];
-		
-		//Use this ptgsessid value to send an HTTP POST to get required textbooks.
-		var dataForPost = 'id='+classFromQueryString+'&div=r-2childcontent';
-		var optionsForPost = 
-		{
-			host: 'coursebook.utdallas.edu',
-			path: '/clips/clip-textbooks.zog',
-			method: 'POST',
-			headers: 
-			{
-				'Content-Type' : 'application/x-www-form-urlencoded',
-				'Content-Length': Buffer.byteLength(dataForPost),
-				'Cookie':'PTGSESSID='+coursebookCookie+';'
-			}
-		};
-		
-		var callbackForPost = function(resp)
-		{
-			resp.setEncoding('utf8');
-			resp.on('data', function (chunk) 
-			{
-				response.header("Content-Type",'application/json');
-				response.send(parseBookHTML(chunk));
 			});
-		}
-		
-		//Send the HTTP POST
-		var post_req = https.request(optionsForPost, callbackForPost) ;
-		post_req.write(dataForPost);
-		post_req.end();
-	}
-	
-	//Send the HTTP GET
-	var get_req = http.request(optionsForGet, callbackForGet);
-    get_req.end();
-})
+			connection.connect();
 
-app.listen(server_port, server_ip_address, (err) => 
-{  
-	if (err) 
-	{
-		return console.log('something bad happened', err)
-	}
+			connection.query('SELECT * from User', function(err, rows, fields) 
+			{
+				if (!err)
+				{
+					//console.log('Results: ', rows);
+					response.json(rows);
+				}
+				else
+				{
+					console.log('Error while performing Query.');
+				}
+			});
+			connection.end();
+        };
+		
+		self.routes['/GetBooksForClass'] = function(request, response) 
+		{
+			var classFromQueryString = request.query.class;
+			var coursebookCookie;
+
+			var optionsForGet = 
+			{
+				host: 'coursebook.utdallas.edu'
+			};
+
+			var callbackForGet = function(resp) 
+			{
+				//Get the value of ptgsessid from the set-cookie header of the response.
+				var setCookieHeader = String(resp.headers["set-cookie"]);
+				var ptgsessid = setCookieHeader.split(";")[0];
+				coursebookCookie = ptgsessid.split("=")[1];
+		
+				//Use this ptgsessid value to send an HTTP POST to get required textbooks.
+				var dataForPost = 'id='+classFromQueryString+'&div=r-2childcontent';
+				var optionsForPost = 
+				{
+					host: 'coursebook.utdallas.edu',
+					path: '/clips/clip-textbooks.zog',
+					method: 'POST',
+					headers: 
+					{
+						'Content-Type' : 'application/x-www-form-urlencoded',
+						'Content-Length': Buffer.byteLength(dataForPost),
+						'Cookie':'PTGSESSID='+coursebookCookie+';'
+					}
+				};
+				
+				var callbackForPost = function(resp)
+				{
+					resp.setEncoding('utf8');
+					resp.on('data', function (chunk) 
+					{
+						response.header("Content-Type",'application/json');
+						response.send(parseBookHTML(chunk));
+					});
+				}
+			
+				//Send the HTTP POST
+				var post_req = https.request(optionsForPost, callbackForPost) ;
+				post_req.write(dataForPost);
+				post_req.end();
+			}
+		
+			//Send the HTTP GET
+			var get_req = http.request(optionsForGet, callbackForGet);
+			get_req.end();
+        };
+    };
 	
-	console.log(`server is listening on ${server_port}`)
-})
+	self.setupVariables = function() {
+        self.ipaddress = server_ip_address;
+        self.port      = server_port;
+        if (typeof self.ipaddress === "undefined") {
+            console.warn('No OPENSHIFT_NODEJS_IP var, using 127.0.0.1');
+            self.ipaddress = "127.0.0.1";
+        };
+    };
+
+
+    /**
+     *  Populate the cache.
+     */
+    self.populateCache = function() {
+        if (typeof self.zcache === "undefined") {
+            self.zcache = { 'index.html': '' };
+        }
+
+        //  Local cache for static content.
+        self.zcache['index.html'] = fs.readFileSync('./index.html');
+    };
+
+
+    /**
+     *  Retrieve entry (content) from cache.
+     *  @param {string} key  Key identifying content to retrieve from cache.
+     */
+    self.cache_get = function(key) { return self.zcache[key]; };
+
+
+    /**
+     *  terminator === the termination handler
+     *  Terminate server on receipt of the specified signal.
+     *  @param {string} sig  Signal to terminate on.
+     */
+    self.terminator = function(sig){
+        if (typeof sig === "string") {
+           console.log('%s: Received %s - terminating app ...',
+                       Date(Date.now()), sig);
+           process.exit(1);
+        }
+        console.log('%s: Node server stopped.', Date(Date.now()) );
+    };
+
+
+    /**
+     *  Setup termination handlers (for exit and a list of signals).
+     */
+    self.setupTerminationHandlers = function(){
+        //  Process on exit and signals.
+        process.on('exit', function() { self.terminator(); });
+
+        // Removed 'SIGPIPE' from the list - bugz 852598.
+        ['SIGHUP', 'SIGINT', 'SIGQUIT', 'SIGILL', 'SIGTRAP', 'SIGABRT',
+         'SIGBUS', 'SIGFPE', 'SIGUSR1', 'SIGSEGV', 'SIGUSR2', 'SIGTERM'
+        ].forEach(function(element, index, array) {
+            process.on(element, function() { self.terminator(element); });
+        });
+    };
+
+    /**
+     *  Initialize the server (express) and create the routes and register
+     *  the handlers.
+     */
+    self.initializeServer = function() {
+        self.createRoutes();
+        self.app = express.createServer();
+
+        //  Add handlers for the app (from the routes).
+        for (var r in self.routes) {
+            self.app.get(r, self.routes[r]);
+        }
+    };
+
+
+    /**
+     *  Initializes the application.
+     */
+    self.initialize = function() {
+        self.setupVariables();
+        self.populateCache();
+        self.setupTerminationHandlers();
+
+        // Create the express server and routes.
+        self.initializeServer();
+    };
+
+
+    /**
+     *  Start the server (starts up the application).
+     */
+    self.start = function() {
+        //  Start the app on the specific interface (and port).
+        self.app.listen(self.port, self.ipaddress, function() {
+            console.log('%s: Node server started on %s:%d ...',
+                        Date(Date.now() ), self.ipaddress, self.port);
+        });
+    };
+
+};
 
 
 function parseBookHTML(html)
@@ -137,4 +234,11 @@ function parseBookHTML(html)
 	
 	return JSON.stringify(arr, null, 4);
 }
+
+/**
+ *  main():  Main code.
+ */
+var zapp = new utdtextbookexchange_app();
+zapp.initialize();
+zapp.start();
 
