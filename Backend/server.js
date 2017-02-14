@@ -8,10 +8,10 @@ var mysql   = require('mysql');
 var server_port 		= process.env.OPENSHIFT_NODEJS_PORT || 3000
 var server_ip_address 	= process.env.OPENSHIFT_NODEJS_IP || '127.0.0.1'
 var mysql_port 			= process.env.OPENSHIFT_MYSQL_DB_PORT || '3306';
-var mysql_ip_address 	= process.env.OPENSHIFT_MYSQL_DB_HOST || '127.0.0.1';
-var mysql_username		= process.env.OPENSHIFT_MYSQL_DB_USERNAME || 'adminYXmz3n4';
-var mysql_password		= process.env.OPENSHIFT_MYSQL_DB_PASSWORD || 'JeCXvIzQ-zwM';
-var mysql_database_name	= 'mysql';
+var mysql_host 			= process.env.OPENSHIFT_MYSQL_DB_HOST || 'sql3.freemysqlhosting.net';
+var mysql_username		= process.env.OPENSHIFT_MYSQL_DB_USERNAME || 'sql3158842';
+var mysql_password		= process.env.OPENSHIFT_MYSQL_DB_PASSWORD || 'MHTv71vnZa';
+var mysql_database_name	= 'sql3158842';
 const app = express()  
 
 app.get('/', (request, response) => 
@@ -116,7 +116,7 @@ function parseBookHTML(html)
 function databaseExample()
 {
 	var connection = mysql.createConnection({
-				host     	: mysql_ip_address,
+				host     	: mysql_host,
 				port		: mysql_port,
 				user     	: mysql_username,
 				password 	: mysql_password,
