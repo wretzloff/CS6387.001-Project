@@ -1,14 +1,22 @@
-var http = require('http');
-var https = require('https');
+#!/bin/env node
 var express = require('express');
+var fs      = require('fs');
+var http 	= require('http');
+var https 	= require('https');
 var cheerio = require('cheerio');
-var mysql      = require('mysql');
-var server_port = process.env.OPENSHIFT_NODEJS_PORT || 3000
-var server_ip_address = process.env.OPENSHIFT_NODEJS_IP || '127.0.0.1'
+var mysql   = require('mysql');
+var server_port 		= process.env.OPENSHIFT_NODEJS_PORT || 3000
+var server_ip_address 	= process.env.OPENSHIFT_NODEJS_IP || '127.0.0.1'
+var mysql_port 			= process.env.OPENSHIFT_MYSQL_DB_PORT || '3306';
+var mysql_ip_address 	= process.env.OPENSHIFT_MYSQL_DB_HOST || '127.0.0.1';
+var mysql_username		= process.env.OPENSHIFT_MYSQL_DB_USERNAME || 'adminYXmz3n4';
+var mysql_password		= process.env.OPENSHIFT_MYSQL_DB_PASSWORD || 'JeCXvIzQ-zwM';
+var mysql_database_name	= 'mysql';
 const app = express()  
 
 app.get('/', (request, response) => 
 { 
+	databaseExample();	
 	response.send('UTD Book Exchange');
 })
 
@@ -103,4 +111,24 @@ function parseBookHTML(html)
 	})
 	
 	return JSON.stringify(arr, null, 4);
+}
+
+function databaseExample()
+{
+	var connection = mysql.createConnection({
+				host     	: mysql_ip_address,
+				port		: mysql_port,
+				user     	: mysql_username,
+				password 	: mysql_password,
+				database 	: mysql_database_name
+	});
+	connection.connect();
+
+	connection.query('SELECT * from mytable', function(err, rows, fields) {
+	if (!err)
+		console.log('Results: ', rows);
+	else
+		console.log('Error while performing Query.');
+	});
+	connection.end();
 }
