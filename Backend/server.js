@@ -11,7 +11,7 @@ var mysql_port 			= process.env.OPENSHIFT_MYSQL_DB_PORT || '3306';
 var mysql_host 			= process.env.OPENSHIFT_MYSQL_DB_HOST || 'sql3.freemysqlhosting.net';
 var mysql_username		= process.env.OPENSHIFT_MYSQL_DB_USERNAME || 'sql3158842';
 var mysql_password		= process.env.OPENSHIFT_MYSQL_DB_PASSWORD || 'MHTv71vnZa';
-var mysql_database_name	= 'sql3158842';
+var mysql_database_name	= process.env.OPENSHIFT_APP_NAME || 'sql3158842';
 const app = express()  
 
 app.get('/', (request, response) => 
