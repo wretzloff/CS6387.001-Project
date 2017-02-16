@@ -5,6 +5,8 @@ var http 	= require('http');
 var https 	= require('https');
 var cheerio = require('cheerio');
 var mysql   = require('mysql');
+var passport	= require('passport');
+var jwt         = require('jwt-simple');
 var server_port 		= process.env.OPENSHIFT_NODEJS_PORT || 3000
 var server_ip_address 	= process.env.OPENSHIFT_NODEJS_IP || '127.0.0.1'
 var mysql_port 			= process.env.OPENSHIFT_MYSQL_DB_PORT || '3306';
@@ -12,6 +14,8 @@ var mysql_host 			= process.env.OPENSHIFT_MYSQL_DB_HOST || 'sql3.freemysqlhostin
 var mysql_username		= process.env.OPENSHIFT_MYSQL_DB_USERNAME || 'sql3158842';
 var mysql_password		= process.env.OPENSHIFT_MYSQL_DB_PASSWORD || 'MHTv71vnZa';
 var mysql_database_name	= process.env.OPENSHIFT_APP_NAME || 'sql3158842'; //When running on OpenShift, this will be the name of the application, and conveniently, also the name of the database.
+var authenticationSecret = 'thisIsASecretKeyThatWillPickedRandomly';
+
 
 var utdtextbookexchange_app = function() {
     var self = this;
@@ -21,8 +25,9 @@ var utdtextbookexchange_app = function() {
     /*  ================================================================  */
     self.createRoutes = function() {
         self.routes = { };
-
-        self.routes['/'] = function(request, response) 
+		self.postRoutes = { };
+		
+		self.routes['/'] = function(request, response) 
 		{
             response.setHeader('Content-Type', 'text/html');
             response.send('UTD Book Exchange');
@@ -107,6 +112,45 @@ var utdtextbookexchange_app = function() {
 			var get_req = http.request(optionsForGet, callbackForGet);
 			get_req.end();
         };
+		
+		self.routes['/getRequiredTextbooks'] = function(request, response) 
+		{
+            var token = getToken(request.headers);
+			if (token) 
+			{
+				var decoded = jwt.decode(token, authenticationSecret);
+				console.log(decoded);
+				response.send('UTD Book Exchange');
+			}
+			else
+			{
+				return response.status(403).send({success: false, msg: 'No token provided.'});
+			}
+        };
+		
+		self.postRoutes['/authenticate'] = function(request, response) 
+		{
+			var username = request.body.username;
+			var password = request.body.password;
+			//If username and password match
+			if (username) 
+			{
+				if(password)
+				{
+					// return the information including token as JSON
+					var token = jwt.encode(username, authenticationSecret);
+					response.json({success: true, token: 'JWT ' + token});
+				}
+				else
+				{
+					response.send({success: false, msg: 'Authentication failed. No password.'});
+				}
+			} 
+			else 
+			{
+				response.send({success: false, msg: 'Authentication failed. No username.'});
+			}
+		};
     };
 	
 	self.setupVariables = function() {
@@ -176,10 +220,15 @@ var utdtextbookexchange_app = function() {
     self.initializeServer = function() {
         self.createRoutes();
         self.app = express.createServer();
+		self.app.use(passport.initialize());
+		self.app.use(express.bodyParser());
 
         //  Add handlers for the app (from the routes).
         for (var r in self.routes) {
             self.app.get(r, self.routes[r]);
+        }
+		for (var r in self.postRoutes) {
+            self.app.post(r, self.postRoutes[r]);
         }
     };
 
@@ -233,6 +282,26 @@ function parseBookHTML(html)
 	})
 	
 	return JSON.stringify(arr, null, 4);
+}
+
+function getToken(headers) 
+{
+  if (headers && headers.authorization) 
+  {
+    var parted = headers.authorization.split(' ');
+    if (parted.length === 2) 
+	{
+      return parted[1];
+    } 
+	else 
+	{
+      return null;
+    }
+  } 
+  else 
+  {
+    return null;
+  }
 }
 
 /**
