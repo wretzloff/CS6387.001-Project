@@ -168,11 +168,11 @@ var utdtextbookexchange_app = function() {
      */
     self.populateCache = function() {
         if (typeof self.zcache === "undefined") {
-            self.zcache = { 'index.html': '' };
+            //self.zcache = { 'index.html': '' };
         }
 
         //  Local cache for static content.
-        self.zcache['index.html'] = fs.readFileSync('./index.html');
+        //self.zcache['index.html'] = fs.readFileSync('./index.html');
     };
 
 
@@ -180,7 +180,7 @@ var utdtextbookexchange_app = function() {
      *  Retrieve entry (content) from cache.
      *  @param {string} key  Key identifying content to retrieve from cache.
      */
-    self.cache_get = function(key) { return self.zcache[key]; };
+    //self.cache_get = function(key) { return self.zcache[key]; };
 
 
     /**
