@@ -10,10 +10,10 @@ var jwt         = require('jwt-simple');
 var server_port 		= process.env.OPENSHIFT_NODEJS_PORT || 3000
 var server_ip_address 	= process.env.OPENSHIFT_NODEJS_IP || '127.0.0.1'
 var mysql_port 			= process.env.OPENSHIFT_MYSQL_DB_PORT || '3306';
-var mysql_host 			= process.env.OPENSHIFT_MYSQL_DB_HOST || 'sql3.freemysqlhosting.net';
-var mysql_username		= process.env.OPENSHIFT_MYSQL_DB_USERNAME || 'sql3158842';
-var mysql_password		= process.env.OPENSHIFT_MYSQL_DB_PASSWORD || 'MHTv71vnZa';
-var mysql_database_name	= process.env.OPENSHIFT_APP_NAME || 'sql3158842'; //When running on OpenShift, this will be the name of the application, and conveniently, also the name of the database.
+var mysql_host 			= process.env.OPENSHIFT_MYSQL_DB_HOST || 'mysqldb1.cv17o5shagql.us-west-2.rds.amazonaws.com';
+var mysql_username		= process.env.OPENSHIFT_MYSQL_DB_USERNAME || 'mysqldb';
+var mysql_password		= process.env.OPENSHIFT_MYSQL_DB_PASSWORD || 'Netbackup1!';
+var mysql_database_name	= process.env.OPENSHIFT_APP_NAME || 'MySQLDB1'; //When running on OpenShift, this will be the name of the application, and conveniently, also the name of the database.
 var authenticationSecret = 'thisIsASecretKeyThatWillPickedRandomly';
 var connection = mysql.createConnection(
 {
@@ -39,23 +39,6 @@ var utdtextbookexchange_app = function() {
 		{
             response.setHeader('Content-Type', 'text/html');
             response.send('UTD Book Exchange');
-        };
-		
-		self.routes['/dbtest'] = function(request, response) 
-		{
-			connection.query('SELECT * from User', function(err, rows, fields) 
-			{
-				if (!err)
-				{
-					console.log('Results: ', rows);
-					response.json(rows);
-				}
-				else
-				{
-					console.log('Error while performing Query.');
-				}
-			});
-			connection.end();
         };
 		
 		self.routes['/GetBooksForClass'] = function(request, response) 
@@ -117,7 +100,6 @@ var utdtextbookexchange_app = function() {
 			if (token) 
 			{
 				var decoded = jwt.decode(token, authenticationSecret);
-				console.log(decoded);
 				response.send('UTD Book Exchange');
 			}
 			else
@@ -130,14 +112,33 @@ var utdtextbookexchange_app = function() {
 		{
 			var username = request.body.username;
 			var password = request.body.password;
-			//If username and password match
+			//If username and password were provided
 			if (username) 
 			{
 				if(password)
 				{
-					// return the information including token as JSON
-					var token = jwt.encode(username, authenticationSecret);
-					response.json({success: true, token: 'JWT ' + token});
+					//Query for a user with a matching netID
+					connection.query("SELECT * from User where netID = '" + username + "'", function(err, rows, fields) 
+					{
+						if (!err)
+						{
+							//If we found a match, the user should be authenticated. Don't worry about a password.
+							if(rows.length > 0)
+							{
+								//Create a token and return it to the client.
+								var token = jwt.encode(username, authenticationSecret);
+								response.json({success: true, token: 'JWT ' + token});
+							}
+							else
+							{
+								response.send({success: false, msg: 'Incorrect username or password.'});
+							}
+						}
+						else
+						{
+							response.send({success: false, msg: 'User cannot be authenticated at this time. Please try again later.'});
+						}
+					});
 				}
 				else
 				{
