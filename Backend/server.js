@@ -15,7 +15,15 @@ var mysql_username		= process.env.OPENSHIFT_MYSQL_DB_USERNAME || 'sql3158842';
 var mysql_password		= process.env.OPENSHIFT_MYSQL_DB_PASSWORD || 'MHTv71vnZa';
 var mysql_database_name	= process.env.OPENSHIFT_APP_NAME || 'sql3158842'; //When running on OpenShift, this will be the name of the application, and conveniently, also the name of the database.
 var authenticationSecret = 'thisIsASecretKeyThatWillPickedRandomly';
-
+var connection = mysql.createConnection(
+{
+				host     	: mysql_host,
+				port		: mysql_port,
+				user     	: mysql_username,
+				password 	: mysql_password,
+				database 	: mysql_database_name
+});
+connection.connect();
 
 var utdtextbookexchange_app = function() {
     var self = this;
@@ -35,21 +43,11 @@ var utdtextbookexchange_app = function() {
 		
 		self.routes['/dbtest'] = function(request, response) 
 		{
-            var connection = mysql.createConnection(
-			{
-				host     	: mysql_host,
-				port		: mysql_port,
-				user     	: mysql_username,
-				password 	: mysql_password,
-				database 	: mysql_database_name
-			});
-			connection.connect();
-
 			connection.query('SELECT * from User', function(err, rows, fields) 
 			{
 				if (!err)
 				{
-					//console.log('Results: ', rows);
+					console.log('Results: ', rows);
 					response.json(rows);
 				}
 				else
