@@ -15,7 +15,6 @@ var mysql_username		= /*process.env.OPENSHIFT_MYSQL_DB_USERNAME || */'mysqldb';
 var mysql_password		= /*process.env.OPENSHIFT_MYSQL_DB_PASSWORD || */'Netbackup1!';
 var mysql_database_name	= /*process.env.OPENSHIFT_APP_NAME || */'MySQLDB1'; //When running on OpenShift, this will be the name of the application, and conveniently, also the name of the database.
 var authenticationSecret = 'thisIsASecretKeyThatWillPickedRandomly';
-//Hello!
 var connection = mysql.createConnection(
 {
 	host     	: mysql_host,
@@ -39,7 +38,7 @@ var utdtextbookexchange_app = function() {
 		self.routes['/'] = function(request, response) 
 		{
             response.setHeader('Content-Type', 'text/html');
-            response.send('UTD Book Exchange');
+            response.send('Welcome to UTD Book Exchange (Hello World)!');
         };
 		
 		self.routes['/GetBooksForClass'] = function(request, response) 
