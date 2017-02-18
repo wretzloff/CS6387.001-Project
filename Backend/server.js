@@ -9,11 +9,11 @@ var passport	= require('passport');
 var jwt         = require('jwt-simple');
 var server_port 		= process.env.OPENSHIFT_NODEJS_PORT || 3000
 var server_ip_address 	= process.env.OPENSHIFT_NODEJS_IP || '127.0.0.1'
-var mysql_port 			= process.env.OPENSHIFT_MYSQL_DB_PORT || '3306';
-var mysql_host 			= process.env.OPENSHIFT_MYSQL_DB_HOST || 'mysqldb1.cv17o5shagql.us-west-2.rds.amazonaws.com';
-var mysql_username		= process.env.OPENSHIFT_MYSQL_DB_USERNAME || 'mysqldb';
-var mysql_password		= process.env.OPENSHIFT_MYSQL_DB_PASSWORD || 'Netbackup1!';
-var mysql_database_name	= process.env.OPENSHIFT_APP_NAME || 'MySQLDB1'; //When running on OpenShift, this will be the name of the application, and conveniently, also the name of the database.
+var mysql_port 			= /*process.env.OPENSHIFT_MYSQL_DB_PORT || */'3306';
+var mysql_host 			= /*process.env.OPENSHIFT_MYSQL_DB_HOST || */'mysqldb1.cv17o5shagql.us-west-2.rds.amazonaws.com';
+var mysql_username		= /*process.env.OPENSHIFT_MYSQL_DB_USERNAME || */'mysqldb';
+var mysql_password		= /*process.env.OPENSHIFT_MYSQL_DB_PASSWORD || */'Netbackup1!';
+var mysql_database_name	= /*process.env.OPENSHIFT_APP_NAME || */'MySQLDB1'; //When running on OpenShift, this will be the name of the application, and conveniently, also the name of the database.
 var authenticationSecret = 'thisIsASecretKeyThatWillPickedRandomly';
 var connection = mysql.createConnection(
 {
@@ -99,8 +99,29 @@ var utdtextbookexchange_app = function() {
             var token = getToken(request.headers);
 			if (token) 
 			{
-				var decoded = jwt.decode(token, authenticationSecret);
-				response.send('UTD Book Exchange');
+				var username = jwt.decode(token, authenticationSecret);
+				connection.query("SELECT * from dummy_User_Enrollment where netID = '" + username + "'", function(err, classRows, fields) 
+					{
+						if (!err)
+						{
+							var booksArray = [];
+							for (var i in classRows) 
+							{
+								var requiredBooksForClass = [];
+								requiredBooksForClass.push({bookName: 'sampleBook1Name', bookEdition: 'sampleBook1Ed', bookAuthor: 'sampleBook1Author', bookISBN: 'sampleBook1ISBN'});
+								requiredBooksForClass.push({bookName: 'sampleBook2Name', bookEdition: 'sampleBook2Ed', bookAuthor: 'sampleBook2Author', bookISBN: 'sampleBook2ISBN'});
+								booksArray.push({classSemester: classRows[i].semester, className: classRows[i].enrolledClass, classBooks: requiredBooksForClass});
+							}
+							
+							response.contentType('application/json');
+							response.json(booksArray);
+						}
+						else
+						{
+							response.send({success: false, msg: 'Required Textbooks cannot be found at this time. Please try again later.'});
+						}
+					});
+				
 			}
 			else
 			{
