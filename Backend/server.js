@@ -17,11 +17,11 @@ var mysql_database_name	= /*process.env.OPENSHIFT_APP_NAME || */'MySQLDB1'; //Wh
 var authenticationSecret = 'thisIsASecretKeyThatWillPickedRandomly';
 var connection = mysql.createConnection(
 {
-				host     	: mysql_host,
-				port		: mysql_port,
-				user     	: mysql_username,
-				password 	: mysql_password,
-				database 	: mysql_database_name
+	host     	: mysql_host,
+	port		: mysql_port,
+	user     	: mysql_username,
+	password 	: mysql_password,
+	database 	: mysql_database_name
 });
 connection.connect();
 
@@ -96,14 +96,11 @@ var utdtextbookexchange_app = function() {
 		
 		self.routes['/getRequiredTextbooks'] = function(request, response) 
 		{
-            var token = getToken(request.headers);
-			if (token) 
-			{
-				var username = jwt.decode(token, authenticationSecret);
+			var getRequiredTextbooksFunction = function(username){
 				connection.query("SELECT * from dummy_User_Enrollment where netID = '" + username + "'", function(err, classRows, fields) 
+				{
+					if (!err)
 					{
-						if (!err)
-						{
 							var booksArray = [];
 							for (var i in classRows) 
 							{
@@ -120,13 +117,11 @@ var utdtextbookexchange_app = function() {
 						{
 							response.send({success: false, msg: 'Required Textbooks cannot be found at this time. Please try again later.'});
 						}
-					});
-				
+				});
 			}
-			else
-			{
-				return response.status(403).send({success: false, msg: 'No token provided.'});
-			}
+			
+			checkToken(request, response, authenticationSecret, getRequiredTextbooksFunction);
+			
         };
 		
 		self.postRoutes['/authenticate'] = function(request, response) 
@@ -323,6 +318,35 @@ function getToken(headers)
     return null;
   }
 }
+
+function checkToken(request, response, authenticationSecret, callbackFunction)
+{
+	//First, check that the token was provided.
+	var token = getToken(request.headers);
+	if (token) 
+	{
+		var username;
+		try
+		{
+			//Second, decode the token to get the username that it encodes.
+			username = jwt.decode(token, authenticationSecret);
+		}
+		catch(err)
+		{
+			return response.status(403).send({success: false, msg: 'Token could not be authenticated: ' + token});
+		}
+		
+		//If we've successfully gotten the username, then this request is authenticated.
+		//Pass the username into the callback function to perform the business logic.
+		callbackFunction(username);
+	}
+	else
+	{
+		return response.status(403).send({success: false, msg: 'No token provided.'});
+	}
+}
+
+
 
 /**
  *  main():  Main code.
