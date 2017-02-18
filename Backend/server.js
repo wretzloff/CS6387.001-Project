@@ -126,7 +126,6 @@ var utdtextbookexchange_app = function() {
 		self.routes['/GetForSaleEntriesForISBN'] = function(request, response) 
 		{
 			var isbnFromQueryString = request.query.isbn;
-			//Query for a user with a matching netID
 			connection.query("SELECT * from ForSale where ISBN = '" + isbnFromQueryString + "'", function(err, rows, fields) 
 			{
 				if (!err)
