@@ -75,6 +75,66 @@ var utdtextbookexchange_app = function() {
 			checkToken(request, response, authenticationSecret, myBooksCallFunction);
         };
 		
+		self.routes['/forSaleEntries/isbn/:isbn'] = function(request, response) 
+		{
+			var providedIsbn = request.params.isbn;
+			connection.query("SELECT iD as forSaleId, isbn,author,price,description,bookCondition from ForSale where ISBN = '" + providedIsbn + "' and status = 0", function(err, rows, fields) 
+			{
+				if (!err)
+				{
+					response.json(rows);
+				}
+				else
+				{
+					console.log(err);
+					response.send({success: false, msg: 'Internal error.'});
+				}
+			});
+		};
+		
+		self.postRoutes['/authenticate'] = function(request, response) 
+		{
+			var username = request.body.username;
+			var password = request.body.password;
+			//If username and password were provided
+			if (username) 
+			{
+				if(password)
+				{
+					//Query for a user with a matching netID
+					connection.query("SELECT * from User where netID = '" + username + "'", function(err, rows, fields) 
+					{
+						if (!err)
+						{
+							//If we found a match, the user should be authenticated. Don't worry about a password.
+							if(rows.length > 0)
+							{
+								//Using the internal user ID of the row that was just found, create a token and return it to the client.
+								var token = jwt.encode(rows[0].internalUserId, authenticationSecret);
+								response.json({success: true, token: 'JWT ' + token});
+							}
+							else
+							{
+								response.send({success: false, msg: 'Incorrect username or password.'});
+							}
+						}
+						else
+						{
+							response.send({success: false, msg: 'User cannot be authenticated at this time. Please try again later.'});
+						}
+					});
+				}
+				else
+				{
+					response.send({success: false, msg: 'Authentication failed. No password.'});
+				}
+			} 
+			else 
+			{
+				response.send({success: false, msg: 'Authentication failed. No username.'});
+			}
+		};
+		
 		self.routes['/GetBooksForClass'] = function(request, response) 
 		{
 			var classFromQueryString = request.query.class;
@@ -127,65 +187,6 @@ var utdtextbookexchange_app = function() {
 			var get_req = http.request(optionsForGet, callbackForGet);
 			get_req.end();
         };
-		
-		self.routes['/GetForSaleEntriesForISBN'] = function(request, response) 
-		{
-			var isbnFromQueryString = request.query.isbn;
-			connection.query("SELECT * from ForSale where ISBN = '" + isbnFromQueryString + "'", function(err, rows, fields) 
-			{
-				if (!err)
-				{
-					response.json(rows);
-				}
-				else
-				{
-					response.send({success: false, msg: 'Internal error.'});
-				}
-			});
-		};
-		
-		self.postRoutes['/authenticate'] = function(request, response) 
-		{
-			var username = request.body.username;
-			var password = request.body.password;
-			//If username and password were provided
-			if (username) 
-			{
-				if(password)
-				{
-					//Query for a user with a matching netID
-					connection.query("SELECT * from User where netID = '" + username + "'", function(err, rows, fields) 
-					{
-						if (!err)
-						{
-							//If we found a match, the user should be authenticated. Don't worry about a password.
-							if(rows.length > 0)
-							{
-								//Using the internal user ID of the row that was just found, create a token and return it to the client.
-								var token = jwt.encode(rows[0].internalUserId, authenticationSecret);
-								response.json({success: true, token: 'JWT ' + token});
-							}
-							else
-							{
-								response.send({success: false, msg: 'Incorrect username or password.'});
-							}
-						}
-						else
-						{
-							response.send({success: false, msg: 'User cannot be authenticated at this time. Please try again later.'});
-						}
-					});
-				}
-				else
-				{
-					response.send({success: false, msg: 'Authentication failed. No password.'});
-				}
-			} 
-			else 
-			{
-				response.send({success: false, msg: 'Authentication failed. No username.'});
-			}
-		};
     };
 	
 	self.setupVariables = function() {
