@@ -92,6 +92,32 @@ var utdtextbookexchange_app = function() {
 			});
 		};
 		
+		self.postRoutes['/forSaleEntries'] = function(request, response) 
+		{
+			
+			function forSaleEntriesPostCallbackFunction(internalUserId)
+			{
+				//Get the parameters from the body of the HTTP POST message
+				var providedIsbn = request.body.isbn;
+				var providedAuthor = request.body.author;
+				var providedPrice = request.body.price;
+				var providedCondition = request.body.condition;
+				var proidedDescription = request.body.description;
+				console.log(providedIsbn);
+				console.log(providedAuthor);
+				console.log(providedPrice);
+				console.log(providedCondition);
+				console.log(proidedDescription);
+				
+				//Insert code here to create an entry in the ForSale database table...................
+				console.log('Insert code here to create an entry in the ForSale database table...................');
+				
+				response.send({success: true, msg: 'Book has been posted for sale.'});
+			}
+			
+			checkToken(request, response, authenticationSecret, forSaleEntriesPostCallbackFunction);
+		}
+		
 		self.postRoutes['/authenticate'] = function(request, response) 
 		{
 			var username = request.body.username;
