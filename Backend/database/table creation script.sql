@@ -10,6 +10,9 @@ drop table if exists Message;
 drop table if exists User_Converation_Assoc;
 drop table if exists Conversation;
 drop table if exists User;
+drop table if exists condition_type;
+drop table if exists forSaleStatus_type;
+drop table if exists transactionStatus_type;
 
 -- tables
 -- Table: Conversation
@@ -60,7 +63,7 @@ CREATE TABLE Transactions (
     iD int NOT NULL AUTO_INCREMENT,
     buyer_InternalUserId int NOT NULL,
     transactionDateTime timestamp NOT NULL,
-    status varchar(255) NOT NULL,
+    status int NOT NULL,
     conversationId int NOT NULL,
     forSaleId int NOT NULL,
     CONSTRAINT Transactions_pk PRIMARY KEY (iD)
@@ -90,12 +93,33 @@ CREATE TABLE WishList (
     CONSTRAINT WishList_pk PRIMARY KEY (iD)
 );
 
+-- Table: condition_type
+CREATE TABLE condition_type (
+    id int NOT NULL,
+    description varchar(255) NOT NULL,
+    CONSTRAINT condition_type_pk PRIMARY KEY (id)
+) COMMENT 'This table hold a list valid values that can be stored in the condition column of the ForSale table.';
+
 -- Table: dummy_User_Enrollment
 CREATE TABLE dummy_User_Enrollment (
     internalUserId int NOT NULL,
     enrolledClass varchar(255) NOT NULL,
     semester varchar(255) NOT NULL,
     CONSTRAINT dummy_User_Enrollment_pk PRIMARY KEY (internalUserId,enrolledClass,semester)
+);
+
+-- Table: forSaleStatus_type
+CREATE TABLE forSaleStatus_type (
+    id int NOT NULL,
+    description varchar(255) NOT NULL,
+    CONSTRAINT forSaleStatus_type_pk PRIMARY KEY (id)
+) COMMENT 'This table hold a list valid values that can be stored in the status column of the ForSale table.';
+
+-- Table: transactionStatus_type
+CREATE TABLE transactionStatus_type (
+    id int NOT NULL,
+    description varchar(255) NOT NULL,
+    CONSTRAINT transactionStatus_type_pk PRIMARY KEY (id)
 );
 
 -- foreign keys
@@ -111,6 +135,14 @@ ALTER TABLE Transactions ADD CONSTRAINT ForSale_Transactions FOREIGN KEY ForSale
 ALTER TABLE ForSale ADD CONSTRAINT ForSale_User FOREIGN KEY ForSale_User (seller_InternalUserId)
     REFERENCES User (internalUserId);
 
+-- Reference: ForSale_condition_type (table: ForSale)
+ALTER TABLE ForSale ADD CONSTRAINT ForSale_condition_type FOREIGN KEY ForSale_condition_type (bookCondition)
+    REFERENCES condition_type (id);
+
+-- Reference: ForSale_status_type (table: ForSale)
+ALTER TABLE ForSale ADD CONSTRAINT ForSale_status_type FOREIGN KEY ForSale_status_type (status)
+    REFERENCES forSaleStatus_type (id);
+
 -- Reference: Message_Conversation (table: Message)
 ALTER TABLE Message ADD CONSTRAINT Message_Conversation FOREIGN KEY Message_Conversation (conversationId)
     REFERENCES Conversation (iD);
@@ -122,6 +154,10 @@ ALTER TABLE Rating ADD CONSTRAINT Rating_Transactions FOREIGN KEY Rating_Transac
 -- Reference: Transactions_Conversation (table: Transactions)
 ALTER TABLE Transactions ADD CONSTRAINT Transactions_Conversation FOREIGN KEY Transactions_Conversation (conversationId)
     REFERENCES Conversation (iD);
+
+-- Reference: Transactions_transactionStatus_type (table: Transactions)
+ALTER TABLE Transactions ADD CONSTRAINT Transactions_transactionStatus_type FOREIGN KEY Transactions_transactionStatus_type (status)
+    REFERENCES transactionStatus_type (id);
 
 -- Reference: User_Converation_Assoc_User (table: User_Converation_Assoc)
 ALTER TABLE User_Converation_Assoc ADD CONSTRAINT User_Converation_Assoc_User FOREIGN KEY User_Converation_Assoc_User (internalUserId)
@@ -136,3 +172,4 @@ ALTER TABLE dummy_User_Enrollment ADD CONSTRAINT dummy_User_Enrollment_User FORE
     REFERENCES User (internalUserId);
 
 -- End of file.
+
