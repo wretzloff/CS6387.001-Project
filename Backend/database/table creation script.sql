@@ -27,7 +27,7 @@ CREATE TABLE ForSale (
     author varchar(255) NOT NULL,
     price decimal(6,2) NOT NULL,
     description varchar(255) NOT NULL,
-    `condition` int NOT NULL,
+    bookCondition int NOT NULL,
     status int NOT NULL,
     CONSTRAINT ForSale_pk PRIMARY KEY (iD)
 );
