@@ -96,27 +96,27 @@ var utdtextbookexchange_app = function() {
 		
 		self.routes['/getRequiredTextbooks'] = function(request, response) 
 		{
-			var getRequiredTextbooksFunction = function(username){
-				connection.query("SELECT * from dummy_User_Enrollment where netID = '" + username + "'", function(err, classRows, fields) 
+			var getRequiredTextbooksFunction = function(internalUserId){
+				connection.query("SELECT * from dummy_User_Enrollment where internalUserId = '" + internalUserId + "'", function(err, classRows, fields) 
 				{
 					if (!err)
 					{
-							var booksArray = [];
-							for (var i in classRows) 
-							{
-								var requiredBooksForClass = [];
-								requiredBooksForClass.push({bookName: 'sampleBook1Name', bookEdition: 'sampleBook1Ed', bookAuthor: 'sampleBook1Author', bookISBN: 'sampleBook1ISBN'});
-								requiredBooksForClass.push({bookName: 'sampleBook2Name', bookEdition: 'sampleBook2Ed', bookAuthor: 'sampleBook2Author', bookISBN: 'sampleBook2ISBN'});
-								booksArray.push({classSemester: classRows[i].semester, className: classRows[i].enrolledClass, classBooks: requiredBooksForClass});
-							}
-							
-							response.contentType('application/json');
-							response.json(booksArray);
-						}
-						else
+						var booksArray = [];
+						for (var i in classRows) 
 						{
-							response.send({success: false, msg: 'Required Textbooks cannot be found at this time. Please try again later.'});
+							var requiredBooksForClass = [];
+							requiredBooksForClass.push({bookName: 'sampleBook1Name', bookEdition: 'sampleBook1Ed', bookAuthor: 'sampleBook1Author', bookISBN: 'sampleBook1ISBN'});
+							requiredBooksForClass.push({bookName: 'sampleBook2Name', bookEdition: 'sampleBook2Ed', bookAuthor: 'sampleBook2Author', bookISBN: 'sampleBook2ISBN'});
+							booksArray.push({classSemester: classRows[i].semester, className: classRows[i].enrolledClass, classBooks: requiredBooksForClass});
 						}
+						
+						response.contentType('application/json');
+						response.json(booksArray);
+					}
+					else
+					{
+						response.send({success: false, msg: 'Required Textbooks cannot be found at this time. Please try again later.'});
+					}
 				});
 			}
 			
@@ -156,8 +156,8 @@ var utdtextbookexchange_app = function() {
 							//If we found a match, the user should be authenticated. Don't worry about a password.
 							if(rows.length > 0)
 							{
-								//Create a token and return it to the client.
-								var token = jwt.encode(username, authenticationSecret);
+								//Using the internal user ID of the row that was just found, create a token and return it to the client.
+								var token = jwt.encode(rows[0].internalUserId, authenticationSecret);
 								response.json({success: true, token: 'JWT ' + token});
 							}
 							else
@@ -340,20 +340,20 @@ function checkToken(request, response, authenticationSecret, callbackFunction)
 	var token = getToken(request.headers);
 	if (token) 
 	{
-		var username;
+		var internalUserId;
 		try
 		{
-			//Second, decode the token to get the username that it encodes.
-			username = jwt.decode(token, authenticationSecret);
+			//Second, decode the token to get the internalUserId that it encodes.
+			internalUserId = jwt.decode(token, authenticationSecret);
 		}
 		catch(err)
 		{
 			return response.status(403).send({success: false, msg: 'Token could not be authenticated: ' + token});
 		}
 		
-		//If we've successfully gotten the username, then this request is authenticated.
-		//Pass the username into the callback function to perform the business logic.
-		callbackFunction(username);
+		//If we've successfully gotten the internalUserId, then this request is authenticated.
+		//Pass the internalUserId into the callback function to perform the business logic.
+		callbackFunction(internalUserId);
 	}
 	else
 	{
