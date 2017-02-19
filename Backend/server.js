@@ -37,7 +37,7 @@ var utdtextbookexchange_app = function() {
 		
 		self.routes['/'] = function(request, response) 
 		{
-            response.setHeader('Content-Type', 'text/html');
+            response.setHeader('Content-Type', 'text/html');			
             response.send('Welcome to UTD Book Exchange (Hello World)!');
         };
 		
@@ -135,58 +135,7 @@ var utdtextbookexchange_app = function() {
 			}
 		};
 		
-		self.routes['/GetBooksForClass'] = function(request, response) 
-		{
-			var classFromQueryString = request.query.class;
-			var coursebookCookie;
-
-			var optionsForGet = 
-			{
-				host: 'coursebook.utdallas.edu'
-			};
-
-			var callbackForGet = function(resp) 
-			{
-				//Get the value of ptgsessid from the set-cookie header of the response.
-				var setCookieHeader = String(resp.headers["set-cookie"]);
-				var ptgsessid = setCookieHeader.split(";")[0];
-				coursebookCookie = ptgsessid.split("=")[1];
 		
-				//Use this ptgsessid value to send an HTTP POST to get required textbooks.
-				var dataForPost = 'id='+classFromQueryString+'&div=r-2childcontent';
-				var optionsForPost = 
-				{
-					host: 'coursebook.utdallas.edu',
-					path: '/clips/clip-textbooks.zog',
-					method: 'POST',
-					headers: 
-					{
-						'Content-Type' : 'application/x-www-form-urlencoded',
-						'Content-Length': Buffer.byteLength(dataForPost),
-						'Cookie':'PTGSESSID='+coursebookCookie+';'
-					}
-				};
-				
-				var callbackForPost = function(resp)
-				{
-					resp.setEncoding('utf8');
-					resp.on('data', function (chunk) 
-					{
-						response.header("Content-Type",'application/json');
-						response.send(parseBookHTML(chunk));
-					});
-				}
-			
-				//Send the HTTP POST
-				var post_req = https.request(optionsForPost, callbackForPost) ;
-				post_req.write(dataForPost);
-				post_req.end();
-			}
-		
-			//Send the HTTP GET
-			var get_req = http.request(optionsForGet, callbackForGet);
-			get_req.end();
-        };
     };
 	
 	self.setupVariables = function() {
@@ -339,6 +288,56 @@ function getToken(headers)
     return null;
   }
 }
+
+function getBooksForClass(classNumber, callbackFunction) 
+{
+	var coursebookCookie;
+	var optionsForGet = 
+	{
+		host: 'coursebook.utdallas.edu'
+	};
+
+	var callbackForGet = function(resp) 
+	{
+		//Get the value of ptgsessid from the set-cookie header of the response.
+		var setCookieHeader = String(resp.headers["set-cookie"]);
+		var ptgsessid = setCookieHeader.split(";")[0];
+		coursebookCookie = ptgsessid.split("=")[1];
+
+		//Use this ptgsessid value to send an HTTP POST to get required textbooks.
+		var dataForPost = 'id='+classNumber+'&div=r-2childcontent';
+		var optionsForPost = 
+		{
+			host: 'coursebook.utdallas.edu',
+			path: '/clips/clip-textbooks.zog',
+			method: 'POST',
+			headers: 
+			{
+				'Content-Type' : 'application/x-www-form-urlencoded',
+				'Content-Length': Buffer.byteLength(dataForPost),
+				'Cookie':'PTGSESSID='+coursebookCookie+';'
+			}
+		};
+		
+		var callbackForPost = function(resp)
+		{
+			resp.setEncoding('utf8');
+			resp.on('data', function (chunk) 
+			{
+				callbackFunction(parseBookHTML(chunk));
+			});
+		}
+	
+		//Send the HTTP POST
+		var post_req = https.request(optionsForPost, callbackForPost) ;
+		post_req.write(dataForPost);
+		post_req.end();
+	}
+
+	//Send the HTTP GET
+	var get_req = http.request(optionsForGet, callbackForGet);
+	get_req.end();
+};
 
 function checkToken(request, response, authenticationSecret, callbackFunction)
 {
