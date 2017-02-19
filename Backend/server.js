@@ -111,8 +111,24 @@ var utdtextbookexchange_app = function() {
 				
 				//Insert code here to create an entry in the ForSale database table...................
 				console.log('Insert code here to create an entry in the ForSale database table...................');
-				
 				response.send({success: true, msg: 'Book has been posted for sale.'});
+			}
+			
+			checkToken(request, response, authenticationSecret, forSaleEntriesPostCallbackFunction);
+		}
+		
+		self.postRoutes['/buyBook'] = function(request, response) 
+		{
+			
+			function forSaleEntriesPostCallbackFunction(internalUserId)
+			{
+				//Get the parameters from the body of the HTTP POST message
+				var providedForSaleId = request.body.forSaleId;
+				console.log(providedForSaleId);
+				
+				//Insert code here to mark the specified ForSale record as On Hold, create a new transaction, and send a message to the seller......
+				console.log('Insert code here to mark the specified ForSale record as On Hold, create a new transaction, and send a message to the seller......');
+				response.send({success: true, msg: 'Book has put on hold.'});
 			}
 			
 			checkToken(request, response, authenticationSecret, forSaleEntriesPostCallbackFunction);
