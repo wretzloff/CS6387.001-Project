@@ -3,26 +3,25 @@
 
 drop table if exists dummy_User_Enrollment;
 drop table if exists Rating;
+drop table if exists Transactions;
 drop table if exists WishList;
 drop table if exists ForSale;
 drop table if exists Message;
+drop table if exists User_Converation_Assoc;
 drop table if exists Conversation;
-drop table if exists Transactions;
 drop table if exists User;
 
 -- tables
 -- Table: Conversation
 CREATE TABLE Conversation (
     iD int NOT NULL AUTO_INCREMENT,
-    recipient1_internalUserId varchar(255) NOT NULL,
-    recipient2_internalUserId varchar(255) NOT NULL,
     CONSTRAINT Conversation_pk PRIMARY KEY (iD)
 );
 
 -- Table: ForSale
 CREATE TABLE ForSale (
     iD int NOT NULL AUTO_INCREMENT,
-    sellerInternalUserId varchar(255) NOT NULL,
+    seller_InternalUserId int NOT NULL,
     postedDateTime timestamp NOT NULL,
     ISBN varchar(13) NOT NULL,
     author varchar(255) NOT NULL,
@@ -36,8 +35,8 @@ CREATE TABLE ForSale (
 -- Table: Message
 CREATE TABLE Message (
     iD int NOT NULL AUTO_INCREMENT,
-    to_internalUserId int NOT NULL,
-    from_internalUserId int NOT NULL,
+    to_InternalUserId int NOT NULL,
+    from_InternalUserId int NOT NULL,
     messageDateTime timestamp NOT NULL,
     messageContent varchar(255) NOT NULL,
     read_unread int NOT NULL,
@@ -49,8 +48,8 @@ CREATE TABLE Message (
 CREATE TABLE Rating (
     iD int NOT NULL AUTO_INCREMENT,
     transactionId int NOT NULL,
-    ratedInternalUserId int NOT NULL,
-    ratedByinternalUserId int NOT NULL,
+    rated_InternalUserId int NOT NULL,
+    ratedBy_InternalUserId int NOT NULL,
     rating int NOT NULL,
     comment varchar(255) NOT NULL,
     CONSTRAINT Rating_pk PRIMARY KEY (iD)
@@ -59,7 +58,7 @@ CREATE TABLE Rating (
 -- Table: Transactions
 CREATE TABLE Transactions (
     iD int NOT NULL AUTO_INCREMENT,
-    buyerInternalUserId varchar(255) NOT NULL,
+    buyer_InternalUserId int NOT NULL,
     transactionDateTime timestamp NOT NULL,
     status varchar(255) NOT NULL,
     conversationId int NOT NULL,
@@ -75,6 +74,13 @@ CREATE TABLE User (
     CONSTRAINT User_pk PRIMARY KEY (internalUserId)
 ) COMMENT 'user is people who has UtDallas email account';
 
+-- Table: User_Converation_Assoc
+CREATE TABLE User_Converation_Assoc (
+    internalUserId int NOT NULL,
+    conversationId int NOT NULL,
+    CONSTRAINT User_Converation_Assoc_pk PRIMARY KEY (internalUserId,conversationId)
+);
+
 -- Table: WishList
 CREATE TABLE WishList (
     iD int NOT NULL AUTO_INCREMENT,
@@ -87,26 +93,22 @@ CREATE TABLE WishList (
 -- Table: dummy_User_Enrollment
 CREATE TABLE dummy_User_Enrollment (
     internalUserId int NOT NULL,
-    class varchar(255) NOT NULL,
+    enrolledClass varchar(255) NOT NULL,
     semester varchar(255) NOT NULL,
-    CONSTRAINT dummy_User_Enrollment_pk PRIMARY KEY (internalUserId,class,semester)
+    CONSTRAINT dummy_User_Enrollment_pk PRIMARY KEY (internalUserId,enrolledClass,semester)
 );
 
 -- foreign keys
--- Reference: Conversation_Transactions (table: Conversation)
-ALTER TABLE Conversation ADD CONSTRAINT Conversation_Transactions FOREIGN KEY Conversation_Transactions ()
-    REFERENCES Transactions ();
+-- Reference: Conversation_User_Converation_Assoc (table: User_Converation_Assoc)
+ALTER TABLE User_Converation_Assoc ADD CONSTRAINT Conversation_User_Converation_Assoc FOREIGN KEY Conversation_User_Converation_Assoc (conversationId)
+    REFERENCES Conversation (iD);
 
--- Reference: Conversation_User (table: Conversation)
-ALTER TABLE Conversation ADD CONSTRAINT Conversation_User FOREIGN KEY Conversation_User (recipient1_internalUserId,recipient2_internalUserId)
-    REFERENCES User (internalUserId,internalUserId);
-
--- Reference: ForSale_Transactions (table: ForSale)
-ALTER TABLE ForSale ADD CONSTRAINT ForSale_Transactions FOREIGN KEY ForSale_Transactions (iD)
-    REFERENCES Transactions (forSaleId);
+-- Reference: ForSale_Transactions (table: Transactions)
+ALTER TABLE Transactions ADD CONSTRAINT ForSale_Transactions FOREIGN KEY ForSale_Transactions (forSaleId)
+    REFERENCES ForSale (iD);
 
 -- Reference: ForSale_User (table: ForSale)
-ALTER TABLE ForSale ADD CONSTRAINT ForSale_User FOREIGN KEY ForSale_User (sellerInternalUserId)
+ALTER TABLE ForSale ADD CONSTRAINT ForSale_User FOREIGN KEY ForSale_User (seller_InternalUserId)
     REFERENCES User (internalUserId);
 
 -- Reference: Message_Conversation (table: Message)
@@ -117,6 +119,14 @@ ALTER TABLE Message ADD CONSTRAINT Message_Conversation FOREIGN KEY Message_Conv
 ALTER TABLE Rating ADD CONSTRAINT Rating_Transactions FOREIGN KEY Rating_Transactions (transactionId)
     REFERENCES Transactions (iD);
 
+-- Reference: Transactions_Conversation (table: Transactions)
+ALTER TABLE Transactions ADD CONSTRAINT Transactions_Conversation FOREIGN KEY Transactions_Conversation (conversationId)
+    REFERENCES Conversation (iD);
+
+-- Reference: User_Converation_Assoc_User (table: User_Converation_Assoc)
+ALTER TABLE User_Converation_Assoc ADD CONSTRAINT User_Converation_Assoc_User FOREIGN KEY User_Converation_Assoc_User (internalUserId)
+    REFERENCES User (internalUserId);
+
 -- Reference: WishList_User (table: WishList)
 ALTER TABLE WishList ADD CONSTRAINT WishList_User FOREIGN KEY WishList_User (internalUserId)
     REFERENCES User (internalUserId);
@@ -126,4 +136,3 @@ ALTER TABLE dummy_User_Enrollment ADD CONSTRAINT dummy_User_Enrollment_User FORE
     REFERENCES User (internalUserId);
 
 -- End of file.
-
