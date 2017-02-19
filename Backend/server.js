@@ -32,23 +32,23 @@ var utdtextbookexchange_app = function() {
     /*  App server functions (main app logic here).                       */
     /*  ================================================================  */
     self.createRoutes = function() {
-        self.routes = { };
+        self.getRoutes = { };
 		self.postRoutes = { };
 		
-		self.routes['/'] = function(request, response) 
+		self.getRoutes['/'] = function(request, response) 
 		{
             response.setHeader('Content-Type', 'text/html');			
             response.send('Welcome to UTD Book Exchange (Hello World)!');
         };
 		
-		self.routes['/my-books/:userId'] = function(request, response) 
+		self.getRoutes['/my-books/:userId'] = function(request, response) 
 		{
 			//Get the userId provided in the query string. Technically, we don't even need this, because when we decode the authorization token,  
 			//that gives us the internalUserId. We'll use that, since it's more secure.
 			var providedUserId = request.params.userId;
 			
 			//Define a function tht will be called after the checkToken() function has finished validating the authorization token.
-			var myBooksCallFunction = function(internalUserId){
+			var myBooksCallbackFunction = function(internalUserId){
 				connection.query("SELECT * from dummy_User_Enrollment where internalUserId = '" + internalUserId + "'", function(err, classRows, fields) 
 				{
 					if (!err)
@@ -72,10 +72,10 @@ var utdtextbookexchange_app = function() {
 				});
 			}
 			
-			checkToken(request, response, authenticationSecret, myBooksCallFunction);
+			checkToken(request, response, authenticationSecret, myBooksCallbackFunction);
         };
 		
-		self.routes['/forSaleEntries/isbn/:isbn'] = function(request, response) 
+		self.getRoutes['/forSaleEntries/isbn/:isbn'] = function(request, response) 
 		{
 			var providedIsbn = request.params.isbn;
 			connection.query("SELECT iD as forSaleId, isbn,author,price,description,bookCondition from ForSale where ISBN = '" + providedIsbn + "' and status = 0", function(err, rows, fields) 
@@ -209,8 +209,8 @@ var utdtextbookexchange_app = function() {
 		self.app.use(express.bodyParser());
 
         //  Add handlers for the app (from the routes).
-        for (var r in self.routes) {
-            self.app.get(r, self.routes[r]);
+        for (var r in self.getRoutes) {
+            self.app.get(r, self.getRoutes[r]);
         }
 		for (var r in self.postRoutes) {
             self.app.post(r, self.postRoutes[r]);
