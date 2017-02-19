@@ -92,6 +92,18 @@ var utdtextbookexchange_app = function() {
 			});
 		};
 		
+		self.getRoutes['/thirdPartySalePrice/isbn/:isbn'] = function(request, response) 
+		{
+			var providedIsbn = request.params.isbn;
+			console.log(providedIsbn);
+			
+			//Insert code here get a third party sale price...................
+			console.log('Insert code here get a third party sale price...................');
+			var thirdPartyPriceInfo = [];
+			thirdPartyPriceInfo.push({price: '51.46', source: 'Amazon', link: 'https://www.amazon.com/Starting-Control-Structures-through-Objects/dp/0133778819/ref=sr_1_1?ie=UTF8&qid=1487534860&sr=8-1&keywords=9780133778816'});
+			response.send(thirdPartyPriceInfo);
+		};
+		
 		self.postRoutes['/forSaleEntries'] = function(request, response) 
 		{
 			
