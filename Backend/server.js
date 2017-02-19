@@ -41,6 +41,40 @@ var utdtextbookexchange_app = function() {
             response.send('Welcome to UTD Book Exchange (Hello World)!');
         };
 		
+		self.routes['/my-books/:userId'] = function(request, response) 
+		{
+			//Get the userId provided in the query string. Technically, we don't even need this, because when we decode the authorization token,  
+			//that gives us the internalUserId. We'll use that, since it's more secure.
+			var providedUserId = request.params.userId;
+			
+			//Define a function tht will be called after the checkToken() function has finished validating the authorization token.
+			var myBooksCallFunction = function(internalUserId){
+				connection.query("SELECT * from dummy_User_Enrollment where internalUserId = '" + internalUserId + "'", function(err, classRows, fields) 
+				{
+					if (!err)
+					{
+						var booksArray = [];
+						for (var i in classRows) 
+						{
+							var requiredBooksForClass = [];
+							requiredBooksForClass.push({bookName: 'sampleBook1Name', bookEdition: 'sampleBook1Ed', bookAuthor: 'sampleBook1Author', bookISBN: 'sampleBook1ISBN'});
+							requiredBooksForClass.push({bookName: 'sampleBook2Name', bookEdition: 'sampleBook2Ed', bookAuthor: 'sampleBook2Author', bookISBN: 'sampleBook2ISBN'});
+							booksArray.push({classSemester: classRows[i].semester, className: classRows[i].enrolledClass, classBooks: requiredBooksForClass});
+						}
+						
+						response.contentType('application/json');
+						response.json(booksArray);
+					}
+					else
+					{
+						response.send({success: false, msg: 'Required Textbooks cannot be found at this time. Please try again later.'});
+					}
+				});
+			}
+			
+			checkToken(request, response, authenticationSecret, myBooksCallFunction);
+        };
+		
 		self.routes['/GetBooksForClass'] = function(request, response) 
 		{
 			var classFromQueryString = request.query.class;
@@ -92,35 +126,6 @@ var utdtextbookexchange_app = function() {
 			//Send the HTTP GET
 			var get_req = http.request(optionsForGet, callbackForGet);
 			get_req.end();
-        };
-		
-		self.routes['/getRequiredTextbooks'] = function(request, response) 
-		{
-			var getRequiredTextbooksFunction = function(internalUserId){
-				connection.query("SELECT * from dummy_User_Enrollment where internalUserId = '" + internalUserId + "'", function(err, classRows, fields) 
-				{
-					if (!err)
-					{
-						var booksArray = [];
-						for (var i in classRows) 
-						{
-							var requiredBooksForClass = [];
-							requiredBooksForClass.push({bookName: 'sampleBook1Name', bookEdition: 'sampleBook1Ed', bookAuthor: 'sampleBook1Author', bookISBN: 'sampleBook1ISBN'});
-							requiredBooksForClass.push({bookName: 'sampleBook2Name', bookEdition: 'sampleBook2Ed', bookAuthor: 'sampleBook2Author', bookISBN: 'sampleBook2ISBN'});
-							booksArray.push({classSemester: classRows[i].semester, className: classRows[i].enrolledClass, classBooks: requiredBooksForClass});
-						}
-						
-						response.contentType('application/json');
-						response.json(booksArray);
-					}
-					else
-					{
-						response.send({success: false, msg: 'Required Textbooks cannot be found at this time. Please try again later.'});
-					}
-				});
-			}
-			
-			checkToken(request, response, authenticationSecret, getRequiredTextbooksFunction);
         };
 		
 		self.routes['/GetForSaleEntriesForISBN'] = function(request, response) 
