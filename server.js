@@ -1,19 +1,19 @@
 #!/bin/env node
-var express = require('express');
-var fs      = require('fs');
-var http 	= require('http');
-var https 	= require('https');
-var cheerio = require('cheerio');
-var mysql   = require('mysql');
-var passport	= require('passport');
-var jwt         = require('jwt-simple');
+var express 			= require('express');
+var fs      			= require('fs');
+var http 				= require('http');
+var https 				= require('https');
+var cheerio 			= require('cheerio');
+var mysql   			= require('mysql');
+var passport			= require('passport');
+var jwt         		= require('jwt-simple');
 var server_port 		= process.env.OPENSHIFT_NODEJS_PORT || 3000
 var server_ip_address 	= process.env.OPENSHIFT_NODEJS_IP || '127.0.0.1'
-var mysql_port 			= /*process.env.OPENSHIFT_MYSQL_DB_PORT || */'3306';
-var mysql_host 			= /*process.env.OPENSHIFT_MYSQL_DB_HOST || */'mysqldb1.cv17o5shagql.us-west-2.rds.amazonaws.com';
-var mysql_username		= /*process.env.OPENSHIFT_MYSQL_DB_USERNAME || */'mysqldb';
-var mysql_password		= /*process.env.OPENSHIFT_MYSQL_DB_PASSWORD || */'Netbackup1!';
-var mysql_database_name	= /*process.env.OPENSHIFT_APP_NAME || */'MySQLDB1'; //When running on OpenShift, this will be the name of the application, and conveniently, also the name of the database.
+var mysql_port 			= '3306';
+var mysql_host 			= 'mysqldb1.cv17o5shagql.us-west-2.rds.amazonaws.com';
+var mysql_username		= 'mysqldb';
+var mysql_password		= 'Netbackup1!';
+var mysql_database_name	= 'MySQLDB1';
 var authenticationSecret = 'thisIsASecretKeyThatWillPickedRandomly';
 var connection = mysql.createConnection(
 {
@@ -47,23 +47,30 @@ var utdtextbookexchange_app = function() {
 			//that gives us the internalUserId. We'll use that, since it's more secure.
 			var providedUserId = request.params.userId;
 			
+			//Define the function that will be called after each call to UTD Coursebook.
+			var booksArray = [];
+			var getBooksForClassCallbackFunction = function(numOfClasses, classNum, classbooks)
+			{
+				booksArray.push({className: classNum, classbooks});
+				if(booksArray.length >= numOfClasses)
+				{
+					response.contentType('application/json');
+					response.json(booksArray);
+				}
+			}
+						
 			//Define a function tht will be called after the checkToken() function has finished validating the authorization token.
-			var myBooksCallbackFunction = function(internalUserId){
+			var afterDatabaseQueryCallbackFunction = function(internalUserId){
 				connection.query("SELECT * from dummy_User_Enrollment where internalUserId = '" + internalUserId + "'", function(err, classRows, fields) 
 				{
 					if (!err)
 					{
-						var booksArray = [];
+						//Loop through each class and fetch the books for that class, and add them to the response.
 						for (var i in classRows) 
 						{
-							var requiredBooksForClass = [];
-							requiredBooksForClass.push({bookName: 'sampleBook1Name', bookEdition: 'sampleBook1Ed', bookAuthor: 'sampleBook1Author', bookISBN: 'sampleBook1ISBN'});
-							requiredBooksForClass.push({bookName: 'sampleBook2Name', bookEdition: 'sampleBook2Ed', bookAuthor: 'sampleBook2Author', bookISBN: 'sampleBook2ISBN'});
-							booksArray.push({classSemester: classRows[i].semester, className: classRows[i].enrolledClass, classBooks: requiredBooksForClass});
+							var classNumber = classRows[i].enrolledClass + '.' + classRows[i].semester;
+							getBooksForClass(classRows.length, classNumber, getBooksForClassCallbackFunction);
 						}
-						
-						response.contentType('application/json');
-						response.json(booksArray);
 					}
 					else
 					{
@@ -72,7 +79,7 @@ var utdtextbookexchange_app = function() {
 				});
 			}
 			
-			checkToken(request, response, authenticationSecret, myBooksCallbackFunction);
+			checkToken(request, response, authenticationSecret, afterDatabaseQueryCallbackFunction);
         };
 		
 		self.getRoutes['/forSaleEntries/isbn/:isbn'] = function(request, response) 
@@ -324,11 +331,11 @@ function parseBookHTML(html)
 		var recommended = $($(".author", data)[1]).text();
 		
 		arr.push({
-			name: title,
-			edition: edition,
-			author: author,
-			ISBN: isbn,
-			required_recommended: recommended
+			bookName: title,
+			bookEdition: edition,
+			bookAuthor: author,
+			bookISBN: isbn,
+			book_required_recommended: recommended
 		});
 	})
 	
@@ -355,7 +362,7 @@ function getToken(headers)
   }
 }
 
-function getBooksForClass(classNumber, callbackFunction) 
+function getBooksForClass(numOfClasses, classNumber, callbackFunction) 
 {
 	var coursebookCookie;
 	var optionsForGet = 
@@ -390,7 +397,8 @@ function getBooksForClass(classNumber, callbackFunction)
 			resp.setEncoding('utf8');
 			resp.on('data', function (chunk) 
 			{
-				callbackFunction(parseBookHTML(chunk));
+				var formattedResults = parseBookHTML(chunk);
+				callbackFunction(numOfClasses, classNumber, formattedResults);
 			});
 		}
 	
