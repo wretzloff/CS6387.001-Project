@@ -41,12 +41,12 @@ var utdtextbookexchange_app = function() {
             response.send('Welcome to UTD Book Exchange (Hello World)!');
         };
 		
-		self.getRoutes['/my-books/:userId/:productionOrStubClasses'] = function(request, response) 
+		self.getRoutes['/my-books/:userId/:productionOrStubBooks'] = function(request, response) 
 		{
 			//Get the userId provided in the query string. Technically, we don't even need this, because when we decode the authorization token,  
 			//that gives us the internalUserId. We'll use that, since it's more secure.
 			var providedUserId = request.params.userId;
-			var productionOrStubClasses = request.params.productionOrStubClasses;
+			var productionOrStubBooks = request.params.productionOrStubBooks;
 			
 			//Define the function that will be called after each call to UTD Coursebook.
 			var booksArray = [];
@@ -71,7 +71,7 @@ var utdtextbookexchange_app = function() {
 						{
 							var classNumber = classRows[i].enrolledClass + '.' + classRows[i].semester;
 							//If the dummy flag has been set, then just return fake books. Otherwise, carry on and actually make calls to coursebook.
-							if(productionOrStubClasses === 'stub')
+							if(productionOrStubBooks === 'stub')
 							{
 								var fakeBooksArray = [];
 								fakeBooksArray.push(
