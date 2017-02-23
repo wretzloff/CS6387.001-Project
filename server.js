@@ -41,11 +41,12 @@ var utdtextbookexchange_app = function() {
             response.send('Welcome to UTD Book Exchange (Hello World)!');
         };
 		
-		self.getRoutes['/my-books/:userId'] = function(request, response) 
+		self.getRoutes['/my-books/:userId/:productionOrStubClasses'] = function(request, response) 
 		{
 			//Get the userId provided in the query string. Technically, we don't even need this, because when we decode the authorization token,  
 			//that gives us the internalUserId. We'll use that, since it's more secure.
 			var providedUserId = request.params.userId;
+			var productionOrStubClasses = request.params.productionOrStubClasses;
 			
 			//Define the function that will be called after each call to UTD Coursebook.
 			var booksArray = [];
@@ -69,7 +70,24 @@ var utdtextbookexchange_app = function() {
 						for (var i in classRows) 
 						{
 							var classNumber = classRows[i].enrolledClass + '.' + classRows[i].semester;
-							getBooksForClass(classRows.length, classNumber, getBooksForClassCallbackFunction);
+							//If the dummy flag has been set, then just return fake books. Otherwise, carry on and actually make calls to coursebook.
+							if(productionOrStubClasses === 'stub')
+							{
+								var fakeBooksArray = [];
+								fakeBooksArray.push(
+								{
+									bookName: 'STARTING OUT WITH C++ FROM CNTRL (LOOSEPGS)(W/OUT ACCESS)', 
+									bookEdition: 'PH 8th Edition 2015', 
+									bookAuthor: 'GADDIS',
+									bookISBN: '9780133778816',
+									book_required_recommended: 'Required Text'
+								});
+								getBooksForClassCallbackFunction(classRows.length, classNumber, fakeBooksArray);
+							}
+							else
+							{
+								getBooksForClass(classRows.length, classNumber, getBooksForClassCallbackFunction);
+							}
 						}
 					}
 					else
