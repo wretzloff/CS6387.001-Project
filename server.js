@@ -199,7 +199,6 @@ var utdtextbookexchange_app = function() {
 		
 		self.postRoutes['/buyBook'] = function(request, response) 
 		{
-			
 			function forSaleEntriesPostCallbackFunction(internalUserId)
 			{
 				//Get the parameters from the body of the HTTP POST message
@@ -212,6 +211,21 @@ var utdtextbookexchange_app = function() {
 			}
 			
 			checkToken(request, response, authenticationSecret, forSaleEntriesPostCallbackFunction);
+		}
+		
+		self.postRoutes['/transactions/transaction/:transactionId/complete'] = function(request, response) 
+		{
+			function setTransactionCompleteCallbackFunction(internalUserId)
+			{
+				var providedTransactionId = request.params.transactionId;
+				console.log(providedTransactionId);
+				
+				//Insert code here to mark the specified Transaction record as complete......
+				console.log('Insert code here to mark the specified Transaction record as complete......');
+				response.send({success: true, msg: 'Transaction has been marked complete.'});
+			}
+			
+			checkToken(request, response, authenticationSecret, setTransactionCompleteCallbackFunction);
 		}
 		
 		self.postRoutes['/authenticate'] = function(request, response) 
