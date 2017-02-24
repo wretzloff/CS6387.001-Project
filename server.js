@@ -156,6 +156,22 @@ var utdtextbookexchange_app = function() {
 			checkToken(request, response, authenticationSecret, getPendingTransactionsCallbackFunction)
 		}
 		
+		self.getRoutes['/transactions/transaction/:transactionId'] = function(request, response) 
+		{
+			function getTransactionCallbackFunction(internalUserId)
+			{
+				var providedTransactionId = request.params.transactionId;
+				console.log(providedTransactionId);
+				
+				//Insert code here to select from the Transaction table where the transaction ID is providedTransactionId.
+				//...
+				
+				response.send({iD: '3', buyerOrSeller: 'seller', buyer_Nickname: 'Daren C', buyer_InternalUserId: '2', transactionDateTime: '2017-02-22 00:02:40', title: 'Software Engineering for Dummies', author: 'Wallace Wang', ISBN: '9780470108543', price: '32.67'});
+			}
+			
+			checkToken(request, response, authenticationSecret, getTransactionCallbackFunction)
+		}
+		
 		self.postRoutes['/forSaleEntries'] = function(request, response) 
 		{
 			
