@@ -141,6 +141,21 @@ var utdtextbookexchange_app = function() {
 			response.send(suggestedSalePriceInfo);
 		};
 		
+		self.getRoutes['/transactions/:userId'] = function(request, response) 
+		{
+			function getPendingTransactionsCallbackFunction(internalUserId)
+			{
+				//Insert code here to select all Transactions for this internalUserId where the transaction status is 0 (for Pending).
+				//Join the Transaction table to the ForSale table to get information about the book being bought/sold, like the book title, author, price, etc.
+				var transactionsArray = [];
+				transactionsArray.push({iD: '3', buyer_InternalUserId: '1', buyer_Nickname: 'Will R', seller_InternalUserId: '2', sellerNickname: 'Daren C', transactionDateTime: '2017-02-22 00:02:40', title: 'Software Engineering for Dummies', author: 'Wallace Wang', ISBN: '9780470108543', price: '32.67'});
+				transactionsArray.push({iD: '8', buyer_InternalUserId: '2', buyer_Nickname: 'Daren C', seller_InternalUserId: '1', sellerNickname: 'Will R', transactionDateTime: '2017-02-24 00:07:41', title: 'Intermediate Algebra', author: 'Alan S. Tussy', ISBN: '9781111567675', price: '88.00'});
+				response.send(transactionsArray);
+			}
+			
+			checkToken(request, response, authenticationSecret, getPendingTransactionsCallbackFunction)
+		}
+		
 		self.postRoutes['/forSaleEntries'] = function(request, response) 
 		{
 			
