@@ -1,0 +1,120 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "description": "Public-facing endpoints to interact with our API.",
+        "version": "1.0.0",
+        "title": "UTD Textbook Exchange"
+    },
+    "tags": [{
+        "name": "Authenticate",
+        "description": "For Authenticating requests"
+    },
+	{
+        "name": "my-books",
+        "description": "User's textbook info"
+    }],
+    "schemes": ["http"],
+    "paths": {
+        "/my-books/{userId}/{productionOrStubBooks}": {
+            "get": {
+                "tags": ["my-books"],
+                "summary": "Get a list of user's required textbooks for all semesters",
+                "description": "",
+                "operationId": "getRequiredTextbooks",
+                "produces": ["application/json"],
+                "parameters": [{
+                    "name": "userId",
+                    "in": "path",
+                    "description": "ID of User whose books you want",
+                    "required": true,
+                    "type": "integer",
+                    "format": "int"
+                },
+				{
+                    "name": "productionOrStubBooks",
+                    "in": "path",
+                    "description": "either 'stub' or 'production'",
+                    "required": true,
+                    "type": "string"
+                }],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "schema": {
+                            "$ref": "#/definitions/AuthenticationResult"
+                        }
+                    }
+                },
+                "security": [{
+                    "api_key": []
+                }]
+            }
+        },
+        "/Authenticate": {
+            "post": {
+                "tags": ["Authenticate"],
+                "summary": "Send a username and password in order to get an authorization token",
+                "description": "",
+                "operationId": "authenticateClient",
+                "produces": ["application/json"],
+                "parameters": [{
+                    "in": "body",
+                    "name": "body",
+                    "description": "Send a username and password in order to get an authorization token",
+                    "required": true,
+                    "schema": {
+                        "$ref": "#/definitions/AuthenticationRequest"
+                    }
+                }],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "schema": {
+                            "$ref": "#/definitions/AuthenticationResult"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid username/password"
+                    }
+                }
+            }
+        }
+        
+    },
+    "securityDefinitions": {
+        
+        "api_key": {
+            "type": "apiKey",
+            "name": "api_key",
+            "in": "header"
+        }
+    },
+    "definitions": {
+		"AuthenticationRequest": {
+			    "type": "object",
+			    "properties": {
+				      "username": {
+					      "type": "string",
+						  "default": "wbr071000"
+				      },
+				      "password": {
+					      "type": "string",
+						  "default": "thisIsARandomPassword"
+				      }
+			     }
+		},
+		"AuthenticationResult": {
+			    "type": "object",
+			    "properties": {
+				      "success": {
+					      "type": "boolean",
+						  "default": true
+				      },
+				      "token": {
+					      "type": "string",
+						  "default": "JWT eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.MQ.4p-Xcp_Aqs6evX2L8AylTbb1woTuxtlgL-Wg1QMXYYk"
+				      }
+			     }
+		}
+    }
+}

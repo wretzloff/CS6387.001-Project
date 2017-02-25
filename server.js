@@ -7,6 +7,9 @@ var cheerio 			= require('cheerio');
 var mysql   			= require('mysql');
 var passport			= require('passport');
 var jwt         		= require('jwt-simple');
+var argv 				= require('minimist')(process.argv.slice(2));
+var swagger 			= require("swagger-node-express");
+var bodyParser 			= require( 'body-parser' );
 var server_port 		= process.env.OPENSHIFT_NODEJS_PORT || 3000
 var server_ip_address 	= process.env.OPENSHIFT_NODEJS_IP || '127.0.0.1'
 var mysql_port 			= '3306';
@@ -117,6 +120,7 @@ var utdtextbookexchange_app = function() {
 					}
 				});
 			}
+			
 			checkToken(request, response, authenticationSecret, forSaleEntriesCallbackFunction);
 		};
 		
@@ -354,6 +358,33 @@ var utdtextbookexchange_app = function() {
         self.app = express.createServer();
 		self.app.use(passport.initialize());
 		self.app.use(express.bodyParser());
+		
+		var subpath = express();
+		self.app.use(bodyParser());
+		self.app.use("/v1", subpath);
+		swagger.setAppHandler(subpath);
+		self.app.use(express.static('dist'));
+		swagger.setApiInfo({
+			title: "example API",
+			description: "API to do something, manage something...",
+			termsOfServiceUrl: "",
+			contact: "yourname@something.com",
+			license: "",
+			licenseUrl: ""
+		});
+		
+		subpath.get('/', function (req, res) {
+			res.sendfile(__dirname + '/dist/index.html');
+		});
+		
+		swagger.configureSwaggerPaths('', 'api-docs', '');
+		var domain = 'localhost';
+		if(argv.domain !== undefined)
+			domain = argv.domain;
+		else
+			console.log('No --domain=xxx specified, taking default hostname "localhost".');
+		var applicationUrl = 'http://' + domain;
+		swagger.configure(applicationUrl, '1.0.0');
 
         //  Add handlers for the app (from the routes).
         for (var r in self.getRoutes) {
