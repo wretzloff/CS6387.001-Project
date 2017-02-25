@@ -96,7 +96,6 @@ var utdtextbookexchange_app = function() {
 					}
 				});
 			}
-			
 			checkToken(request, response, authenticationSecret, afterDatabaseQueryCallbackFunction);
         };
 		
@@ -119,31 +118,38 @@ var utdtextbookexchange_app = function() {
 				});
 			}
 			checkToken(request, response, authenticationSecret, forSaleEntriesCallbackFunction);
-			
 		};
 		
 		self.getRoutes['/thirdPartySalePrice/isbn/:isbn'] = function(request, response) 
 		{
-			var providedIsbn = request.params.isbn;
-			console.log(providedIsbn);
-			
-			//Insert code here get a third party sale price...................
-			console.log('Insert code here get a third party sale price...................');
-			var thirdPartyPriceInfo = [];
-			thirdPartyPriceInfo.push({price: '51.48', source: 'Amazon', link: 'https://www.amazon.com/Starting-Control-Structures-through-Objects/dp/0133778819/ref=sr_1_1?ie=UTF8&qid=1487534860&sr=8-1&keywords=9780133778816'});
-			response.send(thirdPartyPriceInfo);
+			function thirdPartySalePriceCallbackFunction(internalUserId)
+			{
+				var providedIsbn = request.params.isbn;
+				console.log(providedIsbn);
+				
+				//Insert code here get a third party sale price...................
+				console.log('Insert code here get a third party sale price...................');
+				var thirdPartyPriceInfo = [];
+				thirdPartyPriceInfo.push({price: '51.48', source: 'Amazon', link: 'https://www.amazon.com/Starting-Control-Structures-through-Objects/dp/0133778819/ref=sr_1_1?ie=UTF8&qid=1487534860&sr=8-1&keywords=9780133778816'});
+				response.send(thirdPartyPriceInfo);
+			}
+			checkToken(request, response, authenticationSecret, thirdPartySalePriceCallbackFunction);
 		};
 		
 		self.getRoutes['/suggestedSalePrice/isbn/:isbn'] = function(request, response) 
 		{
-			var providedIsbn = request.params.isbn;
-			console.log(providedIsbn);
-			
-			//Insert code here to calculate the suggest sale price...................
-			console.log('Insert code here to calculate the suggest sale price...................');
-			var suggestedSalePriceInfo = [];
-			suggestedSalePriceInfo.push({isbn: providedIsbn, suggestSalePrice: '51.46', reason: 'The lowest price currently listed is $51.46.'});
-			response.send(suggestedSalePriceInfo);
+			function suggestedSalePriceCallbackFunction(internalUserId)
+			{
+				var providedIsbn = request.params.isbn;
+				console.log(providedIsbn);
+				
+				//Insert code here to calculate the suggest sale price...................
+				console.log('Insert code here to calculate the suggest sale price...................');
+				var suggestedSalePriceInfo = [];
+				suggestedSalePriceInfo.push({isbn: providedIsbn, suggestSalePrice: '51.46', reason: 'The lowest price currently listed is $51.46.'});
+				response.send(suggestedSalePriceInfo);
+			}
+			checkToken(request, response, authenticationSecret, suggestedSalePriceCallbackFunction);
 		};
 		
 		self.getRoutes['/transactions/:userId'] = function(request, response) 
