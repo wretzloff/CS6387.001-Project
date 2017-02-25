@@ -102,19 +102,24 @@ var utdtextbookexchange_app = function() {
 		
 		self.getRoutes['/forSaleEntries/isbn/:isbn'] = function(request, response) 
 		{
-			var providedIsbn = request.params.isbn;
-			connection.query("SELECT iD as forSaleId, isbn,author,price,description,bookCondition from ForSale where ISBN = '" + providedIsbn + "' and status = 0", function(err, rows, fields) 
+			function forSaleEntriesCallbackFunction(internalUserId)
 			{
-				if (!err)
+				var providedIsbn = request.params.isbn;
+				connection.query("SELECT iD as forSaleId, isbn,author,price,description,bookCondition from ForSale where ISBN = '" + providedIsbn + "' and status = 0", function(err, rows, fields) 
 				{
-					response.json(rows);
-				}
-				else
-				{
-					console.log(err);
-					response.send({success: false, msg: 'Internal error.'});
-				}
-			});
+					if (!err)
+					{
+						response.json(rows);
+					}
+					else
+					{
+						console.log(err);
+						response.send({success: false, msg: 'Internal error.'});
+					}
+				});
+			}
+			checkToken(request, response, authenticationSecret, forSaleEntriesCallbackFunction);
+			
 		};
 		
 		self.getRoutes['/thirdPartySalePrice/isbn/:isbn'] = function(request, response) 
