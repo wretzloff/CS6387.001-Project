@@ -534,7 +534,7 @@ function checkToken(request, response, authenticationSecret, callbackFunction)
 		}
 		catch(err)
 		{
-			return response.status(403).send({success: false, msg: 'Token could not be authenticated: ' + token});
+			return response.status(401).send({success: false, msg: 'Token could not be authenticated: ' + token});
 		}
 		
 		//If we've successfully gotten the internalUserId, then this request is authenticated.
@@ -543,7 +543,7 @@ function checkToken(request, response, authenticationSecret, callbackFunction)
 	}
 	else
 	{
-		return response.status(403).send({success: false, msg: 'No token provided.'});
+		return response.status(401).send({success: false, msg: 'No token provided.'});
 	}
 }
 
