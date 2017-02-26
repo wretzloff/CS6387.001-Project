@@ -182,6 +182,75 @@
                     "authorization": []
                 }]
             }
+        },
+        "/forSaleEntries": {
+            "post": {
+                "tags": ["forSaleEntries"],
+                "summary": "Post a book for sale",
+                "description": "",
+                "operationId": "postForSaleEntry",
+                "produces": ["application/json"],
+                "parameters": [{
+                    "name": "isbn",
+                    "in": "formData",
+                    "description": "ISBN of the book being posted for sale.",
+                    "required": true,
+                    "type": "string"
+                },
+				        {
+                    "name": "author",
+                    "in": "formData",
+                    "description": "Author of the book being posted for sale.",
+                    "required": true,
+                    "type": "string"
+                },
+                {
+                    "name": "price",
+                    "in": "formData",
+                    "description": "Price of the book being posted for sale.",
+                    "required": true,
+                    "type": "number",
+                    "format": "double"
+                },
+                {
+                    "name": "condition",
+                    "in": "formData",
+                    "description": "Condition of the book being posted for sale.",
+                    "required": true,
+                    "type": "integer",
+                    "format": "int"
+                },
+                {
+                    "name": "description",
+                    "in": "formData",
+                    "description": "Description of the book being posted for sale.",
+                    "required": true,
+                    "type": "string"
+                }],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/200forSaleEntriesPostResult"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/401Result"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error.",
+                        "schema": {
+                            "$ref": "#/definitions/500Result"
+                        }
+                    }
+                },
+                "security": [{
+                    "authorization": []
+                }]
+            }
         }
     },
     "securityDefinitions": {
@@ -235,6 +304,19 @@
 			    "type": "array",
 			    "items": {
 				      "$ref": "#/definitions/forSaleRecord"
+			     }
+		},
+		"200forSaleEntriesPostResult": {
+			    "type": "object",
+			    "properties": {
+				      "success": {
+					      "type": "boolean",
+						  "default": true
+				      },
+				      "msg": {
+					      "type": "string",
+						  "default": "Book has been posted for sale."
+				      }
 			     }
 		},
 		"401Result": {
