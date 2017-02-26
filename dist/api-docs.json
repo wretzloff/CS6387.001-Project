@@ -41,7 +41,7 @@
                     "200": {
                         "description": "successful operation",
                         "schema": {
-                            "$ref": "#/definitions/bookName"
+                            "$ref": "#/definitions/getRequiredTextbookResult"
                         }
                     }
                 },
@@ -116,31 +116,45 @@
 				      }
 			     }
 		},
-		"getRequiredTextbooksResult": {
-            "type": "array",
-            "items": {
-                        "type": "string"
-            }
-        },
-		"classBook": {
+		"getRequiredTextbookResult": {
 			    "type": "object",
 			    "properties": {
 				      "className": {
 					      "type": "string",
-						  "default": "CS1336.001.17S"
+						    "default": "CS1336.001.17S"
 				      },
 				      "classBooks": {
-					      "type": "array",
-					      "items": {
-					        "type": "string"
-					      }
-					    }
-						  
+				        "type": "array",
+				        "items": {
+				          "$ref": "#/definitions/classBook" 
+				        }
+				      }
 			     }
 		},
-		"bookName": {
-			    "type": "string",
-			    "default": "STARTING OUT WITH C++ FROM CNTRL (LOOSEPGS)(W/OUT ACCESS)"
+		"classBook": {
+			    "type": "object",
+			    "properties": {
+				      "bookName": {
+					      "type": "string",
+						    "default": "STARTING OUT WITH C++ FROM CNTRL (LOOSEPGS)(W/OUT ACCESS)"
+				      },
+				      "bookEdition": {
+					      "type": "string",
+						    "default": "PH 8th Edition 2015"
+				      },
+				      "bookAuthor": {
+					      "type": "string",
+						    "default": "GADDIS"
+				      },
+				      "bookISBN": {
+					      "type": "string",
+						    "default": "9780133778816"
+				      },
+				      "book_required_recommended": {
+					      "type": "string",
+						    "default": "Required Text"
+				      }
+			     }
 		}
       
     }
