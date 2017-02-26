@@ -103,7 +103,7 @@ var utdtextbookexchange_app = function() {
 			checkToken(request, response, authenticationSecret, afterDatabaseQueryCallbackFunction);
         };
 		
-		self.getRoutes['/forSaleEntries/:isbn'] = function(request, response) 
+		self.getRoutes['/forSaleEntries/isbn/:isbn'] = function(request, response) 
 		{
 			function forSaleEntriesCallbackFunction(internalUserId)
 			{
