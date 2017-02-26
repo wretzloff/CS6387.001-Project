@@ -96,7 +96,7 @@ var utdtextbookexchange_app = function() {
 					else
 					{
 						console.log(err);
-						response.send({success: false, msg: 'Required Textbooks cannot be found at this time. Please try again later.'});
+						response.status(500).send({success: false, msg: 'Internal Server Error. Please try again later.'});
 					}
 				});
 			}
@@ -267,12 +267,12 @@ var utdtextbookexchange_app = function() {
 							}
 							else
 							{
-								response.status(401).send({success: false, msg: 'Incorrect username or password.'});
+								response.status(401).send({success: false, msg: 'Invalid credentials.'});
 							}
 						}
 						else
 						{
-							response.status(500).send({success: false, msg: 'User cannot be authenticated at this time. Please try again later.'});
+							response.status(500).send({success: false, msg: 'Internal Server Error. Please try again later.'});
 						}
 					});
 				}

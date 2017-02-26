@@ -33,19 +33,22 @@
                 }],
                 "responses": {
                     "200": {
-                        "description": "successful operation",
+                        "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/AuthenticationResultSuccess"
+                            "$ref": "#/definitions/200AuthenticationResult"
                         }
                     },
                     "401": {
                         "description": "Invalid credentials.",
                         "schema": {
-                            "$ref": "#/definitions/AuthenticationResultFailure"
+                            "$ref": "#/definitions/401AuthenticationResult"
                         }
                     },
-					"500": {
-                        "description": "Internal error."
+					          "500": {
+                        "description": "Internal Server Error.",
+                        "schema": {
+                            "$ref": "#/definitions/500Result"
+                        }
                     }
                 }
             }
@@ -74,9 +77,21 @@
                 }],
                 "responses": {
                     "200": {
-                        "description": "successful operation",
+                        "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/getRequiredTextbooksResult"
+                            "$ref": "#/definitions/200myBooksResult"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/401Result"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error.",
+                        "schema": {
+                            "$ref": "#/definitions/500Result"
                         }
                     }
                 },
@@ -108,7 +123,7 @@
 				      }
 			     }
 		},
-		"AuthenticationResultSuccess": {
+		"200AuthenticationResult": {
 			    "type": "object",
 			    "properties": {
 				      "success": {
@@ -121,7 +136,13 @@
 				      }
 			     }
 		},
-		"AuthenticationResultFailure": {
+		"200myBooksResult": {
+			    "type": "array",
+			    "items": {
+				      "$ref": "#/definitions/getRequiredTextbooksRecord"
+			     }
+		},
+		"401Result": {
 			    "type": "object",
 			    "properties": {
 				      "success": {
@@ -130,14 +151,34 @@
 				      },
 				      "msg": {
 					      "type": "string",
-						  "default": "Incorrect username or password."
+						  "default": "Authentication failed."
 				      }
 			     }
 		},
-		"getRequiredTextbooksResult": {
-			    "type": "array",
-			    "items": {
-				      "$ref": "#/definitions/getRequiredTextbooksRecord"
+		"401AuthenticationResult": {
+			    "type": "object",
+			    "properties": {
+				      "success": {
+					      "type": "boolean",
+						  "default": false
+				      },
+				      "msg": {
+					      "type": "string",
+						  "default": "Invalid credentials."
+				      }
+			     }
+		},
+		"500Result": {
+			    "type": "object",
+			    "properties": {
+				      "success": {
+					      "type": "boolean",
+						  "default": false
+				      },
+				      "msg": {
+					      "type": "string",
+						  "default": "Internal Server Error."
+				      }
 			     }
 		},
 		"getRequiredTextbooksRecord": {
