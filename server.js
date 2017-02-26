@@ -267,23 +267,23 @@ var utdtextbookexchange_app = function() {
 							}
 							else
 							{
-								response.send({success: false, msg: 'Incorrect username or password.'});
+								response.status(401).send({success: false, msg: 'Incorrect username or password.'});
 							}
 						}
 						else
 						{
-							response.send({success: false, msg: 'User cannot be authenticated at this time. Please try again later.'});
+							response.status(500).send({success: false, msg: 'User cannot be authenticated at this time. Please try again later.'});
 						}
 					});
 				}
 				else
 				{
-					response.send({success: false, msg: 'Authentication failed. No password.'});
+					response.status(401).send({success: false, msg: 'Authentication failed. No password.'});
 				}
 			} 
 			else 
 			{
-				response.send({success: false, msg: 'Authentication failed. No username.'});
+				response.status(401).send({success: false, msg: 'Authentication failed. No username.'});
 			}
 		};
 		
