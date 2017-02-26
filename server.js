@@ -125,6 +125,28 @@ var utdtextbookexchange_app = function() {
 			checkToken(request, response, authenticationSecret, forSaleEntriesCallbackFunction);
 		};
 		
+		self.getRoutes['/forSaleEntries/userId/:userId'] = function(request, response) 
+		{
+			function forSaleEntriesCallbackFunction(internalUserId)
+			{
+				var providedUserId = request.params.userId;
+				connection.query("SELECT iD as forSaleId, isbn,author,price,description,bookCondition from ForSale where seller_InternalUserId = '" + providedUserId + "' and status = 0", function(err, rows, fields) 
+				{
+					if (!err)
+					{
+						response.json(rows);
+					}
+					else
+					{
+						console.log(err);
+						response.send({success: false, msg: 'Internal error.'});
+					}
+				});
+			}
+			
+			checkToken(request, response, authenticationSecret, forSaleEntriesCallbackFunction);
+		};
+		
 		self.getRoutes['/thirdPartySalePrice/isbn/:isbn'] = function(request, response) 
 		{
 			function thirdPartySalePriceCallbackFunction(internalUserId)

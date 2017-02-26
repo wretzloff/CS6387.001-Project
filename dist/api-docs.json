@@ -143,6 +143,45 @@
                     "authorization": []
                 }]
             }
+        },
+        "/forSaleEntries/userId/{userId}": {
+            "get": {
+                "tags": ["forSaleEntries"],
+                "summary": "Get a list of books for sale for the given User Id",
+                "description": "",
+                "operationId": "getForSaleEntriesByUserId",
+                "produces": ["application/json"],
+                "parameters": [{
+                    "name": "userId",
+                    "in": "path",
+                    "description": "User Id of user for which you want listings for sale.",
+                    "required": true,
+                    "type": "string"
+                }],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/200forSaleEntriesUserGetResult"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/401Result"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error.",
+                        "schema": {
+                            "$ref": "#/definitions/500Result"
+                        }
+                    }
+                },
+                "security": [{
+                    "authorization": []
+                }]
+            }
         }
     },
     "securityDefinitions": {
@@ -187,6 +226,12 @@
 			     }
 		},
 		"200forSaleEntriesIsbnGetResult": {
+			    "type": "array",
+			    "items": {
+				      "$ref": "#/definitions/forSaleRecord"
+			     }
+		},
+		"200forSaleEntriesUserGetResult": {
 			    "type": "array",
 			    "items": {
 				      "$ref": "#/definitions/forSaleRecord"
