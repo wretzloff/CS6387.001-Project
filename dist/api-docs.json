@@ -41,7 +41,7 @@
                     "200": {
                         "description": "successful operation",
                         "schema": {
-                            "$ref": "#/definitions/getRequiredTextbookResult"
+                            "$ref": "#/definitions/getRequiredTextbooksResult"
                         }
                     }
                 },
@@ -82,12 +82,12 @@
         
     },
     "securityDefinitions": {
-        
         "api_key": {
             "type": "apiKey",
-            "name": "api_key",
+            "name": "authorization",
             "in": "header"
         }
+        
     },
     "definitions": {
 		"AuthenticationRequest": {
@@ -116,7 +116,13 @@
 				      }
 			     }
 		},
-		"getRequiredTextbookResult": {
+		"getRequiredTextbooksResult": {
+			    "type": "array",
+			    "items": {
+				      "$ref": "#/definitions/getRequiredTextbooksRecord"
+			     }
+		},
+		"getRequiredTextbooksRecord": {
 			    "type": "object",
 			    "properties": {
 				      "className": {
