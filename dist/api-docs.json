@@ -9,9 +9,13 @@
         "name": "Authenticate",
         "description": "For Authenticating requests"
     },
-	{
+	  {
         "name": "my-books",
         "description": "User's textbook info"
+    },
+    {
+        "name": "forSaleEntries",
+        "description": "For operations on the 'For Sale List'"
     }],
     "schemes": ["http"],
     "paths": {
@@ -68,7 +72,7 @@
                     "type": "integer",
                     "format": "int"
                 },
-				{
+				        {
                     "name": "productionOrStubBooks",
                     "in": "path",
                     "description": "either 'stub' or 'production'",
@@ -80,6 +84,46 @@
                         "description": "OK",
                         "schema": {
                             "$ref": "#/definitions/200myBooksResult"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/401Result"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error.",
+                        "schema": {
+                            "$ref": "#/definitions/500Result"
+                        }
+                    }
+                },
+                "security": [{
+                    "authorization": []
+                }]
+            }
+        },
+        "/forSaleEntries/isbn/{isbn}": {
+            "get": {
+                "tags": ["forSaleEntries"],
+                "summary": "Get a list of books for sale for the given ISBN",
+                "description": "",
+                "operationId": "getForSaleEntriesByIsbn",
+                "produces": ["application/json"],
+                "parameters": [{
+                    "name": "isbn",
+                    "in": "path",
+                    "description": "ISBN of book for which you want listings for sale.",
+                    "required": true,
+                    "type": "string",
+                    "format": "int"
+                }],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/200forSaleEntriesIsbnGetResult"
                         }
                     },
                     "401": {
@@ -140,6 +184,12 @@
 			    "type": "array",
 			    "items": {
 				      "$ref": "#/definitions/getRequiredTextbooksRecord"
+			     }
+		},
+		"200forSaleEntriesIsbnGetResult": {
+			    "type": "array",
+			    "items": {
+				      "$ref": "#/definitions/forSaleRecord"
 			     }
 		},
 		"401Result": {
@@ -218,6 +268,33 @@
 				      "book_required_recommended": {
 					      "type": "string",
 						    "default": "Required Text"
+				      }
+			     }
+		},
+		"forSaleRecord": {
+			    "type": "object",
+			    "properties": {
+				      "forSaleId": {
+					      "type": "integer",
+                "format": "int",
+                "default": 217
+				      },
+				      "isbn": {
+					      "type": "string",
+						    "default": "9780133778816"
+				      },
+				      "author": {
+					      "type": "string",
+						    "default": "GADDIS"
+				      },
+				      "price": {
+					      "type": "number",
+					      "format": "double",
+						    "default": 37.92
+				      },
+				      "description": {
+					      "type": "string",
+						    "default": "Light wear, some hilighting"
 				      }
 			     }
 		}
