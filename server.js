@@ -55,7 +55,7 @@ var utdtextbookexchange_app = function() {
 			var booksArray = [];
 			var getBooksForClassCallbackFunction = function(numOfClasses, classNum, classbooks)
 			{
-				booksArray.push({className: classNum, classbooks});
+				booksArray.push({className: classNum, classbooks: classbooks});
 				if(booksArray.length >= numOfClasses)
 				{
 					response.contentType('application/json');
