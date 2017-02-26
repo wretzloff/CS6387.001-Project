@@ -95,6 +95,7 @@ var utdtextbookexchange_app = function() {
 					}
 					else
 					{
+						console.log(err);
 						response.send({success: false, msg: 'Required Textbooks cannot be found at this time. Please try again later.'});
 					}
 				});
@@ -529,6 +530,7 @@ function checkToken(request, response, authenticationSecret, callbackFunction)
 		{
 			//Second, decode the token to get the internalUserId that it encodes.
 			internalUserId = jwt.decode(token, authenticationSecret);
+			console.log('internalUserId: ' + internalUserId);
 		}
 		catch(err)
 		{
