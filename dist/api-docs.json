@@ -104,7 +104,7 @@
                 }]
             }
         },
-        "/forSaleEntries/isbn/{isbn}": {
+        "/forSaleEntries/{isbn}": {
             "get": {
                 "tags": ["forSaleEntries"],
                 "summary": "Get a list of books for sale for the given ISBN",
