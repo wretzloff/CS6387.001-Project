@@ -15,6 +15,41 @@
     }],
     "schemes": ["http"],
     "paths": {
+        "/Authenticate": {
+            "post": {
+                "tags": ["Authenticate"],
+                "summary": "Send a username and password in order to get an authorization token",
+                "description": "",
+                "operationId": "authenticateClient",
+                "produces": ["application/json"],
+                "parameters": [{
+                    "in": "body",
+                    "name": "body",
+                    "description": "Send a username and password in order to get an authorization token",
+                    "required": true,
+                    "schema": {
+                        "$ref": "#/definitions/AuthenticationRequest"
+                    }
+                }],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "schema": {
+                            "$ref": "#/definitions/AuthenticationResultSuccess"
+                        }
+                    },
+                    "401": {
+                        "description": "Invalid credentials.",
+                        "schema": {
+                            "$ref": "#/definitions/AuthenticationResultFailure"
+                        }
+                    },
+					"500": {
+                        "description": "Internal error."
+                    }
+                }
+            }
+        },
         "/my-books/{userId}/{productionOrStubBooks}": {
             "get": {
                 "tags": ["my-books"],
@@ -46,43 +81,13 @@
                     }
                 },
                 "security": [{
-                    "api_key": []
+                    "authorization": []
                 }]
             }
-        },
-        "/Authenticate": {
-            "post": {
-                "tags": ["Authenticate"],
-                "summary": "Send a username and password in order to get an authorization token",
-                "description": "",
-                "operationId": "authenticateClient",
-                "produces": ["application/json"],
-                "parameters": [{
-                    "in": "body",
-                    "name": "body",
-                    "description": "Send a username and password in order to get an authorization token",
-                    "required": true,
-                    "schema": {
-                        "$ref": "#/definitions/AuthenticationRequest"
-                    }
-                }],
-                "responses": {
-                    "200": {
-                        "description": "successful operation",
-                        "schema": {
-                            "$ref": "#/definitions/AuthenticationResult"
-                        }
-                    },
-                    "400": {
-                        "description": "Invalid username/password"
-                    }
-                }
-            }
         }
-        
     },
     "securityDefinitions": {
-        "api_key": {
+        "authorization": {
             "type": "apiKey",
             "name": "authorization",
             "in": "header"
@@ -103,7 +108,7 @@
 				      }
 			     }
 		},
-		"AuthenticationResult": {
+		"AuthenticationResultSuccess": {
 			    "type": "object",
 			    "properties": {
 				      "success": {
@@ -113,6 +118,19 @@
 				      "token": {
 					      "type": "string",
 						  "default": "JWT eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.MQ.4p-Xcp_Aqs6evX2L8AylTbb1woTuxtlgL-Wg1QMXYYk"
+				      }
+			     }
+		},
+		"AuthenticationResultFailure": {
+			    "type": "object",
+			    "properties": {
+				      "success": {
+					      "type": "boolean",
+						  "default": false
+				      },
+				      "msg": {
+					      "type": "string",
+						  "default": "Incorrect username or password."
 				      }
 			     }
 		},
