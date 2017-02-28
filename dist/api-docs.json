@@ -16,6 +16,10 @@
     {
         "name": "forSaleEntries",
         "description": "For operations on the 'For Sale List'"
+    },
+	{
+        "name": "buyBook",
+        "description": "For a buyer to buy a book"
     }],
     "schemes": ["http"],
     "paths": {
@@ -251,6 +255,47 @@
                     "authorization": []
                 }]
             }
+        },
+        "/buyBook": {
+            "post": {
+                "tags": ["buyBook"],
+                "summary": "Buy a book",
+                "description": "",
+                "operationId": "buyBook",
+                "produces": ["application/json"],
+                "parameters": [{
+                    "name": "forSaleId",
+                    "in": "formData",
+                    "description": "forSaleId of the book being bought.",
+                    "required": true,
+                    "type": "integer",
+                    "format": "int",
+                    "default": 1
+                }],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/200buyBookResult"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/401Result"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error.",
+                        "schema": {
+                            "$ref": "#/definitions/500Result"
+                        }
+                    }
+                },
+                "security": [{
+                    "authorization": []
+                }]
+            }
         }
     },
     "securityDefinitions": {
@@ -316,6 +361,19 @@
 				      "msg": {
 					      "type": "string",
 						  "default": "Book has been posted for sale."
+				      }
+			     }
+		},
+		"200buyBookResult": {
+			    "type": "object",
+			    "properties": {
+				      "success": {
+					      "type": "boolean",
+						  "default": true
+				      },
+				      "msg": {
+					      "type": "string",
+						  "default": "Book has put on hold."
 				      }
 			     }
 		},
