@@ -31,13 +31,20 @@
                 "operationId": "authenticateClient",
                 "produces": ["application/json"],
                 "parameters": [{
-                    "in": "body",
-                    "name": "body",
-                    "description": "Send a username and password in order to get an authorization token",
+                    "name": "username",
+                    "in": "formData",
+                    "description": "",
                     "required": true,
-                    "schema": {
-                        "$ref": "#/definitions/AuthenticationRequest"
-                    }
+                    "type": "string",
+                    "default": "wbr071000"
+                },
+                {
+                    "name": "password",
+                    "in": "formData",
+                    "description": "",
+                    "required": true,
+                    "type": "string",
+                    "default": "thisIsARandomPassword"
                 }],
                 "responses": {
                     "200": {
@@ -307,19 +314,6 @@
         
     },
     "definitions": {
-		"AuthenticationRequest": {
-			    "type": "object",
-			    "properties": {
-				      "username": {
-					      "type": "string",
-						  "default": "wbr071000"
-				      },
-				      "password": {
-					      "type": "string",
-						  "default": "thisIsARandomPassword"
-				      }
-			     }
-		},
 		"200AuthenticationResult": {
 			    "type": "object",
 			    "properties": {
