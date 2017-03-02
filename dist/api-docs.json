@@ -263,6 +263,45 @@
                 }]
             }
         },
+        "/transactions/{userId}": {
+            "get": {
+                "tags": ["transactions"],
+                "summary": "Get a list of open transactions for the given User Id",
+                "description": "",
+                "operationId": "getTransactionsByUser",
+                "produces": ["application/json"],
+                "parameters": [{
+                    "name": "userId",
+                    "in": "path",
+                    "description": "User Id of user for which you want listings for sale.",
+                    "required": true,
+                    "type": "string"
+                }],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/200getTransactionResult"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/401Result"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error.",
+                        "schema": {
+                            "$ref": "#/definitions/500Result"
+                        }
+                    }
+                },
+                "security": [{
+                    "authorization": []
+                }]
+            }
+        },
         "/transactions": {
             "post": {
                 "tags": ["transactions"],
@@ -304,6 +343,7 @@
                 }]
             }
         }
+        
     },
     "securityDefinitions": {
         "authorization": {
@@ -369,6 +409,12 @@
 					      "type": "string",
 						  "default": "Book has put on hold."
 				      }
+			     }
+		},
+		"200getTransactionResult": {
+			    "type": "array",
+			    "items": {
+				      "$ref": "#/definitions/transactionRecord"
 			     }
 		},
 		"401Result": {
@@ -454,9 +500,9 @@
 			    "type": "object",
 			    "properties": {
 				      "forSaleId": {
-					      "type": "integer",
-                "format": "int",
-                "default": 217
+						"type": "integer",
+						"format": "int",
+						"default": 217
 				      },
 				      "isbn": {
 					      "type": "string",
@@ -475,6 +521,50 @@
 					      "type": "string",
 						    "default": "Light wear, some hilighting"
 				      }
+			     }
+		},
+		"transactionRecord": {
+			    "type": "object",
+			    "properties": {
+					"transactionId": {
+						"type": "integer",
+						"format": "int",
+						"default": 139
+					},
+						"buyerOrSeller": {
+						"type": "string",
+						"default": "seller"
+					},
+						"buyer_Nickname": {
+					    "type": "string",
+						"default": "Daren C"
+					},
+						"buyer_InternalUserId": {
+					    "type": "integer",
+					    "format": "int",
+						"default": 2
+				    },
+						"transactionDateTime": {
+					    "type": "string",
+						"default": "2017-02-22 00:02:40"
+				    },
+						"title": {
+					    "type": "string",
+						"default": "Software Engineering for Dummies"
+					},
+						"author": {
+					    "type": "string",
+						"default": "Wallace Wang"
+					},
+						"ISBN": {
+					    "type": "string",
+						"default": "9780133778816"
+				    },
+						"price": {
+					    "type": "number",
+					    "format": "double",
+						"default": 101.99
+				    }
 			     }
 		}
       
