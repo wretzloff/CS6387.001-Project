@@ -317,7 +317,7 @@
         "/transactions/transaction/{transactionId}": {
             "get": {
                 "tags": ["transactions"],
-                "summary": "Get a list of open transactions for the given transaction Id",
+                "summary": "Get the transaction specified by the given transaction Id",
                 "description": "",
                 "operationId": "getTransactionById",
                 "produces": ["application/json"],
