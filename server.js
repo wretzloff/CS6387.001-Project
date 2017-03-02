@@ -89,6 +89,11 @@ var utdtextbookexchange_app = function() {
 			transactions.markTransactionComplete(request, response, connection);
 		}
 		
+		self.postRoutes['/transactions/transaction/:transactionId/cancel'] = function(request, response) 
+		{
+			transactions.markTransactionCancelled(request, response, connection);
+		}
+		
 		self.postRoutes['/transactions'] = function(request, response) 
 		{
 			transactions.buyBook(request, response, connection);

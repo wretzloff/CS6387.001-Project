@@ -64,4 +64,19 @@ methods.markTransactionComplete = function(request, response, connection)
 	authenticate.checkToken(request, response, setTransactionCompleteCallbackFunction);
 }
 
+methods.markTransactionCancelled = function(request, response, connection)
+{
+	function setTransactionCancelledCallbackFunction(internalUserId)
+	{
+		var providedTransactionId = request.params.transactionId;
+		console.log(providedTransactionId);
+		
+		//Insert code here to mark the specified Transaction record as cancelled......
+		console.log('Insert code here to mark the specified Transaction record as cancelled......');
+		response.send({success: true, msg: 'Transaction has been cancelled.'});
+	}
+	
+	authenticate.checkToken(request, response, setTransactionCancelledCallbackFunction);
+}
+
 module.exports = methods;

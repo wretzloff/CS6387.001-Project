@@ -356,7 +356,7 @@
             }
         },
         "/transactions/transaction/{transactionId}/complete": {
-            "get": {
+            "post": {
                 "tags": ["transactions"],
                 "summary": "Mark a transaction as complete, given the transaction Id",
                 "description": "",
@@ -376,6 +376,47 @@
                         "description": "OK",
                         "schema": {
                             "$ref": "#/definitions/200transactionCompleteResult"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/401Result"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error.",
+                        "schema": {
+                            "$ref": "#/definitions/500Result"
+                        }
+                    }
+                },
+                "security": [{
+                    "authorization": []
+                }]
+            }
+        },
+        "/transactions/transaction/{transactionId}/cancel": {
+            "post": {
+                "tags": ["transactions"],
+                "summary": "Mark a transaction as cancelled, given the transaction Id",
+                "description": "",
+                "operationId": "markTransactionCancelled",
+                "produces": ["application/json"],
+                "parameters": [{
+                    "name": "transactionId",
+                    "in": "path",
+                    "description": "Transaction Id of transaction.",
+                    "required": true,
+                    "type": "integer",
+                    "format": "int",
+                    "default": 1
+                }],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/200transactionCancelResult"
                         }
                     },
                     "401": {
@@ -521,6 +562,19 @@
 				      "msg": {
 					      "type": "string",
 						  "default": "Transaction has been marked complete."
+				      }
+			     }
+		},
+		"200transactionCancelResult": {
+			    "type": "object",
+			    "properties": {
+				      "success": {
+					      "type": "boolean",
+						  "default": true
+				      },
+				      "msg": {
+					      "type": "string",
+						  "default": "Transaction has been cancelled."
 				      }
 			     }
 		},
