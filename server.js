@@ -111,25 +111,13 @@ var utdtextbookexchange_app = function() {
 		
 		self.getRoutes['/forSaleEntries/userId/:userId'] = function(request, response) 
 		{
-			function forSaleEntriesCallbackFunction(internalUserId)
-			{
-				var providedUserId = request.params.userId;
-				connection.query("SELECT iD as forSaleId, isbn,author,price,description,bookCondition from ForSale where seller_InternalUserId = '" + providedUserId + "' and status = 0", function(err, rows, fields) 
-				{
-					if (!err)
-					{
-						response.json(rows);
-					}
-					else
-					{
-						console.log(err);
-						response.send({success: false, msg: 'Internal error.'});
-					}
-				});
-			}
-			
-			authenticate.checkToken(request, response, forSaleEntriesCallbackFunction);
+			forSaleEntries.getForSaleEntriesByUser(request, response, connection);
 		};
+		
+		self.postRoutes['/forSaleEntries'] = function(request, response) 
+		{
+			forSaleEntries.postBookForSale(request, response, connection);
+		}
 		
 		self.getRoutes['/thirdPartySalePrice/isbn/:isbn'] = function(request, response) 
 		{
@@ -192,31 +180,6 @@ var utdtextbookexchange_app = function() {
 			}
 			
 			authenticate.checkToken(request, response, getTransactionCallbackFunction)
-		}
-		
-		self.postRoutes['/forSaleEntries'] = function(request, response) 
-		{
-			
-			function forSaleEntriesPostCallbackFunction(internalUserId)
-			{
-				//Get the parameters from the body of the HTTP POST message
-				var providedIsbn = request.body.isbn;
-				var providedAuthor = request.body.author;
-				var providedPrice = request.body.price;
-				var providedCondition = request.body.condition;
-				var proidedDescription = request.body.description;
-				console.log(providedIsbn);
-				console.log(providedAuthor);
-				console.log(providedPrice);
-				console.log(providedCondition);
-				console.log(proidedDescription);
-				
-				//Insert code here to create an entry in the ForSale database table...................
-				console.log('Insert code here to create an entry in the ForSale database table...................');
-				response.send({success: true, msg: 'Book has been posted for sale.'});
-			}
-			
-			authenticate.checkToken(request, response, forSaleEntriesPostCallbackFunction);
 		}
 		
 		self.postRoutes['/buyBook'] = function(request, response) 
