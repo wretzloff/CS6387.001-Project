@@ -81,14 +81,16 @@
                     "description": "ID of User whose books you want",
                     "required": true,
                     "type": "integer",
-                    "format": "int"
+                    "format": "int",
+                    "default": 1
                 },
 				        {
                     "name": "productionOrStubBooks",
                     "in": "path",
                     "description": "either 'stub' or 'production'",
                     "required": true,
-                    "type": "string"
+                    "type": "string",
+                    "default": "stub"
                 }],
                 "responses": {
                     "200": {
@@ -128,7 +130,7 @@
                     "description": "ISBN of book for which you want listings for sale.",
                     "required": true,
                     "type": "string",
-                    "format": "int"
+                    "default": "9780133778816"
                 }],
                 "responses": {
                     "200": {
@@ -167,7 +169,10 @@
                     "in": "path",
                     "description": "User Id of user for which you want listings for sale.",
                     "required": true,
-                    "type": "string"
+                    "type": "integer",
+                    "format": "int",
+                    "default": 1
+                    
                 }],
                 "responses": {
                     "200": {
@@ -206,14 +211,16 @@
                     "in": "formData",
                     "description": "ISBN of the book being posted for sale.",
                     "required": true,
-                    "type": "string"
+                    "type": "string",
+                    "default": "9780133778816"
                 },
 				        {
                     "name": "author",
                     "in": "formData",
                     "description": "Author of the book being posted for sale.",
                     "required": true,
-                    "type": "string"
+                    "type": "string",
+                    "default": "Wallace Wang"
                 },
                 {
                     "name": "price",
@@ -221,7 +228,8 @@
                     "description": "Price of the book being posted for sale.",
                     "required": true,
                     "type": "number",
-                    "format": "double"
+                    "format": "double",
+                    "default": 32.99
                 },
                 {
                     "name": "condition",
@@ -229,14 +237,16 @@
                     "description": "Condition of the book being posted for sale.",
                     "required": true,
                     "type": "integer",
-                    "format": "int"
+                    "format": "int",
+                    "default": 1
                 },
                 {
                     "name": "description",
                     "in": "formData",
                     "description": "Description of the book being posted for sale.",
                     "required": true,
-                    "type": "string"
+                    "type": "string",
+                    "default": "Unused. Still in original packaging."
                 }],
                 "responses": {
                     "200": {
@@ -273,9 +283,52 @@
                 "parameters": [{
                     "name": "userId",
                     "in": "path",
-                    "description": "User Id of user for which you want listings for sale.",
+                    "description": "User Id of user for which you want a list of open transactions.",
                     "required": true,
-                    "type": "string"
+                    "type": "integer",
+                    "format": "int",
+                    "default": 1
+                }],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/200getTransactionResult"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/401Result"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error.",
+                        "schema": {
+                            "$ref": "#/definitions/500Result"
+                        }
+                    }
+                },
+                "security": [{
+                    "authorization": []
+                }]
+            }
+        },
+        "/transactions/transaction/{transactionId}": {
+            "get": {
+                "tags": ["transactions"],
+                "summary": "Get a list of open transactions for the given transaction Id",
+                "description": "",
+                "operationId": "getTransactionById",
+                "produces": ["application/json"],
+                "parameters": [{
+                    "name": "transactionId",
+                    "in": "path",
+                    "description": "Transaction Id of transaction you want.",
+                    "required": true,
+                    "type": "integer",
+                    "format": "int",
+                    "default": 1
                 }],
                 "responses": {
                     "200": {
