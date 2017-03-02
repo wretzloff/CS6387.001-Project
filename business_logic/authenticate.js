@@ -1,8 +1,9 @@
 var jwt         		= require('jwt-simple');
+var authenticationSecret = 'thisIsASecretKeyThatWillPickedRandomly';
 
 var methods = {};
 
-methods.checkToken = function(request, response, authenticationSecret, callbackFunction)
+methods.checkToken = function(request, response, callbackFunction)
 {
 	//First, check that the token was provided.
 	var token = getToken(request.headers);
@@ -30,7 +31,7 @@ methods.checkToken = function(request, response, authenticationSecret, callbackF
 	}
 }
 
-methods.issueToken = function(request, response, authenticationSecret, connection)
+methods.issueToken = function(request, response, connection)
 {
 	var username = request.body.username;
 			var password = request.body.password;

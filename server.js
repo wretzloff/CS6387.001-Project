@@ -18,7 +18,6 @@ var mysql_host 			= 'mysqldb1.cv17o5shagql.us-west-2.rds.amazonaws.com';
 var mysql_username		= 'mysqldb';
 var mysql_password		= 'Netbackup1!';
 var mysql_database_name	= 'MySQLDB1';
-var authenticationSecret = 'thisIsASecretKeyThatWillPickedRandomly';
 var connection = mysql.createConnection(
 {
 	host     	: mysql_host,
@@ -101,7 +100,7 @@ var utdtextbookexchange_app = function() {
 					}
 				});
 			}
-			authenticate.checkToken(request, response, authenticationSecret, afterDatabaseQueryCallbackFunction);
+			authenticate.checkToken(request, response, afterDatabaseQueryCallbackFunction);
         };
 		
 		self.getRoutes['/forSaleEntries/isbn/:isbn'] = function(request, response) 
@@ -123,7 +122,7 @@ var utdtextbookexchange_app = function() {
 				});
 			}
 			
-			authenticate.checkToken(request, response, authenticationSecret, forSaleEntriesCallbackFunction);
+			authenticate.checkToken(request, response, forSaleEntriesCallbackFunction);
 		};
 		
 		self.getRoutes['/forSaleEntries/userId/:userId'] = function(request, response) 
@@ -145,7 +144,7 @@ var utdtextbookexchange_app = function() {
 				});
 			}
 			
-			authenticate.checkToken(request, response, authenticationSecret, forSaleEntriesCallbackFunction);
+			authenticate.checkToken(request, response, forSaleEntriesCallbackFunction);
 		};
 		
 		self.getRoutes['/thirdPartySalePrice/isbn/:isbn'] = function(request, response) 
@@ -161,7 +160,7 @@ var utdtextbookexchange_app = function() {
 				thirdPartyPriceInfo.push({price: '51.48', source: 'Amazon', link: 'https://www.amazon.com/Starting-Control-Structures-through-Objects/dp/0133778819/ref=sr_1_1?ie=UTF8&qid=1487534860&sr=8-1&keywords=9780133778816'});
 				response.send(thirdPartyPriceInfo);
 			}
-			authenticate.checkToken(request, response, authenticationSecret, thirdPartySalePriceCallbackFunction);
+			authenticate.checkToken(request, response, thirdPartySalePriceCallbackFunction);
 		};
 		
 		self.getRoutes['/suggestedSalePrice/isbn/:isbn'] = function(request, response) 
@@ -177,7 +176,7 @@ var utdtextbookexchange_app = function() {
 				suggestedSalePriceInfo.push({isbn: providedIsbn, suggestSalePrice: '51.46', reason: 'The lowest price currently listed is $51.46.'});
 				response.send(suggestedSalePriceInfo);
 			}
-			authenticate.checkToken(request, response, authenticationSecret, suggestedSalePriceCallbackFunction);
+			authenticate.checkToken(request, response, suggestedSalePriceCallbackFunction);
 		};
 		
 		self.getRoutes['/transactions/:userId'] = function(request, response) 
@@ -192,7 +191,7 @@ var utdtextbookexchange_app = function() {
 				response.send(transactionsArray);
 			}
 			
-			authenticate.checkToken(request, response, authenticationSecret, getPendingTransactionsCallbackFunction)
+			authenticate.checkToken(request, response, getPendingTransactionsCallbackFunction)
 		}
 		
 		self.getRoutes['/transactions/transaction/:transactionId'] = function(request, response) 
@@ -208,7 +207,7 @@ var utdtextbookexchange_app = function() {
 				response.send({iD: '3', buyerOrSeller: 'seller', buyer_Nickname: 'Daren C', buyer_InternalUserId: '2', transactionDateTime: '2017-02-22 00:02:40', title: 'Software Engineering for Dummies', author: 'Wallace Wang', ISBN: '9780470108543', price: '32.67'});
 			}
 			
-			authenticate.checkToken(request, response, authenticationSecret, getTransactionCallbackFunction)
+			authenticate.checkToken(request, response, getTransactionCallbackFunction)
 		}
 		
 		self.postRoutes['/forSaleEntries'] = function(request, response) 
@@ -233,7 +232,7 @@ var utdtextbookexchange_app = function() {
 				response.send({success: true, msg: 'Book has been posted for sale.'});
 			}
 			
-			authenticate.checkToken(request, response, authenticationSecret, forSaleEntriesPostCallbackFunction);
+			authenticate.checkToken(request, response, forSaleEntriesPostCallbackFunction);
 		}
 		
 		self.postRoutes['/buyBook'] = function(request, response) 
@@ -249,7 +248,7 @@ var utdtextbookexchange_app = function() {
 				response.send({success: true, msg: 'Book has put on hold.'});
 			}
 			
-			authenticate.checkToken(request, response, authenticationSecret, forSaleEntriesPostCallbackFunction);
+			authenticate.checkToken(request, response, forSaleEntriesPostCallbackFunction);
 		}
 		
 		self.postRoutes['/transactions/transaction/:transactionId/complete'] = function(request, response) 
@@ -264,12 +263,12 @@ var utdtextbookexchange_app = function() {
 				response.send({success: true, msg: 'Transaction has been marked complete.'});
 			}
 			
-			authenticate.checkToken(request, response, authenticationSecret, setTransactionCompleteCallbackFunction);
+			authenticate.checkToken(request, response, setTransactionCompleteCallbackFunction);
 		}
 		
 		self.postRoutes['/authenticate'] = function(request, response) 
 		{
-			authenticate.issueToken(request, response, authenticationSecret, connection);
+			authenticate.issueToken(request, response, connection);
 		};
     };
 	
