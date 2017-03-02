@@ -11,6 +11,8 @@ var forSaleEntries		= require('./business_logic/forSaleEntries');
 var myBooks				= require('./business_logic/my-books');
 var transactions		= require('./business_logic/transactions');
 var salePrice			= require('./business_logic/salePrice');
+var datetime			= require('dateformat');
+var moment 				= require('moment');
 var server_port 		= process.env.OPENSHIFT_NODEJS_PORT || 3000
 var server_ip_address 	= process.env.OPENSHIFT_NODEJS_IP || '127.0.0.1'
 var mysql_port 			= '3306';
@@ -84,9 +86,75 @@ var utdtextbookexchange_app = function() {
 			transactions.getTransactionById(request, response, connection);
 		}
 		
-		self.postRoutes['/transactions/transaction/:transactionId/complete'] = function(request, response) 
+		
+		self.postRoutes['/forSalePostedBooks'] = function(request, response) 
 		{
-			transactions.markTransactionComplete(request, response, connection);
+			
+			function forSalePostedBooksPostCallbackFunction(internalUserId)
+			{
+				//Get the parameters from the body of the HTTP POST message
+				var providedInternalUserId = parseInt(internalUserId);
+				//select query to go
+				connection.query("SELECT * from ForSale where seller_InternalUserId = " + providedInternalUserId + "and status=, function(err, classRows, fields)
+				{
+					if(!err)
+					{
+						response.send({success: true, msg: 'Book has been posted for sale.'}); 
+					}	
+					else
+					{
+						response.send({success: false, msg: 'Problem posting your book. Please try again.'});
+					}				
+				});
+				//response.send({success: true, msg: 'Book has been posted for sale.'});
+			}
+			
+			checkToken(request, response, authenticationSecret, forSalePostedBooksPostCallbackFunction);
+			}
+		}
+		
+		
+		self.postRoutes['/forSaleEntries'] = function(request, response) 
+		{
+			
+			function forSaleEntriesPostCallbackFunction(internalUserId)
+			{
+				//Get the parameters from the body of the HTTP POST message
+				var providedInternalUserId = parseInt(internalUserId);
+				var providedIsbn = request.body.isbn;
+				var providedAuthor = request.body.author;
+				var providedPrice = parseFloat(request.body.price);
+				var providedCondition = parseInt(request.body.condition);
+				var providedDescription = request.body.description;
+				var providedDate = moment(new Date()).format("YYYY-MM-DD HH:mm:ss");
+				var providedStatus = 0;
+				var insert_ForSale = {seller_InternalUserId:providedInternalUserId,postedDateTime:providedDate,ISBN:providedIsbn,author:providedAuthor,price:providedPrice,description:providedDescription,bookCondition:providedCondition,status:providedStatus};
+				console.log(providedInternalUserId);
+				console.log(providedIsbn);
+				console.log(providedAuthor);
+				console.log(providedPrice);
+				console.log(providedCondition);
+				console.log(providedDescription);
+				console.log(providedDate);
+				console.log(providedStatus);
+				console.log(insert_ForSale);
+				//Insert code here to create an entry in the ForSale database table...................
+				console.log('Insert code here to create an entry in the ForSale database table...................');
+				connection.query('Insert into ForSale SET ?',insert_ForSale,function(err,result)
+				{
+					if(!err)
+					{
+						response.send({success: true, msg: 'Book has been posted for sale.'}); 
+					}	
+					else
+					{
+						response.send({success: false, msg: 'Problem posting your book. Please try again.'});
+					}				
+				});
+				//response.send({success: true, msg: 'Book has been posted for sale.'});
+			}
+			
+			checkToken(request, response, authenticationSecret, forSaleEntriesPostCallbackFunction);
 		}
 		
 		self.postRoutes['/transactions/transaction/:transactionId/cancel'] = function(request, response) 
