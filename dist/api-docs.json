@@ -28,7 +28,7 @@
                 "tags": ["Authenticate"],
                 "summary": "Send a username and password in order to get an authorization token",
                 "description": "",
-                "operationId": "authenticateClient",
+                "operationId": "issueToken",
                 "produces": ["application/json"],
                 "parameters": [{
                     "name": "username",
@@ -73,7 +73,7 @@
                 "tags": ["my-books"],
                 "summary": "Get a list of user's required textbooks for all semesters",
                 "description": "",
-                "operationId": "getRequiredTextbooks",
+                "operationId": "getMyBooks",
                 "produces": ["application/json"],
                 "parameters": [{
                     "name": "userId",
@@ -160,7 +160,7 @@
                 "tags": ["forSaleEntries"],
                 "summary": "Get a list of books for sale for the given User Id",
                 "description": "",
-                "operationId": "getForSaleEntriesByUserId",
+                "operationId": "getForSaleEntriesByUser",
                 "produces": ["application/json"],
                 "parameters": [{
                     "name": "userId",
@@ -199,7 +199,7 @@
                 "tags": ["forSaleEntries"],
                 "summary": "Post a book for sale",
                 "description": "",
-                "operationId": "postForSaleEntry",
+                "operationId": "postBookForSale",
                 "produces": ["application/json"],
                 "parameters": [{
                     "name": "isbn",
