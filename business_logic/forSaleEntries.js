@@ -49,25 +49,43 @@ methods.getForSaleEntriesByUser = function(request, response, connection)
 methods.postBookForSale = function(request, response, connection)
 {
 	function forSaleEntriesPostCallbackFunction(internalUserId)
-	{
-		//Get the parameters from the body of the HTTP POST message
-		var providedIsbn = request.body.isbn;
-		var providedAuthor = request.body.author;
-		var providedPrice = request.body.price;
-		var providedCondition = request.body.condition;
-		var proidedDescription = request.body.description;
-		console.log(providedIsbn);
-		console.log(providedAuthor);
-		console.log(providedPrice);
-		console.log(providedCondition);
-		console.log(proidedDescription);
-		
-		//Insert code here to create an entry in the ForSale database table...................
-		console.log('Insert code here to create an entry in the ForSale database table...................');
-		response.send({success: true, msg: 'Book has been posted for sale.'});
-	}
-	
-	authenticate.checkToken(request, response, forSaleEntriesPostCallbackFunction)
+			{
+				//Get the parameters from the body of the HTTP POST message
+				var providedInternalUserId = parseInt(internalUserId);
+				var providedIsbn = request.body.isbn;
+				var providedAuthor = request.body.author;
+				var providedPrice = parseFloat(request.body.price);
+				var providedCondition = parseInt(request.body.condition);
+				var providedDescription = request.body.description;
+				var providedDate = moment(new Date()).format("YYYY-MM-DD HH:mm:ss");
+				var providedStatus = 0;
+				var insert_ForSale = {seller_InternalUserId:providedInternalUserId,postedDateTime:providedDate,ISBN:providedIsbn,author:providedAuthor,price:providedPrice,description:providedDescription,bookCondition:providedCondition,status:providedStatus};
+				console.log(providedInternalUserId);
+				console.log(providedIsbn);
+				console.log(providedAuthor);
+				console.log(providedPrice);
+				console.log(providedCondition);
+				console.log(providedDescription);
+				console.log(providedDate);
+				console.log(providedStatus);
+				console.log(insert_ForSale);
+				//Insert code here to create an entry in the ForSale database table...................
+				console.log('Insert code here to create an entry in the ForSale database table...................');
+				connection.query('Insert into ForSale SET ?',insert_ForSale,function(err,result)
+				{
+					if(!err)
+					{
+						response.send({success: true, msg: 'Book has been posted for sale.'}); 
+					}	
+					else
+					{
+						response.send({success: false, msg: 'Problem posting your book. Please try again.'});
+					}				
+				});
+				//response.send({success: true, msg: 'Book has been posted for sale.'});
+			}
+			
+		authenticate.checkToken(request, response, forSaleEntriesPostCallbackFunction)
 }
 
 module.exports = methods;
