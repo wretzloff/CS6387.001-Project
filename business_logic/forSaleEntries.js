@@ -60,7 +60,6 @@ methods.postBookForSale = function(request, response, connection)
 				var providedDescription = request.body.description;
 				var providedDate = moment(new Date()).format("YYYY-MM-DD HH:mm:ss");
 				var providedStatus = 0;
-				var insert_ForSale = {seller_InternalUserId:providedInternalUserId,postedDateTime:providedDate,ISBN:providedIsbn,author:providedAuthor,price:providedPrice,description:providedDescription,bookCondition:providedCondition,status:providedStatus};
 				console.log(providedInternalUserId);
 				console.log(providedIsbn);
 				console.log(providedAuthor);
@@ -70,8 +69,9 @@ methods.postBookForSale = function(request, response, connection)
 				console.log(providedDate);
 				console.log(providedStatus);
 				console.log(insert_ForSale);
-				//Insert code here to create an entry in the ForSale database table...................
-				console.log('Insert code here to create an entry in the ForSale database table...................');
+				
+				//Insert the record into the database.
+				var insert_ForSale = {seller_InternalUserId:providedInternalUserId,postedDateTime:providedDate,ISBN:providedIsbn,author:providedAuthor,price:providedPrice,description:providedDescription,bookCondition:providedCondition,status:providedStatus};
 				connection.query('Insert into ForSale SET ?',insert_ForSale,function(err,result)
 				{
 					if(!err)
@@ -83,7 +83,6 @@ methods.postBookForSale = function(request, response, connection)
 						response.send({success: false, msg: 'Problem posting your book. Please try again.'});
 					}				
 				});
-				//response.send({success: true, msg: 'Book has been posted for sale.'});
 			}
 			
 		authenticate.checkToken(request, response, forSaleEntriesPostCallbackFunction)
