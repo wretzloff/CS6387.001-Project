@@ -10,6 +10,7 @@ var authenticate		= require('./business_logic/authenticate');
 var forSaleEntries		= require('./business_logic/forSaleEntries');
 var myBooks				= require('./business_logic/my-books');
 var transactions		= require('./business_logic/transactions');
+var salePrice			= require('./business_logic/salePrice');
 var server_port 		= process.env.OPENSHIFT_NODEJS_PORT || 3000
 var server_ip_address 	= process.env.OPENSHIFT_NODEJS_IP || '127.0.0.1'
 var mysql_port 			= '3306';
@@ -65,18 +66,7 @@ var utdtextbookexchange_app = function() {
 		
 		self.getRoutes['/thirdPartySalePrice/isbn/:isbn'] = function(request, response) 
 		{
-			function thirdPartySalePriceCallbackFunction(internalUserId)
-			{
-				var providedIsbn = request.params.isbn;
-				console.log(providedIsbn);
-				
-				//Insert code here get a third party sale price...................
-				console.log('Insert code here get a third party sale price...................');
-				var thirdPartyPriceInfo = [];
-				thirdPartyPriceInfo.push({price: '51.48', source: 'Amazon', link: 'https://www.amazon.com/Starting-Control-Structures-through-Objects/dp/0133778819/ref=sr_1_1?ie=UTF8&qid=1487534860&sr=8-1&keywords=9780133778816'});
-				response.send(thirdPartyPriceInfo);
-			}
-			authenticate.checkToken(request, response, thirdPartySalePriceCallbackFunction);
+			salePrice.getThirdPartySalePrice(request, response, connection);
 		};
 		
 		self.getRoutes['/suggestedSalePrice/isbn/:isbn'] = function(request, response) 
