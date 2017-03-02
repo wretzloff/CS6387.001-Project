@@ -9,6 +9,7 @@ var bodyParser 			= require('body-parser');
 var authenticate		= require('./business_logic/authenticate');
 var forSaleEntries		= require('./business_logic/forSaleEntries');
 var myBooks				= require('./business_logic/my-books');
+var transactions		= require('./business_logic/transactions');
 var server_port 		= process.env.OPENSHIFT_NODEJS_PORT || 3000
 var server_ip_address 	= process.env.OPENSHIFT_NODEJS_IP || '127.0.0.1'
 var mysql_port 			= '3306';
@@ -96,17 +97,7 @@ var utdtextbookexchange_app = function() {
 		
 		self.getRoutes['/transactions/:userId'] = function(request, response) 
 		{
-			function getPendingTransactionsCallbackFunction(internalUserId)
-			{
-				//Insert code here to select all Transactions for this internalUserId where the transaction status is 0 (for Pending).
-				//Join the Transaction table to the ForSale table to get information about the book being bought/sold, like the book title, author, price, etc.
-				var transactionsArray = [];
-				transactionsArray.push({iD: '3', buyerOrSeller: 'seller', buyer_Nickname: 'Daren C', buyer_InternalUserId: '2', transactionDateTime: '2017-02-22 00:02:40', title: 'Software Engineering for Dummies', author: 'Wallace Wang', ISBN: '9780470108543', price: '32.67'});
-				transactionsArray.push({iD: '8', buyerOrSeller: 'buyer', seller_Nickname: 'Jonathan R', seller_InternalUserId: '5', transactionDateTime: '2017-02-24 00:07:41', title: 'Intermediate Algebra', author: 'Alan S. Tussy', ISBN: '9781111567675', price: '88.00'});
-				response.send(transactionsArray);
-			}
-			
-			authenticate.checkToken(request, response, getPendingTransactionsCallbackFunction)
+			transactions.getTransactionsByUser(request, response, connection);
 		}
 		
 		self.getRoutes['/transactions/transaction/:transactionId'] = function(request, response) 
