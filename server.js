@@ -11,6 +11,7 @@ var argv 				= require('minimist')(process.argv.slice(2));
 var swagger 			= require("swagger-node-express");
 var bodyParser 			= require('body-parser');
 var authenticate		= require('./business_logic/authenticate');
+var forSaleEntries		= require('./business_logic/forSaleEntries');
 var server_port 		= process.env.OPENSHIFT_NODEJS_PORT || 3000
 var server_ip_address 	= process.env.OPENSHIFT_NODEJS_IP || '127.0.0.1'
 var mysql_port 			= '3306';
@@ -105,24 +106,7 @@ var utdtextbookexchange_app = function() {
 		
 		self.getRoutes['/forSaleEntries/isbn/:isbn'] = function(request, response) 
 		{
-			function forSaleEntriesCallbackFunction(internalUserId)
-			{
-				var providedIsbn = request.params.isbn;
-				connection.query("SELECT iD as forSaleId, isbn,author,price,description,bookCondition from ForSale where ISBN = '" + providedIsbn + "' and status = 0", function(err, rows, fields) 
-				{
-					if (!err)
-					{
-						response.json(rows);
-					}
-					else
-					{
-						console.log(err);
-						response.send({success: false, msg: 'Internal error.'});
-					}
-				});
-			}
-			
-			authenticate.checkToken(request, response, forSaleEntriesCallbackFunction);
+			forSaleEntries.getForSaleEntriesByIsbn(request, response, connection);
 		};
 		
 		self.getRoutes['/forSaleEntries/userId/:userId'] = function(request, response) 
