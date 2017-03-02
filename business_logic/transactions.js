@@ -2,6 +2,22 @@ var authenticate         		= require('./authenticate');
 
 var methods = {};
 
+methods.buyBook = function(request, response, connection)
+{
+	function forSaleEntriesPostCallbackFunction(internalUserId)
+	{
+		//Get the parameters from the body of the HTTP POST message
+		var providedForSaleId = request.body.forSaleId;
+		console.log(providedForSaleId);
+		
+		//Insert code here to mark the specified ForSale record as On Hold, create a new transaction, and send a message to the seller......
+		console.log('Insert code here to mark the specified ForSale record as On Hold, create a new transaction, and send a message to the seller......');
+		response.send({success: true, msg: 'Book has put on hold.'});
+	}
+	
+	authenticate.checkToken(request, response, forSaleEntriesPostCallbackFunction);
+}
+
 methods.getTransactionsByUser = function(request, response, connection)
 {
 	function getPendingTransactionsCallbackFunction(internalUserId)

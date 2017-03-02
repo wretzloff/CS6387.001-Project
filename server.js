@@ -89,20 +89,9 @@ var utdtextbookexchange_app = function() {
 			transactions.markTransactionComplete(request, response, connection);
 		}
 		
-		self.postRoutes['/buyBook'] = function(request, response) 
+		self.postRoutes['/transactions'] = function(request, response) 
 		{
-			function forSaleEntriesPostCallbackFunction(internalUserId)
-			{
-				//Get the parameters from the body of the HTTP POST message
-				var providedForSaleId = request.body.forSaleId;
-				console.log(providedForSaleId);
-				
-				//Insert code here to mark the specified ForSale record as On Hold, create a new transaction, and send a message to the seller......
-				console.log('Insert code here to mark the specified ForSale record as On Hold, create a new transaction, and send a message to the seller......');
-				response.send({success: true, msg: 'Book has put on hold.'});
-			}
-			
-			authenticate.checkToken(request, response, forSaleEntriesPostCallbackFunction);
+			transactions.buyBook(request, response, connection);
 		}
 		
 		self.postRoutes['/authenticate'] = function(request, response) 
