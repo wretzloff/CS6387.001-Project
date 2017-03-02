@@ -355,6 +355,47 @@
                 }]
             }
         },
+        "/transactions": {
+            "post": {
+                "tags": ["transactions"],
+                "summary": "Buy a book",
+                "description": "",
+                "operationId": "buyBook",
+                "produces": ["application/json"],
+                "parameters": [{
+                    "name": "forSaleId",
+                    "in": "formData",
+                    "description": "forSaleId of the book being bought.",
+                    "required": true,
+                    "type": "integer",
+                    "format": "int",
+                    "default": 1
+                }],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/200buyBookResult"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/401Result"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error.",
+                        "schema": {
+                            "$ref": "#/definitions/500Result"
+                        }
+                    }
+                },
+                "security": [{
+                    "authorization": []
+                }]
+            }
+        },
         "/transactions/transaction/{transactionId}/complete": {
             "post": {
                 "tags": ["transactions"],
@@ -436,49 +477,7 @@
                     "authorization": []
                 }]
             }
-        },
-        "/transactions": {
-            "post": {
-                "tags": ["transactions"],
-                "summary": "Buy a book",
-                "description": "",
-                "operationId": "buyBook",
-                "produces": ["application/json"],
-                "parameters": [{
-                    "name": "forSaleId",
-                    "in": "formData",
-                    "description": "forSaleId of the book being bought.",
-                    "required": true,
-                    "type": "integer",
-                    "format": "int",
-                    "default": 1
-                }],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/200buyBookResult"
-                        }
-                    },
-                    "401": {
-                        "description": "Unauthorized",
-                        "schema": {
-                            "$ref": "#/definitions/401Result"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error.",
-                        "schema": {
-                            "$ref": "#/definitions/500Result"
-                        }
-                    }
-                },
-                "security": [{
-                    "authorization": []
-                }]
-            }
         }
-        
     },
     "securityDefinitions": {
         "authorization": {
