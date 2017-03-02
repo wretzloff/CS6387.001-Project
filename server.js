@@ -9,7 +9,8 @@ var passport			= require('passport');
 var jwt         		= require('jwt-simple');
 var argv 				= require('minimist')(process.argv.slice(2));
 var swagger 			= require("swagger-node-express");
-var bodyParser 			= require( 'body-parser' );
+var bodyParser 			= require('body-parser');
+var authenticate		= require('./business_logic/authenticate');
 var server_port 		= process.env.OPENSHIFT_NODEJS_PORT || 3000
 var server_ip_address 	= process.env.OPENSHIFT_NODEJS_IP || '127.0.0.1'
 var mysql_port 			= '3306';
@@ -100,7 +101,7 @@ var utdtextbookexchange_app = function() {
 					}
 				});
 			}
-			checkToken(request, response, authenticationSecret, afterDatabaseQueryCallbackFunction);
+			authenticate.checkToken(request, response, authenticationSecret, afterDatabaseQueryCallbackFunction);
         };
 		
 		self.getRoutes['/forSaleEntries/isbn/:isbn'] = function(request, response) 
@@ -122,7 +123,7 @@ var utdtextbookexchange_app = function() {
 				});
 			}
 			
-			checkToken(request, response, authenticationSecret, forSaleEntriesCallbackFunction);
+			authenticate.checkToken(request, response, authenticationSecret, forSaleEntriesCallbackFunction);
 		};
 		
 		self.getRoutes['/forSaleEntries/userId/:userId'] = function(request, response) 
@@ -144,7 +145,7 @@ var utdtextbookexchange_app = function() {
 				});
 			}
 			
-			checkToken(request, response, authenticationSecret, forSaleEntriesCallbackFunction);
+			authenticate.checkToken(request, response, authenticationSecret, forSaleEntriesCallbackFunction);
 		};
 		
 		self.getRoutes['/thirdPartySalePrice/isbn/:isbn'] = function(request, response) 
@@ -160,7 +161,7 @@ var utdtextbookexchange_app = function() {
 				thirdPartyPriceInfo.push({price: '51.48', source: 'Amazon', link: 'https://www.amazon.com/Starting-Control-Structures-through-Objects/dp/0133778819/ref=sr_1_1?ie=UTF8&qid=1487534860&sr=8-1&keywords=9780133778816'});
 				response.send(thirdPartyPriceInfo);
 			}
-			checkToken(request, response, authenticationSecret, thirdPartySalePriceCallbackFunction);
+			authenticate.checkToken(request, response, authenticationSecret, thirdPartySalePriceCallbackFunction);
 		};
 		
 		self.getRoutes['/suggestedSalePrice/isbn/:isbn'] = function(request, response) 
@@ -176,7 +177,7 @@ var utdtextbookexchange_app = function() {
 				suggestedSalePriceInfo.push({isbn: providedIsbn, suggestSalePrice: '51.46', reason: 'The lowest price currently listed is $51.46.'});
 				response.send(suggestedSalePriceInfo);
 			}
-			checkToken(request, response, authenticationSecret, suggestedSalePriceCallbackFunction);
+			authenticate.checkToken(request, response, authenticationSecret, suggestedSalePriceCallbackFunction);
 		};
 		
 		self.getRoutes['/transactions/:userId'] = function(request, response) 
@@ -191,7 +192,7 @@ var utdtextbookexchange_app = function() {
 				response.send(transactionsArray);
 			}
 			
-			checkToken(request, response, authenticationSecret, getPendingTransactionsCallbackFunction)
+			authenticate.checkToken(request, response, authenticationSecret, getPendingTransactionsCallbackFunction)
 		}
 		
 		self.getRoutes['/transactions/transaction/:transactionId'] = function(request, response) 
@@ -207,7 +208,7 @@ var utdtextbookexchange_app = function() {
 				response.send({iD: '3', buyerOrSeller: 'seller', buyer_Nickname: 'Daren C', buyer_InternalUserId: '2', transactionDateTime: '2017-02-22 00:02:40', title: 'Software Engineering for Dummies', author: 'Wallace Wang', ISBN: '9780470108543', price: '32.67'});
 			}
 			
-			checkToken(request, response, authenticationSecret, getTransactionCallbackFunction)
+			authenticate.checkToken(request, response, authenticationSecret, getTransactionCallbackFunction)
 		}
 		
 		self.postRoutes['/forSaleEntries'] = function(request, response) 
@@ -232,7 +233,7 @@ var utdtextbookexchange_app = function() {
 				response.send({success: true, msg: 'Book has been posted for sale.'});
 			}
 			
-			checkToken(request, response, authenticationSecret, forSaleEntriesPostCallbackFunction);
+			authenticate.checkToken(request, response, authenticationSecret, forSaleEntriesPostCallbackFunction);
 		}
 		
 		self.postRoutes['/buyBook'] = function(request, response) 
@@ -248,7 +249,7 @@ var utdtextbookexchange_app = function() {
 				response.send({success: true, msg: 'Book has put on hold.'});
 			}
 			
-			checkToken(request, response, authenticationSecret, forSaleEntriesPostCallbackFunction);
+			authenticate.checkToken(request, response, authenticationSecret, forSaleEntriesPostCallbackFunction);
 		}
 		
 		self.postRoutes['/transactions/transaction/:transactionId/complete'] = function(request, response) 
@@ -263,53 +264,13 @@ var utdtextbookexchange_app = function() {
 				response.send({success: true, msg: 'Transaction has been marked complete.'});
 			}
 			
-			checkToken(request, response, authenticationSecret, setTransactionCompleteCallbackFunction);
+			authenticate.checkToken(request, response, authenticationSecret, setTransactionCompleteCallbackFunction);
 		}
 		
 		self.postRoutes['/authenticate'] = function(request, response) 
 		{
-			var username = request.body.username;
-			var password = request.body.password;
-			//If username and password were provided
-			if (username) 
-			{
-				if(password)
-				{
-					//Query for a user with a matching netID
-					connection.query("SELECT * from User where netID = '" + username + "'", function(err, rows, fields) 
-					{
-						if (!err)
-						{
-							//If we found a match, the user should be authenticated. Don't worry about a password.
-							if(rows.length > 0)
-							{
-								//Using the internal user ID of the row that was just found, create a token and return it to the client.
-								var token = jwt.encode(rows[0].internalUserId, authenticationSecret);
-								response.json({success: true, token: 'JWT ' + token});
-							}
-							else
-							{
-								response.status(401).send({success: false, msg: 'Invalid credentials.'});
-							}
-						}
-						else
-						{
-							response.status(500).send({success: false, msg: 'Internal Server Error. Please try again later.'});
-						}
-					});
-				}
-				else
-				{
-					response.status(401).send({success: false, msg: 'Authentication failed. No password.'});
-				}
-			} 
-			else 
-			{
-				response.status(401).send({success: false, msg: 'Authentication failed. No username.'});
-			}
+			authenticate.issueToken(request, response, authenticationSecret, connection);
 		};
-		
-		
     };
 	
 	self.setupVariables = function() {
@@ -470,26 +431,6 @@ function parseBookHTML(html)
 	return JSON.stringify(arr, null, 4);
 }
 
-function getToken(headers) 
-{
-  if (headers && headers.authorization) 
-  {
-    var parted = headers.authorization.split(' ');
-    if (parted.length === 2) 
-	{
-      return parted[1];
-    } 
-	else 
-	{
-      return null;
-    }
-  } 
-  else 
-  {
-    return null;
-  }
-}
-
 function getBooksForClass(numOfClasses, classNumber, callbackFunction) 
 {
 	var coursebookCookie;
@@ -540,35 +481,6 @@ function getBooksForClass(numOfClasses, classNumber, callbackFunction)
 	var get_req = http.request(optionsForGet, callbackForGet);
 	get_req.end();
 };
-
-function checkToken(request, response, authenticationSecret, callbackFunction)
-{
-	//First, check that the token was provided.
-	var token = getToken(request.headers);
-	if (token) 
-	{
-		var internalUserId;
-		try
-		{
-			//Second, decode the token to get the internalUserId that it encodes.
-			internalUserId = jwt.decode(token, authenticationSecret);
-			console.log('internalUserId: ' + internalUserId);
-		}
-		catch(err)
-		{
-			return response.status(401).send({success: false, msg: 'Token could not be authenticated: ' + token});
-		}
-		
-		//If we've successfully gotten the internalUserId, then this request is authenticated.
-		//Pass the internalUserId into the callback function to perform the business logic.
-		callbackFunction(internalUserId);
-	}
-	else
-	{
-		return response.status(401).send({success: false, msg: 'No token provided.'});
-	}
-}
-
 
 
 /**
