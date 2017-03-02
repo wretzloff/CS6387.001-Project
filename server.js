@@ -64,12 +64,12 @@ var utdtextbookexchange_app = function() {
 			forSaleEntries.postBookForSale(request, response, connection);
 		}
 		
-		self.getRoutes['/thirdPartySalePrice/isbn/:isbn'] = function(request, response) 
+		self.getRoutes['/salePrice/thirdParty/isbn/:isbn'] = function(request, response) 
 		{
 			salePrice.getThirdPartySalePrice(request, response, connection);
 		};
 		
-		self.getRoutes['/suggestedSalePrice/isbn/:isbn'] = function(request, response) 
+		self.getRoutes['/salePrice/suggested/isbn/:isbn'] = function(request, response) 
 		{
 			salePrice.getSuggestedSalePrice(request, response, connection);
 		};
