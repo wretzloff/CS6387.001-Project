@@ -71,18 +71,7 @@ var utdtextbookexchange_app = function() {
 		
 		self.getRoutes['/suggestedSalePrice/isbn/:isbn'] = function(request, response) 
 		{
-			function suggestedSalePriceCallbackFunction(internalUserId)
-			{
-				var providedIsbn = request.params.isbn;
-				console.log(providedIsbn);
-				
-				//Insert code here to calculate the suggest sale price...................
-				console.log('Insert code here to calculate the suggest sale price...................');
-				var suggestedSalePriceInfo = [];
-				suggestedSalePriceInfo.push({isbn: providedIsbn, suggestSalePrice: '51.46', reason: 'The lowest price currently listed is $51.46.'});
-				response.send(suggestedSalePriceInfo);
-			}
-			authenticate.checkToken(request, response, suggestedSalePriceCallbackFunction);
+			salePrice.getSuggestedSalePrice(request, response, connection);
 		};
 		
 		self.getRoutes['/transactions/:userId'] = function(request, response) 

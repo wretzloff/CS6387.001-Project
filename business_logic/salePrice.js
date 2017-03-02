@@ -18,5 +18,20 @@ methods.getThirdPartySalePrice = function(request, response, connection)
 	authenticate.checkToken(request, response, thirdPartySalePriceCallbackFunction);
 }
 
+methods.getSuggestedSalePrice = function(request, response, connection)
+{
+	function suggestedSalePriceCallbackFunction(internalUserId)
+	{
+		var providedIsbn = request.params.isbn;
+		console.log(providedIsbn);
+		
+		//Insert code here to calculate the suggest sale price...................
+		console.log('Insert code here to calculate the suggest sale price...................');
+		var suggestedSalePriceInfo = [];
+		suggestedSalePriceInfo.push({isbn: providedIsbn, suggestSalePrice: '51.46', reason: 'The lowest price currently listed is $51.46.'});
+		response.send(suggestedSalePriceInfo);
+	}
+	authenticate.checkToken(request, response, suggestedSalePriceCallbackFunction);
+}
 
 module.exports = methods;
