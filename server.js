@@ -86,33 +86,6 @@ var utdtextbookexchange_app = function() {
 			transactions.getTransactionById(request, response, connection);
 		}
 		
-		
-		self.postRoutes['/forSalePostedBooks'] = function(request, response) 
-		{
-			
-			function forSalePostedBooksPostCallbackFunction(internalUserId)
-			{
-				//Get the parameters from the body of the HTTP POST message
-				var providedInternalUserId = parseInt(internalUserId);
-				//select query to go
-				connection.query("SELECT * from ForSale where seller_InternalUserId = " + providedInternalUserId + "and status=, function(err, classRows, fields)
-				{
-					if(!err)
-					{
-						response.send({success: true, msg: 'Book has been posted for sale.'}); 
-					}	
-					else
-					{
-						response.send({success: false, msg: 'Problem posting your book. Please try again.'});
-					}				
-				});
-				//response.send({success: true, msg: 'Book has been posted for sale.'});
-			}
-			
-			checkToken(request, response, authenticationSecret, forSalePostedBooksPostCallbackFunction);
-			}
-		}
-		
 		self.postRoutes['/transactions/transaction/:transactionId/cancel'] = function(request, response) 
 		{
 			transactions.markTransactionCancelled(request, response, connection);
