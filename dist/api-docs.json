@@ -18,8 +18,8 @@
         "description": "For operations on the 'For Sale List'"
     },
 	{
-        "name": "buyBook",
-        "description": "For a buyer to buy a book"
+        "name": "transactions",
+        "description": "For operations regarding transactions"
     }],
     "schemes": ["http"],
     "paths": {
@@ -263,9 +263,9 @@
                 }]
             }
         },
-        "/buyBook": {
+        "/transactions": {
             "post": {
-                "tags": ["buyBook"],
+                "tags": ["transactions"],
                 "summary": "Buy a book",
                 "description": "",
                 "operationId": "buyBook",
