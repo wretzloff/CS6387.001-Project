@@ -20,6 +20,11 @@ methods.get_forSaleEntries_by_internalUserId = function(connection, callbackFunc
 	connection.query("SELECT iD as forSaleId, isbn,author,price,description,bookCondition from ForSale where seller_InternalUserId = '" + internalUserId + "' and status = 0", callbackFunction);
 }
 
+methods.post_forSaleEntries = function(connection, callbackFunction, rowToInsert)
+{
+	connection.query('Insert into ForSale SET ?', rowToInsert, callbackFunction);
+}
+
 
 
 module.exports = methods;
