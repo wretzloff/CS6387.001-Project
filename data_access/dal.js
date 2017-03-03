@@ -10,5 +10,11 @@ methods.get_dummyUserEnrollment_by_internalUserId = function(connection, callbac
 	connection.query("SELECT * from dummy_User_Enrollment where internalUserId = '" + internalUserId + "'", callbackFunction)
 }
 
+methods.get_forSaleEntries_by_isbn = function(connection, callbackFunction, isbn)
+{
+	connection.query("SELECT iD as forSaleId, isbn,author,price,description,bookCondition from ForSale where ISBN = '" + isbn + "' and status = 0", callbackFunction);
+}
+
+
 
 module.exports = methods;

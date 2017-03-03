@@ -1,4 +1,6 @@
 var moment 						= require('moment');
+
+var dal         				= require('../data_access/dal');
 var authenticate         		= require('./authenticate');
 
 var methods = {};
@@ -8,7 +10,8 @@ methods.getForSaleEntriesByIsbn = function(request, response, connection)
 	function afterCheckTokenCallback(internalUserId)
 	{
 		var providedIsbn = request.params.isbn;
-		connection.query("SELECT iD as forSaleId, isbn,author,price,description,bookCondition from ForSale where ISBN = '" + providedIsbn + "' and status = 0", function(err, rows, fields) 
+		
+		function get_forSaleEntries_by_isbn_callback(err, rows, fields)
 		{
 			if (!err)
 			{
@@ -19,7 +22,9 @@ methods.getForSaleEntriesByIsbn = function(request, response, connection)
 				console.log(err);
 				response.send({success: false, msg: 'Internal error.'});
 			}
-		});
+		}
+		console.log(providedIsbn);
+		dal.get_forSaleEntries_by_isbn(connection, get_forSaleEntries_by_isbn_callback, providedIsbn);
 	}
 			
 	authenticate.checkToken(request, response, afterCheckTokenCallback);
