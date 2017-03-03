@@ -5,7 +5,7 @@ var methods = {};
 
 methods.getForSaleEntriesByIsbn = function(request, response, connection)
 {
-	function forSaleEntriesCallbackFunction(internalUserId)
+	function afterCheckTokenCallback(internalUserId)
 	{
 		var providedIsbn = request.params.isbn;
 		connection.query("SELECT iD as forSaleId, isbn,author,price,description,bookCondition from ForSale where ISBN = '" + providedIsbn + "' and status = 0", function(err, rows, fields) 
@@ -22,12 +22,12 @@ methods.getForSaleEntriesByIsbn = function(request, response, connection)
 		});
 	}
 			
-	authenticate.checkToken(request, response, forSaleEntriesCallbackFunction);
+	authenticate.checkToken(request, response, afterCheckTokenCallback);
 }
 
 methods.getForSaleEntriesByUser = function(request, response, connection)
 {
-	function forSaleEntriesCallbackFunction(internalUserId)
+	function afterCheckTokenCallback(internalUserId)
 	{
 		var providedUserId = request.params.userId;
 		connection.query("SELECT iD as forSaleId, isbn,author,price,description,bookCondition from ForSale where seller_InternalUserId = '" + providedUserId + "' and status = 0", function(err, rows, fields) 
@@ -44,12 +44,12 @@ methods.getForSaleEntriesByUser = function(request, response, connection)
 		});
 	}
 			
-	authenticate.checkToken(request, response, forSaleEntriesCallbackFunction);
+	authenticate.checkToken(request, response, afterCheckTokenCallback);
 }
 
 methods.postBookForSale = function(request, response, connection)
 {
-	function forSaleEntriesPostCallbackFunction(internalUserId)
+	function afterCheckTokenCallback(internalUserId)
 			{
 				//Get the parameters from the body of the HTTP POST message
 				var providedInternalUserId = parseInt(internalUserId);
@@ -85,7 +85,7 @@ methods.postBookForSale = function(request, response, connection)
 				});
 			}
 			
-		authenticate.checkToken(request, response, forSaleEntriesPostCallbackFunction)
+		authenticate.checkToken(request, response, afterCheckTokenCallback)
 }
 
 module.exports = methods;

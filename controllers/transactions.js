@@ -4,7 +4,7 @@ var methods = {};
 
 methods.buyBook = function(request, response, connection)
 {
-	function forSaleEntriesPostCallbackFunction(internalUserId)
+	function afterCheckTokenCallback(internalUserId)
 	{
 		//Get the parameters from the body of the HTTP POST message
 		var providedForSaleId = request.body.forSaleId;
@@ -15,12 +15,12 @@ methods.buyBook = function(request, response, connection)
 		response.send({success: true, msg: 'Book has put on hold.'});
 	}
 	
-	authenticate.checkToken(request, response, forSaleEntriesPostCallbackFunction);
+	authenticate.checkToken(request, response, afterCheckTokenCallback);
 }
 
 methods.getTransactionsByUser = function(request, response, connection)
 {
-	function getPendingTransactionsCallbackFunction(internalUserId)
+	function afterCheckTokenCallback(internalUserId)
 	{
 		//Insert code here to select all Transactions for this internalUserId where the transaction status is 0 (for Pending).
 		//Join the Transaction table to the ForSale table to get information about the book being bought/sold, like the book title, author, price, etc.
@@ -30,12 +30,12 @@ methods.getTransactionsByUser = function(request, response, connection)
 		response.send(transactionsArray);
 	}
 	
-	authenticate.checkToken(request, response, getPendingTransactionsCallbackFunction);
+	authenticate.checkToken(request, response, afterCheckTokenCallback);
 }
 
 methods.getTransactionById = function(request, response, connection)
 {
-	function getTransactionCallbackFunction(internalUserId)
+	function afterCheckTokenCallback(internalUserId)
 	{
 		var providedTransactionId = request.params.transactionId;
 		console.log(providedTransactionId);
@@ -46,12 +46,12 @@ methods.getTransactionById = function(request, response, connection)
 		response.send({iD: '3', buyerOrSeller: 'seller', buyer_Nickname: 'Daren C', buyer_InternalUserId: '2', transactionDateTime: '2017-02-22 00:02:40', title: 'Software Engineering for Dummies', author: 'Wallace Wang', ISBN: '9780470108543', price: '32.67'});
 	}
 	
-	authenticate.checkToken(request, response, getTransactionCallbackFunction);
+	authenticate.checkToken(request, response, afterCheckTokenCallback);
 }
 
 methods.markTransactionComplete = function(request, response, connection)
 {
-	function setTransactionCompleteCallbackFunction(internalUserId)
+	function afterCheckTokenCallback(internalUserId)
 	{
 		var providedTransactionId = request.params.transactionId;
 		console.log(providedTransactionId);
@@ -61,12 +61,12 @@ methods.markTransactionComplete = function(request, response, connection)
 		response.send({success: true, msg: 'Transaction has been marked complete.'});
 	}
 	
-	authenticate.checkToken(request, response, setTransactionCompleteCallbackFunction);
+	authenticate.checkToken(request, response, afterCheckTokenCallback);
 }
 
 methods.markTransactionCancelled = function(request, response, connection)
 {
-	function setTransactionCancelledCallbackFunction(internalUserId)
+	function afterCheckTokenCallback(internalUserId)
 	{
 		var providedTransactionId = request.params.transactionId;
 		console.log(providedTransactionId);
@@ -76,7 +76,7 @@ methods.markTransactionCancelled = function(request, response, connection)
 		response.send({success: true, msg: 'Transaction has been cancelled.'});
 	}
 	
-	authenticate.checkToken(request, response, setTransactionCancelledCallbackFunction);
+	authenticate.checkToken(request, response, afterCheckTokenCallback);
 }
 
 module.exports = methods;

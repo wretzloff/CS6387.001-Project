@@ -4,7 +4,7 @@ var methods = {};
 
 methods.getThirdPartySalePrice = function(request, response, connection)
 {
-	function thirdPartySalePriceCallbackFunction(internalUserId)
+	function afterCheckTokenCallback(internalUserId)
 	{
 		var providedIsbn = request.params.isbn;
 		console.log(providedIsbn);
@@ -15,12 +15,12 @@ methods.getThirdPartySalePrice = function(request, response, connection)
 		thirdPartyPriceInfo.push({price: '51.48', source: 'Amazon', link: 'https://www.amazon.com/Starting-Control-Structures-through-Objects/dp/0133778819/ref=sr_1_1?ie=UTF8&qid=1487534860&sr=8-1&keywords=9780133778816'});
 		response.send(thirdPartyPriceInfo);
 	}
-	authenticate.checkToken(request, response, thirdPartySalePriceCallbackFunction);
+	authenticate.checkToken(request, response, afterCheckTokenCallback);
 }
 
 methods.getSuggestedSalePrice = function(request, response, connection)
 {
-	function suggestedSalePriceCallbackFunction(internalUserId)
+	function afterCheckTokenCallback(internalUserId)
 	{
 		var providedIsbn = request.params.isbn;
 		console.log(providedIsbn);
@@ -31,7 +31,7 @@ methods.getSuggestedSalePrice = function(request, response, connection)
 		suggestedSalePriceInfo.push({isbn: providedIsbn, suggestSalePrice: '51.46', reason: 'The lowest price currently listed is $51.46.'});
 		response.send(suggestedSalePriceInfo);
 	}
-	authenticate.checkToken(request, response, suggestedSalePriceCallbackFunction);
+	authenticate.checkToken(request, response, afterCheckTokenCallback);
 }
 
 module.exports = methods;
