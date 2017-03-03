@@ -35,7 +35,8 @@ methods.getForSaleEntriesByUser = function(request, response, connection)
 	function afterCheckTokenCallback(internalUserId)
 	{
 		var providedUserId = request.params.userId;
-		connection.query("SELECT iD as forSaleId, isbn,author,price,description,bookCondition from ForSale where seller_InternalUserId = '" + providedUserId + "' and status = 0", function(err, rows, fields) 
+		
+		function get_forSaleEntries_by_internalUserId_callback(err, rows, fields)
 		{
 			if (!err)
 			{
@@ -46,7 +47,9 @@ methods.getForSaleEntriesByUser = function(request, response, connection)
 				console.log(err);
 				response.send({success: false, msg: 'Internal error.'});
 			}
-		});
+		}
+		
+		dal.get_forSaleEntries_by_internalUserId(connection, get_forSaleEntries_by_internalUserId_callback, providedUserId);
 	}
 			
 	authenticate.checkToken(request, response, afterCheckTokenCallback);
