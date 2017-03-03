@@ -65,7 +65,7 @@ methods.issueToken = function(request, response, connection)
 			}
 		
 			//Query for a user with a matching netID
-			dal.get_User_by_netId(connection, username, get_User_by_netId_callback);			
+			dal.get_User_by_netId(connection, get_User_by_netId_callback, username);			
 		}
 		else
 		{

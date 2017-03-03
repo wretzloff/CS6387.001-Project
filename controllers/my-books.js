@@ -3,6 +3,7 @@ var https 				= require('https');
 var cheerio 			= require('cheerio');
 
 var authenticate        = require('./authenticate');
+var dal         		= require('../data_access/dal');
 
 var methods = {};
 
@@ -26,8 +27,8 @@ methods.getMyBooks = function(request, response, connection)
 			}
 						
 			//Define a function tht will be called after the checkToken() function has finished validating the authorization token.
-			var afterDatabaseQueryCallbackFunction = function(internalUserId){
-				connection.query("SELECT * from dummy_User_Enrollment where internalUserId = '" + internalUserId + "'", function(err, classRows, fields) 
+			var afterCheckTokenCallback = function(internalUserId){
+				var get_dummyUserEnrollment_by_internalUserId_callback = function(err, classRows, fields)
 				{
 					if (!err)
 					{
@@ -60,9 +61,11 @@ methods.getMyBooks = function(request, response, connection)
 						console.log(err);
 						response.status(500).send({success: false, msg: 'Internal Server Error. Please try again later.'});
 					}
-				});
+				}
+				
+				dal.get_dummyUserEnrollment_by_internalUserId(connection, get_dummyUserEnrollment_by_internalUserId_callback, internalUserId);
 			}
-			authenticate.checkToken(request, response, afterDatabaseQueryCallbackFunction);
+			authenticate.checkToken(request, response, afterCheckTokenCallback);
 }
 
 
