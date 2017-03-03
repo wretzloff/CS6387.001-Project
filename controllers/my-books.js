@@ -31,28 +31,36 @@ methods.getMyBooks = function(request, response, connection)
 				var get_dummyUserEnrollment_by_internalUserId_callback = function(err, classRows, fields)
 				{
 					if (!err)
-					{
-						//Loop through each class and fetch the books for that class, and add them to the response.
-						for (var i in classRows) 
+					{	
+						//If there were no rows found, then just return and empty array.
+						if(classRows.length === 0)
 						{
-							var classNumber = classRows[i].enrolledClass + '.' + classRows[i].semester;
-							//If the dummy flag has been set, then just return fake books. Otherwise, carry on and actually make calls to coursebook.
-							if(productionOrStubBooks === 'stub')
+							response.contentType('application/json');
+							response.json({});
+						}
+						else //Else, loop through each class and fetch the books for that class, and add them to the response.
+						{
+							for (var i in classRows) 
 							{
-								var fakeBooksArray = [];
-								fakeBooksArray.push(
+								var classNumber = classRows[i].enrolledClass + '.' + classRows[i].semester;
+								//If the dummy flag has been set, then just return fake books. Otherwise, carry on and actually make calls to coursebook.
+								if(productionOrStubBooks === 'stub')
 								{
-									bookName: 'STARTING OUT WITH C++ FROM CNTRL (LOOSEPGS)(W/OUT ACCESS)', 
-									bookEdition: 'PH 8th Edition 2015', 
-									bookAuthor: 'GADDIS',
-									bookISBN: '9780133778816',
-									book_required_recommended: 'Required Text'
-								});
-								getBooksForClassCallbackFunction(classRows.length, classNumber, fakeBooksArray);
-							}
-							else
-							{
-								getBooksForClass(classRows.length, classNumber, getBooksForClassCallbackFunction);
+									var fakeBooksArray = [];
+									fakeBooksArray.push(
+									{
+										bookName: 'STARTING OUT WITH C++ FROM CNTRL (LOOSEPGS)(W/OUT ACCESS)', 
+										bookEdition: 'PH 8th Edition 2015', 
+										bookAuthor: 'GADDIS',
+										bookISBN: '9780133778816',
+										book_required_recommended: 'Required Text'
+									});
+									getBooksForClassCallbackFunction(classRows.length, classNumber, fakeBooksArray);
+								}
+								else
+								{
+									getBooksForClass(classRows.length, classNumber, getBooksForClassCallbackFunction);
+								}
 							}
 						}
 					}
