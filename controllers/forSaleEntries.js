@@ -23,7 +23,7 @@ methods.getForSaleEntriesByIsbn = function(request, response, connection)
 				response.send({success: false, msg: 'Internal error.'});
 			}
 		}
-		console.log(providedIsbn);
+		
 		dal.get_forSaleEntries_by_isbn(connection, get_forSaleEntries_by_isbn_callback, providedIsbn);
 	}
 			
