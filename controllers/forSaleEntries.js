@@ -1,5 +1,5 @@
-var authenticate         		= require('./authenticate');
 var moment 						= require('moment');
+var authenticate         		= require('./authenticate');
 
 var methods = {};
 
