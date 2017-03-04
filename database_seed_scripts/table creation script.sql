@@ -104,6 +104,7 @@ CREATE TABLE condition_type (
 CREATE TABLE dummy_User_Enrollment (
     internalUserId int NOT NULL,
     enrolledClass varchar(255) NOT NULL,
+    enrolledClassName varchar(255) NOT NULL,
     semester varchar(255) NOT NULL,
     CONSTRAINT dummy_User_Enrollment_pk PRIMARY KEY (internalUserId,enrolledClass,semester)
 );

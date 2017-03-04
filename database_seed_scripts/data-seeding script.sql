@@ -37,7 +37,7 @@ insert into dummy_User_Enrollment (internalUserID, enrolledClass, enrolledClassN
 insert into dummy_User_Enrollment (internalUserID, enrolledClass, enrolledClassName, semester) values ('1', 'EE2310.001', 'Introduction to Digital Systems', '17S');
 insert into dummy_User_Enrollment (internalUserID, enrolledClass, enrolledClassName, semester) values ('1', 'MATH1306.001', 'College Algebra for the Non-Scientist', '16F');
 insert into dummy_User_Enrollment (internalUserID, enrolledClass, enrolledClassName, semester) values ('1', 'CS3305.002', 'Discrete Mathematics for Computing II', '16F');
-insert into dummy_User_Enrollment (internalUserID, enrolledClass, enrolledClassName, semester) values ('1', 'CS2305.001', '	Discrete Mathematics for Computing I', '16S');
+insert into dummy_User_Enrollment (internalUserID, enrolledClass, enrolledClassName, semester) values ('1', 'CS2305.001', 'Discrete Mathematics for Computing I', '16S');
 
 insert into dummy_User_Enrollment (internalUserID, enrolledClass, enrolledClassName, semester) values ('2', 'MATH1306.001', 'College Algebra for the Non-Scientist', '17S');
 insert into dummy_User_Enrollment (internalUserID, enrolledClass, enrolledClassName, semester) values ('2', 'BIOL3361.001', 'Biochemistry I', '16F');
