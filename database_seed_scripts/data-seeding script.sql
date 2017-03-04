@@ -31,32 +31,32 @@ insert into transactionStatus_type (id, description) values ('2', 'Cancelled');
 
 
 
-insert into dummy_User_Enrollment (internalUserID, enrolledClass, semester) values ('1', 'CS1336.001', '17S');
-insert into dummy_User_Enrollment (internalUserID, enrolledClass, semester) values ('1', 'MATH1325.006', '17S');
-insert into dummy_User_Enrollment (internalUserID, enrolledClass, semester) values ('1', 'BIOL3361.001', '17S');
-insert into dummy_User_Enrollment (internalUserID, enrolledClass, semester) values ('1', 'EE2310.001', '17S');
-insert into dummy_User_Enrollment (internalUserID, enrolledClass, semester) values ('1', 'MATH1306.001', '16F');
-insert into dummy_User_Enrollment (internalUserID, enrolledClass, semester) values ('1', 'CS3305.002', '16F');
-insert into dummy_User_Enrollment (internalUserID, enrolledClass, semester) values ('1', 'CS2305.001', '16S');
+insert into dummy_User_Enrollment (internalUserID, enrolledClass, enrolledClassName, semester) values ('1', 'CS1336.001', 'Programming Fundamentals', '17S');
+insert into dummy_User_Enrollment (internalUserID, enrolledClass, enrolledClassName, semester) values ('1', 'MATH1325.006', 'Applied Calculus I', '17S');
+insert into dummy_User_Enrollment (internalUserID, enrolledClass, enrolledClassName, semester) values ('1', 'BIOL3361.001', 'Biochemistry I', '17S');
+insert into dummy_User_Enrollment (internalUserID, enrolledClass, enrolledClassName, semester) values ('1', 'EE2310.001', 'Introduction to Digital Systems', '17S');
+insert into dummy_User_Enrollment (internalUserID, enrolledClass, enrolledClassName, semester) values ('1', 'MATH1306.001', 'College Algebra for the Non-Scientist', '16F');
+insert into dummy_User_Enrollment (internalUserID, enrolledClass, enrolledClassName, semester) values ('1', 'CS3305.002', 'Discrete Mathematics for Computing II', '16F');
+insert into dummy_User_Enrollment (internalUserID, enrolledClass, enrolledClassName, semester) values ('1', 'CS2305.001', '	Discrete Mathematics for Computing I', '16S');
 
---insert into dummy_User_Enrollment (internalUserID, enrolledClass, semester) values ('2', 'MATH1306.001', '17S');
---insert into dummy_User_Enrollment (internalUserID, enrolledClass, semester) values ('2', 'BIOL3361.001', '16F');
---insert into dummy_User_Enrollment (internalUserID, enrolledClass, semester) values ('2', 'CS1336.006', '15F');
+insert into dummy_User_Enrollment (internalUserID, enrolledClass, enrolledClassName, semester) values ('2', 'MATH1306.001', 'College Algebra for the Non-Scientist', '17S');
+insert into dummy_User_Enrollment (internalUserID, enrolledClass, enrolledClassName, semester) values ('2', 'BIOL3361.001', 'Biochemistry I', '16F');
+insert into dummy_User_Enrollment (internalUserID, enrolledClass, enrolledClassName, semester) values ('2', 'CS1336.006', 'Programming Fundamentals', '15F');
 
-insert into dummy_User_Enrollment (internalUserID, enrolledClass, semester) values ('3', 'BIOL3361.001', '17S');
-insert into dummy_User_Enrollment (internalUserID, enrolledClass, semester) values ('3', 'MATH1306.002', '15S');
+insert into dummy_User_Enrollment (internalUserID, enrolledClass, enrolledClassName, semester) values ('3', 'BIOL3361.001', 'Biochemistry I', '17S');
+insert into dummy_User_Enrollment (internalUserID, enrolledClass, enrolledClassName, semester) values ('3', 'MATH1306.002', 'College Algebra for the Non-Scientist', '15S');
 
-insert into dummy_User_Enrollment (internalUserID, enrolledClass, semester) values ('4', 'BIOL3361.001', '16F');
+insert into dummy_User_Enrollment (internalUserID, enrolledClass, enrolledClassName, semester) values ('4', 'BIOL3361.001', 'Biochemistry I', '16F');
 
-insert into dummy_User_Enrollment (internalUserID, enrolledClass, semester) values ('5', 'EE2310.001', '16F');
+insert into dummy_User_Enrollment (internalUserID, enrolledClass, enrolledClassName, semester) values ('5', 'EE2310.001', 'Introduction to Digital Systems', '16F');
 
-insert into dummy_User_Enrollment (internalUserID, enrolledClass, semester) values ('6', 'BIOL3361.001', '17S');
-insert into dummy_User_Enrollment (internalUserID, enrolledClass, semester) values ('6', 'EE2310.001', '16F');
-insert into dummy_User_Enrollment (internalUserID, enrolledClass, semester) values ('6', 'CS3305.002', '16F');
-insert into dummy_User_Enrollment (internalUserID, enrolledClass, semester) values ('6', 'CS2305.001', '16S');
+insert into dummy_User_Enrollment (internalUserID, enrolledClass, enrolledClassName, semester) values ('6', 'BIOL3361.001', 'Biochemistry I', '17S');
+insert into dummy_User_Enrollment (internalUserID, enrolledClass, enrolledClassName, semester) values ('6', 'EE2310.001', 'Introduction to Digital Systems', '16F');
+insert into dummy_User_Enrollment (internalUserID, enrolledClass, enrolledClassName, semester) values ('6', 'CS3305.002', 'Discrete Mathematics for Computing II', '16F');
+insert into dummy_User_Enrollment (internalUserID, enrolledClass, enrolledClassName, semester) values ('6', 'CS2305.001', '	Discrete Mathematics for Computing I', '16S');
 
-insert into dummy_User_Enrollment (internalUserID, enrolledClass, semester) values ('7', 'BIOL3361.001', '16F');
-insert into dummy_User_Enrollment (internalUserID, enrolledClass, semester) values ('7', 'CS3305.002', '16S');
+insert into dummy_User_Enrollment (internalUserID, enrolledClass, enrolledClassName, semester) values ('7', 'BIOL3361.001', 'Biochemistry I', '16F');
+insert into dummy_User_Enrollment (internalUserID, enrolledClass, enrolledClassName, semester) values ('7', 'CS3305.002', 'Discrete Mathematics for Computing II', '16S');
 
 
 

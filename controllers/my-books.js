@@ -16,9 +16,10 @@ methods.getMyBooks = function(request, response, connection)
 			
 			//Define the function that will be called after each call to UTD Coursebook.
 			var booksArray = [];
-			var getBooksForClassCallbackFunction = function(numOfClasses, classNum, classbooks)
+			var getBooksForClassCallbackFunction = function(numOfClasses, classNum, className, classbooks)
 			{
-				booksArray.push({className: classNum, classbooks: classbooks});
+				booksArray.push({classNumber: classNum, className: className, classbooks: classbooks});
+				console.log('numofClasses: ' + numOfClasses + 'classNum: ' + classNum);
 				if(booksArray.length >= numOfClasses)
 				{
 					response.contentType('application/json');
@@ -43,6 +44,7 @@ methods.getMyBooks = function(request, response, connection)
 							for (var i in classRows) 
 							{
 								var classNumber = classRows[i].enrolledClass + '.' + classRows[i].semester;
+								var className = classRows[i].enrolledClassName;
 								//If the dummy flag has been set, then just return fake books. Otherwise, carry on and actually make calls to coursebook.
 								if(productionOrStubBooks === 'stub')
 								{
@@ -55,11 +57,11 @@ methods.getMyBooks = function(request, response, connection)
 										bookISBN: '9780133778816',
 										book_required_recommended: 'Required Text'
 									});
-									getBooksForClassCallbackFunction(classRows.length, classNumber, fakeBooksArray);
+									getBooksForClassCallbackFunction(classRows.length, classNumber, className, fakeBooksArray);
 								}
 								else
 								{
-									getBooksForClass(classRows.length, classNumber, getBooksForClassCallbackFunction);
+									getBooksForClass(classRows.length, classNumber, className, getBooksForClassCallbackFunction);
 								}
 							}
 						}
@@ -101,7 +103,7 @@ function parseBookHTML(html)
 	return JSON.stringify(arr, null, 4);
 }
 
-function getBooksForClass(numOfClasses, classNumber, callbackFunction) 
+function getBooksForClass(numOfClasses, classNumber, className, callbackFunction) 
 {
 	var coursebookCookie;
 	var optionsForGet = 
@@ -137,7 +139,7 @@ function getBooksForClass(numOfClasses, classNumber, callbackFunction)
 			resp.on('data', function (chunk) 
 			{
 				var formattedResults = parseBookHTML(chunk);
-				callbackFunction(numOfClasses, classNumber, formattedResults);
+				callbackFunction(numOfClasses, classNumber, className, formattedResults);
 			});
 		}
 	

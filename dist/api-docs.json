@@ -619,9 +619,13 @@
 		"getRequiredTextbooksRecord": {
 			    "type": "object",
 			    "properties": {
-				      "className": {
+				      "classNumber": {
 					      "type": "string",
 						    "default": "CS1336.001.17S"
+				      },
+					  "className": {
+					      "type": "string",
+						    "default": "Programming Fundamentals"
 				      },
 				      "classBooks": {
 				        "type": "array",
