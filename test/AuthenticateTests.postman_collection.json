@@ -1,0 +1,76 @@
+{
+	"variables": [],
+	"info": {
+		"name": "AuthenticateTests",
+		"_postman_id": "53d54ae1-72d8-eeb5-71f0-700c0dc2f4e7",
+		"description": "",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "http://localhost:3000/authenticate",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"var jsonData = JSON.parse(responseBody);",
+							"",
+							"//Test that the endpoint returns the expected status code.",
+							"tests[\"Status code is 200\"] = responseCode.code === 200;",
+							"",
+							"//Test that the endpoint returns a Content-Type header of \"application/json\".",
+							"var contentTypeHeaderExists = responseHeaders.hasOwnProperty(\"Content-Type\");",
+							"tests[\"Has Content-Type\"] = contentTypeHeaderExists;",
+							"if (contentTypeHeaderExists) ",
+							"{",
+							"    tests[\"Content-Type is application/json\"] = responseHeaders[\"Content-Type\"].has(\"application/json\");",
+							"}",
+							"",
+							"//Test that the payload of the response contains the the expected success/failure",
+							"",
+							"tests[\"Success is true\"] = jsonData.success === true;",
+							"",
+							"//Test that the payload of the response contains the expected content",
+							"",
+							"",
+							""
+						]
+					}
+				}
+			],
+			"request": {
+				"url": "http://localhost:3000/authenticate",
+				"method": "POST",
+				"header": [
+					{
+						"key": "//Content-Type",
+						"value": "application/x-www-form-urlencoded",
+						"description": "",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "username",
+							"value": "wbr071000",
+							"type": "text",
+							"enabled": true
+						},
+						{
+							"key": "password",
+							"value": "aaa",
+							"type": "text",
+							"enabled": true
+						}
+					]
+				},
+				"description": ""
+			},
+			"response": []
+		}
+	]
+}
