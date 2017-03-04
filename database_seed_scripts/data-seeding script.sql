@@ -33,9 +33,14 @@ insert into transactionStatus_type (id, description) values ('2', 'Cancelled');
 
 insert into dummy_User_Enrollment (internalUserID, enrolledClass, semester) values ('1', 'CS1336.001', '17S');
 insert into dummy_User_Enrollment (internalUserID, enrolledClass, semester) values ('1', 'MATH1325.006', '17S');
-
 insert into dummy_User_Enrollment (internalUserID, enrolledClass, semester) values ('1', 'MATH1306.001', '16F');
+
+insert into dummy_User_Enrollment (internalUserID, enrolledClass, semester) values ('6', 'BIOL3361.001', '17S');
 insert into dummy_User_Enrollment (internalUserID, enrolledClass, semester) values ('6', 'EE2310.001', '16F');
+insert into dummy_User_Enrollment (internalUserID, enrolledClass, semester) values ('6', 'CS3305.002', '16F');
+insert into dummy_User_Enrollment (internalUserID, enrolledClass, semester) values ('6', 'CS2305.001', '16S');
+
+
 
 
 
