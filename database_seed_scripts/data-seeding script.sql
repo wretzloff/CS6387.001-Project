@@ -33,12 +33,30 @@ insert into transactionStatus_type (id, description) values ('2', 'Cancelled');
 
 insert into dummy_User_Enrollment (internalUserID, enrolledClass, semester) values ('1', 'CS1336.001', '17S');
 insert into dummy_User_Enrollment (internalUserID, enrolledClass, semester) values ('1', 'MATH1325.006', '17S');
+insert into dummy_User_Enrollment (internalUserID, enrolledClass, semester) values ('1', 'BIOL3361.001', '17S');
+insert into dummy_User_Enrollment (internalUserID, enrolledClass, semester) values ('1', 'EE2310.001', '17S');
 insert into dummy_User_Enrollment (internalUserID, enrolledClass, semester) values ('1', 'MATH1306.001', '16F');
+insert into dummy_User_Enrollment (internalUserID, enrolledClass, semester) values ('1', 'CS3305.002', '16F');
+insert into dummy_User_Enrollment (internalUserID, enrolledClass, semester) values ('1', 'CS2305.001', '16S');
+
+--insert into dummy_User_Enrollment (internalUserID, enrolledClass, semester) values ('2', 'MATH1306.001', '17S');
+--insert into dummy_User_Enrollment (internalUserID, enrolledClass, semester) values ('2', 'BIOL3361.001', '16F');
+--insert into dummy_User_Enrollment (internalUserID, enrolledClass, semester) values ('2', 'CS1336.006', '15F');
+
+insert into dummy_User_Enrollment (internalUserID, enrolledClass, semester) values ('3', 'BIOL3361.001', '17S');
+insert into dummy_User_Enrollment (internalUserID, enrolledClass, semester) values ('3', 'MATH1306.002', '15S');
+
+insert into dummy_User_Enrollment (internalUserID, enrolledClass, semester) values ('4', 'BIOL3361.001', '16F');
+
+insert into dummy_User_Enrollment (internalUserID, enrolledClass, semester) values ('5', 'EE2310.001', '16F');
 
 insert into dummy_User_Enrollment (internalUserID, enrolledClass, semester) values ('6', 'BIOL3361.001', '17S');
 insert into dummy_User_Enrollment (internalUserID, enrolledClass, semester) values ('6', 'EE2310.001', '16F');
 insert into dummy_User_Enrollment (internalUserID, enrolledClass, semester) values ('6', 'CS3305.002', '16F');
 insert into dummy_User_Enrollment (internalUserID, enrolledClass, semester) values ('6', 'CS2305.001', '16S');
+
+insert into dummy_User_Enrollment (internalUserID, enrolledClass, semester) values ('7', 'BIOL3361.001', '16F');
+insert into dummy_User_Enrollment (internalUserID, enrolledClass, semester) values ('7', 'CS3305.002', '16S');
 
 
 
