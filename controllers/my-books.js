@@ -135,10 +135,17 @@ function getBooksForClass(numOfClasses, classNumber, className, callbackFunction
 		
 		var callbackForPost = function(resp)
 		{
+			//Define a string, onto which we will append the chunks of response data until we get to the 'end', and then we will parse the string
+			//to get the formatted results.
+			var str = '';
 			resp.setEncoding('utf8');
 			resp.on('data', function (chunk) 
 			{
-				var formattedResults = parseBookHTML(chunk);
+				str += chunk;
+			});
+			resp.on('end', function () 
+			{
+				var formattedResults = parseBookHTML(str);
 				callbackFunction(numOfClasses, classNumber, className, formattedResults);
 			});
 		}
