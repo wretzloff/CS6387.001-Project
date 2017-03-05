@@ -31,7 +31,7 @@
             "post": {
                 "tags": ["Authenticate"],
                 "summary": "Send a username and password in order to get an authorization token",
-                "description": "",
+                "description": "Side effects: none",
                 "operationId": "issueToken",
                 "produces": ["application/json"],
                 "parameters": [{
@@ -76,7 +76,7 @@
             "get": {
                 "tags": ["my-books"],
                 "summary": "Get a list of user's required textbooks for all semesters",
-                "description": "",
+                "description": "Side effects: none",
                 "operationId": "getMyBooks",
                 "produces": ["application/json"],
                 "parameters": [{
@@ -125,7 +125,7 @@
             "get": {
                 "tags": ["forSaleEntries"],
                 "summary": "Get a list of books for sale for the given ISBN",
-                "description": "",
+                "description": "Side effects: none",
                 "operationId": "getForSaleEntriesByIsbn",
                 "produces": ["application/json"],
                 "parameters": [{
@@ -165,7 +165,7 @@
             "get": {
                 "tags": ["forSaleEntries"],
                 "summary": "Get a list of books for sale for the given User Id",
-                "description": "",
+                "description": "Side effects: none",
                 "operationId": "getForSaleEntriesByUser",
                 "produces": ["application/json"],
                 "parameters": [{
@@ -207,7 +207,7 @@
             "get": {
                 "tags": ["forSaleEntries"],
                 "summary": "Get all the possible values for a For Sale entry's condition, along with a description of each.",
-                "description": "",
+                "description": "Side effects: none",
                 "operationId": "getPossibleForSaleEntryConditions",
                 "produces": ["application/json"],
                 "parameters": [],
@@ -232,7 +232,7 @@
             "post": {
                 "tags": ["forSaleEntries"],
                 "summary": "Post a book for sale",
-                "description": "",
+                "description": "Side effects: An entry is added to the For Sale list with the given ISBN, author, price, condition, and description.",
                 "operationId": "postBookForSale",
                 "produces": ["application/json"],
                 "parameters": [{
@@ -306,7 +306,7 @@
             "get": {
                 "tags": ["transactions"],
                 "summary": "Get a list of open transactions for the given User Id",
-                "description": "",
+                "description": "Side effects: none",
                 "operationId": "getTransactionsByUser",
                 "produces": ["application/json"],
                 "parameters": [{
@@ -347,7 +347,7 @@
             "get": {
                 "tags": ["transactions"],
                 "summary": "Get transaction history for the given User Id",
-                "description": "",
+                "description": "Side effects: none",
                 "operationId": "getTransactionsHistoryByUser",
                 "produces": ["application/json"],
                 "parameters": [{
@@ -388,7 +388,7 @@
             "get": {
                 "tags": ["transactions"],
                 "summary": "Get the transaction specified by the given transaction Id",
-                "description": "",
+                "description": "Side effects: none",
                 "operationId": "getTransactionById",
                 "produces": ["application/json"],
                 "parameters": [{
@@ -429,7 +429,7 @@
             "post": {
                 "tags": ["transactions"],
                 "summary": "Buy a book",
-                "description": "",
+                "description": "Side effects: 1) A Transaction is created between the buyer and the seller. 2) An automated message is sent to the seller to notify them that their book has been sold.",
                 "operationId": "buyBook",
                 "produces": ["application/json"],
                 "parameters": [{
@@ -470,7 +470,7 @@
             "get": {
                 "tags": ["transactions"],
                 "summary": "Get all the possible values for a Transaction's status, along with a description of each.",
-                "description": "",
+                "description": "Side effects: none",
                 "operationId": "getPossibleTransactionStatuses",
                 "produces": ["application/json"],
                 "parameters": [],
@@ -495,7 +495,7 @@
             "post": {
                 "tags": ["transactions"],
                 "summary": "Mark a transaction as complete, given the transaction Id",
-                "description": "",
+                "description": "Side effects: Flags transaction as completed.",
                 "operationId": "markTransactionComplete",
                 "produces": ["application/json"],
                 "parameters": [{
@@ -536,7 +536,7 @@
             "post": {
                 "tags": ["transactions"],
                 "summary": "Mark a transaction as cancelled, given the transaction Id",
-                "description": "",
+                "description": "Side effects: Flags transaction as cancelled.",
                 "operationId": "markTransactionCancelled",
                 "produces": ["application/json"],
                 "parameters": [{
@@ -577,7 +577,7 @@
             "get": {
                 "tags": ["salePrice"],
                 "summary": "Get the suggested sale price for the given isbn",
-                "description": "",
+                "description": "Side effects: none",
                 "operationId": "getSuggestedSalePrice",
                 "produces": ["application/json"],
                 "parameters": [{
@@ -617,7 +617,7 @@
             "get": {
                 "tags": ["salePrice"],
                 "summary": "Get the third party sale price for the given isbn",
-                "description": "",
+                "description": "Side effects: none",
                 "operationId": "getThirdPartySalePrice",
                 "produces": ["application/json"],
                 "parameters": [{
