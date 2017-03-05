@@ -277,7 +277,7 @@
                 }]
             }
         },
-        "/transactions/{userId}": {
+        "/transactions/userId/{userId}": {
             "get": {
                 "tags": ["transactions"],
                 "summary": "Get a list of open transactions for the given User Id",

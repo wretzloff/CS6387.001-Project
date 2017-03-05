@@ -25,6 +25,10 @@ methods.post_forSaleEntries = function(connection, callbackFunction, rowToInsert
 	connection.query('Insert into ForSale SET ?', rowToInsert, callbackFunction);
 }
 
+methods.get_possibleTransactionStatuses = function(connection, callbackFunction)
+{
+	connection.query('select * from transactionStatus_type', callbackFunction);
+}
 
 
 module.exports = methods;

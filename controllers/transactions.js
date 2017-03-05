@@ -1,3 +1,4 @@
+var dal         				= require('../data_access/dal');
 var authenticate         		= require('./authenticate');
 
 var methods = {};
@@ -47,6 +48,24 @@ methods.getTransactionById = function(request, response, connection)
 	}
 	
 	authenticate.checkToken(request, response, afterCheckTokenCallback);
+}
+
+methods.getPossibleTransactionStatuses = function(request, response, connection)
+{
+	function get_possibleTransactionStatuses_callback(err, rows, fields)
+	{
+		if (!err)
+		{
+			response.json(rows);
+		}
+		else
+		{
+			console.log(err);
+			response.send({success: false, msg: 'Internal error.'});
+		}
+	}
+	
+	dal.get_possibleTransactionStatuses(connection, get_possibleTransactionStatuses_callback);
 }
 
 methods.markTransactionComplete = function(request, response, connection)

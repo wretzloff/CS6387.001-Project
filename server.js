@@ -75,7 +75,7 @@ var utdtextbookexchange_app = function() {
 			salePrice.getSuggestedSalePrice(request, response, connection);
 		};
 		
-		self.getRoutes['/transactions/:userId'] = function(request, response) 
+		self.getRoutes['/transactions/userId/:userId'] = function(request, response) 
 		{
 			transactions.getTransactionsByUser(request, response, connection);
 		}
@@ -83,6 +83,11 @@ var utdtextbookexchange_app = function() {
 		self.getRoutes['/transactions/transaction/:transactionId'] = function(request, response) 
 		{
 			transactions.getTransactionById(request, response, connection);
+		}
+		
+		self.getRoutes['/transactions/status'] = function(request, response) 
+		{
+			transactions.getPossibleTransactionStatuses(request, response, connection);
 		}
 		
 		self.postRoutes['/transactions/transaction/:transactionId/cancel'] = function(request, response) 
