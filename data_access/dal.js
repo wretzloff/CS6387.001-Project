@@ -12,7 +12,7 @@ methods.get_dummyUserEnrollment_by_internalUserId = function(connection, callbac
 
 methods.get_forSaleEntries_by_isbn = function(connection, callbackFunction, isbn)
 {
-	connection.query("SELECT iD as forSaleId, isbn,author,price,description,bookCondition from ForSale where ISBN = '" + isbn + "' and status = 0", callbackFunction);
+	connection.query("SELECT a.iD as forSaleId, a.isbn,a.author,a.price,a.description,a.bookCondition from ForSale a left outer join Transactions b on a.iD=b.forSaleId where a.ISBN = '" + isbn + "' and (b.status is null or b.status = '2')", callbackFunction);
 }
 
 methods.get_forSaleEntries_by_internalUserId = function(connection, callbackFunction, internalUserId)
