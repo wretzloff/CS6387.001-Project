@@ -1,3 +1,5 @@
+var moment 						= require('moment');
+
 var dal         				= require('../data_access/dal');
 var authenticate         		= require('./authenticate');
 
@@ -9,11 +11,36 @@ methods.buyBook = function(request, response, connection)
 	{
 		//Get the parameters from the body of the HTTP POST message
 		var providedForSaleId = request.body.forSaleId;
-		console.log(providedForSaleId);
 		
-		function createConversation_callback(conversationId, recipient1, recipient2)
+		//Declare variables that will be set and used throughout this request.
+		var buyerId = internalUserId;
+		var convId;
+		var sellerId;
+		
+		
+		function insert_Message_callback(err,result)
 		{
-			response.send("Conversation ID " + conversationId + " created between users " + recipient1 + " and " + recipient2 + ". This endpoint is still under construction.");
+			if (err) 
+			{
+				console.log(err);
+				response.send({success: false, msg: 'Internal error.'});
+			}
+			else
+			{
+				response.send("Message sent from buyer (" + buyerId + ") to seller (" + sellerId + ") that the book has been bought. This endpoint is still under construction.");
+			}
+		}
+		
+		function sendAutomatedMessageFromBuyerToSeller()
+		{
+			var dateTimeOfMessage = moment(new Date()).format("YYYY-MM-DD HH:mm:ss");
+			dal.insert_Message(connection, insert_Message_callback, sellerId, buyerId, dateTimeOfMessage, '_ wants to buy your book _ !', convId)
+		}
+		
+		function createConversation_callback(conversationId)
+		{
+			convId = conversationId;
+			sendAutomatedMessageFromBuyerToSeller();		
 		}
 		
 		
@@ -31,8 +58,8 @@ methods.buyBook = function(request, response, connection)
 			}
 			else
 			{
-				var seller_InternalUserId = rows[0].seller_InternalUserId;
-				dal.createConversation(connection, createConversation_callback, internalUserId, seller_InternalUserId);
+				sellerId = rows[0].seller_InternalUserId;
+				dal.createConversation(connection, createConversation_callback, internalUserId, sellerId);
 			}
 		}
 		

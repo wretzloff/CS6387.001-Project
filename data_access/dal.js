@@ -30,6 +30,8 @@ methods.get_possibleConditionTypes = function(connection, callbackFunction)
 	connection.query("select * from condition_type", callbackFunction);
 }
 
+//TODO: refactor so that the caller passes in the fields to be inserted, and then build rowToInsert here in the Data Access Layer.
+//Data Access Layer should be responsible for building this record. Business Logic should not be aware of the columns in the database.
 methods.post_forSaleEntries = function(connection, callbackFunction, rowToInsert)
 {
 	connection.query("Insert into ForSale SET ?", rowToInsert, callbackFunction);
@@ -40,12 +42,15 @@ methods.get_possibleTransactionStatuses = function(connection, callbackFunction)
 	connection.query("select * from transactionStatus_type", callbackFunction);
 }
 
+//Inserts a conversation record between the two specified recipients if it does not already exist.
+//TODO: Most of this should probably live in the Business Logic layer instead of the Data Access Layer.
 methods.createConversation = function(connection, callbackFunction, recipient1, recipient2)
 {
 	
 	function insertNewConversationRecordCallback(err,result)
 	{
 		var conversationId = result.insertId;
+		
 		//After the Conversation record has been created, we need to insert two records into to the conversation-user association table, so
 		//that both users are linked to the conversation.
 		var values = [
@@ -62,11 +67,9 @@ methods.createConversation = function(connection, callbackFunction, recipient1, 
 			}
 			else
 			{
-				callbackFunction(conversationId, recipient1, recipient2);
+				callbackFunction(conversationId);
 			}
 		});
-		
-		
 	}
 	
 	function insertNewConversationRecord()
@@ -91,13 +94,19 @@ methods.createConversation = function(connection, callbackFunction, recipient1, 
 		else
 		{
 			//The query returned a previously existing Conversation record between these two users, so just send the ID of that conversation to the callback function.
-			console.log("recipient1: " + recipient1 + " recipient2: " + recipient2);
-			callbackFunction(rows[0].iD, recipient1, recipient2);
+			callbackFunction(rows[0].iD);
 		}
 	}
 	
 	//First, run a query to see if a conversation between these two recipients already exists.
 	connection.query("select * from Conversation conv where exists (select * from User_Converation_Assoc where conversationId = conv.iD and internalUserId = " + recipient1 + ") and exists (select * from User_Converation_Assoc where conversationId = conv.iD and internalUserId = " + recipient2 + ")", checkIfConversationAlreadyExistsCallback);
+}
+
+methods.insert_Message = function(connection, callbackFunction, to, from, dateTime, content, convId)
+{
+	//INSERT INTO Message ( iD ,  to_InternalUserId, from_InternalUserId, messageDateTime, messageContent, read_unread, conversationId) VALUES (NULL, '1', '2', NOW(), 'Will R wants to buy your book "Applying UML and Patterns"! ', 'unread', '4');
+	var rowToInsert = {to_InternalUserId:to,from_InternalUserId:from, messageDateTime: dateTime, messageContent: content, read_unread: 'unread', conversationId: convId};
+	connection.query("Insert into Message SET ?", rowToInsert, callbackFunction);
 }
 
 module.exports = methods;
