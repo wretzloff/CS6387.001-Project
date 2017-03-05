@@ -17,9 +17,13 @@
         "name": "forSaleEntries",
         "description": "For operations on the 'For Sale List'"
     },
-	{
+  	{
         "name": "transactions",
         "description": "For operations regarding transactions"
+    },
+    {
+        "name": "salePrice",
+        "description": "For operations regarding a book's sale price"
     }],
     "schemes": ["http"],
     "paths": {
@@ -477,6 +481,46 @@
                     "authorization": []
                 }]
             }
+        },
+        "/salePrice/suggested/isbn/{isbn}": {
+            "get": {
+                "tags": ["salePrice"],
+                "summary": "Get the suggested sale price for the given isbn",
+                "description": "",
+                "operationId": "getSuggestedSalePrice",
+                "produces": ["application/json"],
+                "parameters": [{
+                    "name": "isbn",
+                    "in": "path",
+                    "description": "isbn of the book for which you want the suggested sale price.",
+                    "required": true,
+                    "type": "string",
+                    "default": "9780133778816"
+                }],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/200suggestedSalePriceResult"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/401Result"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error.",
+                        "schema": {
+                            "$ref": "#/definitions/500Result"
+                        }
+                    }
+                },
+                "security": [{
+                    "authorization": []
+                }]
+            }
         }
     },
     "securityDefinitions": {
@@ -574,6 +618,24 @@
 				      "msg": {
 					      "type": "string",
 						  "default": "Transaction has been cancelled."
+				      }
+			     }
+		},
+		"200suggestedSalePriceResult": {
+			    "type": "object",
+			    "properties": {
+				      "isbn": {
+					      "type": "string",
+						    "default": "9780133778816"
+				      },
+				      "suggestedSalePrice": {
+                "type": "number",
+					      "format": "double",
+						    "default": 51.46
+				      },
+				      "reason": {
+					      "type": "string",
+						    "default": "The lowest price currently listed is $51.46."
 				      }
 			     }
 		},
