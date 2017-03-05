@@ -203,6 +203,31 @@
                 }]
             }
         },
+        "/forSaleEntries/condition": {
+            "get": {
+                "tags": ["forSaleEntries"],
+                "summary": "Get all the possible values for a For Sale entry's condition, along with a description of each.",
+                "description": "",
+                "operationId": "getPossibleForSaleEntryConditions",
+                "produces": ["application/json"],
+                "parameters": [],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/conditionTypeRecord"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error.",
+                        "schema": {
+                            "$ref": "#/definitions/500Result"
+                        }
+                    }
+                },
+                "security": []
+            }
+        },
         "/forSaleEntries": {
             "post": {
                 "tags": ["forSaleEntries"],
@@ -923,27 +948,31 @@
 				      }
 			     }
 		},
-		"Student": {
-        "type": "object",
-        "required": [ "name" ],
-        "properties": {
-            "name": {
-                "type": "string"
-            }
-        }
-    },
     "transactionStatusRecord": {
         "type": "object",
         "properties": {
-			"id": {
-				"type": "string",
-				"default": "0"
-			},
-			"description": {
-				"type": "string",
-				"default": "Pending"
-			}
-		}
+			    "id": {
+				    "type": "string",
+				    "default": "0"
+			    },
+			    "description": {
+				    "type": "string",
+				    "default": "Pending"
+			    }
+		    }
+    },
+    "conditionTypeRecord": {
+        "type": "object",
+        "properties": {
+			    "id": {
+				    "type": "string",
+				    "default": "0"
+			    },
+			    "description": {
+				    "type": "string",
+				    "default": "New"
+			    }
+		    }
     }
     }
 }   
