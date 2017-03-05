@@ -521,6 +521,46 @@
                     "authorization": []
                 }]
             }
+        },
+        "/salePrice/thirdParty/isbn/{isbn}": {
+            "get": {
+                "tags": ["salePrice"],
+                "summary": "Get the third party sale price for the given isbn",
+                "description": "",
+                "operationId": "getThirdPartySalePrice",
+                "produces": ["application/json"],
+                "parameters": [{
+                    "name": "isbn",
+                    "in": "path",
+                    "description": "isbn of the book for which you want the third party sale price.",
+                    "required": true,
+                    "type": "string",
+                    "default": "9780133778816"
+                }],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/200thirdPartySalePriceResult"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/401Result"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error.",
+                        "schema": {
+                            "$ref": "#/definitions/500Result"
+                        }
+                    }
+                },
+                "security": [{
+                    "authorization": []
+                }]
+            }
         }
     },
     "securityDefinitions": {
@@ -637,6 +677,12 @@
 					      "type": "string",
 						    "default": "The lowest price currently listed is $51.46."
 				      }
+			     }
+		},
+		"200thirdPartySalePriceResult": {
+			    "type": "array",
+			    "items": {
+				      "$ref": "#/definitions/thirdPartySalePriceRecord"
 			     }
 		},
 		"401Result": {
@@ -791,6 +837,24 @@
 					    "format": "double",
 						"default": 101.99
 				    }
+			     }
+		},
+		"thirdPartySalePriceRecord": {
+			    "type": "object",
+			    "properties": {
+				      "price": {
+                "type": "number",
+					      "format": "double",
+						    "default": 51.46
+				      },
+				      "source": {
+					      "type": "string",
+						    "default": "Amazon"
+				      },
+				      "link": {
+					      "type": "string",
+						    "default": "https://www.amazon.com/Starting-Control-Structures-through-Objects/dp/0133778819/ref=sr_1_1?ie=UTF8&qid=1487534860&sr=8-1&keywords=9780133778816"
+				      }
 			     }
 		}
       
