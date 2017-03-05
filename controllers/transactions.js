@@ -11,9 +11,45 @@ methods.buyBook = function(request, response, connection)
 		var providedForSaleId = request.body.forSaleId;
 		console.log(providedForSaleId);
 		
-		//Insert code here to mark the specified ForSale record as On Hold, create a new transaction, and send a message to the seller......
-		console.log('Insert code here to mark the specified ForSale record as On Hold, create a new transaction, and send a message to the seller......');
-		response.send({success: true, msg: 'Book has put on hold.'});
+		function createConversation_callback(conversationId, recipient1, recipient2)
+		{
+			response.send("Conversation ID " + conversationId + " created between users " + recipient1 + " and " + recipient2 + ". This endpoint is still under construction.");
+		}
+		
+		
+		
+		function get_forSaleEntries_by_iD_callback(err, rows, fields)
+		{
+			if (err)
+			{
+				console.log(err);
+				response.send({success: false, msg: 'Internal error.'});
+			}
+			else if(rows.length === 0)
+			{
+				response.send({success: false, msg: 'Error. No For Sale Entries with this iD exist.'});
+			}
+			else
+			{
+				var seller_InternalUserId = rows[0].seller_InternalUserId;
+				dal.createConversation(connection, createConversation_callback, internalUserId, seller_InternalUserId);
+			}
+		}
+		
+		dal.get_forSaleEntries_by_iD(connection, get_forSaleEntries_by_iD_callback, providedForSaleId);
+		//1. Get the ForSaleEntry record from the database so we know who the seller is.
+		// select * from ForSale where iD = providedForSaleId
+		//2. Check if a row already exists in the Conversation table between these two users.
+		//select * from Conversation conv where exists (select * from User_Converation_Assoc where conversationId = conv.iD and internalUserId = internalUserId) and exists (select * from User_Converation_Assoc where conversationId = conv.iD and internalUserId = seller_InternalUserId)
+		//3. If the conversation does not already exist, create one.
+		//INSERT INTO  Conversation (iD) VALUES (NULL);
+		//INSERT INTO User_Converation_Assoc (internalUserId, conversationId) VALUES (internalUserId, result.insertId)
+		//INSERT INTO User_Converation_Assoc (internalUserId, conversationId) VALUES (seller_InternalUserId, result.insertId)
+		//4. Now that we have a Conversation to tie it to, create a Transaction.
+		//INSERT INTO  Transactions (iD , buyer_InternalUserId , transactionDateTime , status , conversationId , forSaleId) VALUES (NULL ,  '2', NOW( ) ,  '0',  '4',  '2');
+		//5. Now, the system needs to send an automated message from the buyer to the seller.
+		//INSERT INTO Message ( iD ,  to_InternalUserId, from_InternalUserId, messageDateTime, messageContent, read_unread, conversationId) VALUES (NULL, '1', '2', NOW(), 'Will R wants to buy your book "Applying UML and Patterns"! ', 'unread', '4');
+		
 	}
 	
 	authenticate.checkToken(request, response, afterCheckTokenCallback);
