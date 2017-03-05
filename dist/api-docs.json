@@ -318,6 +318,47 @@
                 }]
             }
         },
+        "/transactions/{userId}/history": {
+            "get": {
+                "tags": ["transactions"],
+                "summary": "Get transaction history for the given User Id",
+                "description": "",
+                "operationId": "getTransactionsHistoryByUser",
+                "produces": ["application/json"],
+                "parameters": [{
+                    "name": "userId",
+                    "in": "path",
+                    "description": "User Id for which you want transaction history.",
+                    "required": true,
+                    "type": "integer",
+                    "format": "int",
+                    "default": 1
+                }],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/200getTransactionResult"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/401Result"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error.",
+                        "schema": {
+                            "$ref": "#/definitions/500Result"
+                        }
+                    }
+                },
+                "security": [{
+                    "authorization": []
+                }]
+            }
+        },
         "/transactions/transaction/{transactionId}": {
             "get": {
                 "tags": ["transactions"],
