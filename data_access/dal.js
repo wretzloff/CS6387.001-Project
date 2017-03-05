@@ -45,8 +45,28 @@ methods.createConversation = function(connection, callbackFunction, recipient1, 
 	
 	function insertNewConversationRecordCallback(err,result)
 	{
-		//After the Conversation record has been created, we need to insert 
-		callbackFunction(result.insertId, recipient1, recipient2);
+		var conversationId = result.insertId;
+		//After the Conversation record has been created, we need to insert two records into to the conversation-user association table, so
+		//that both users are linked to the conversation.
+		var values = [
+			[recipient1, conversationId],
+			[recipient2, conversationId]
+		];
+		
+		connection.query("INSERT INTO User_Converation_Assoc (internalUserId, conversationId) VALUES ?", [values], function(err) 
+		{
+			if (err) 
+			{
+				//TODO: need to find a way to return an error message to the client.
+				console.log(err);
+			}
+			else
+			{
+				callbackFunction(conversationId, recipient1, recipient2);
+			}
+		});
+		
+		
 	}
 	
 	function insertNewConversationRecord()
@@ -59,8 +79,9 @@ methods.createConversation = function(connection, callbackFunction, recipient1, 
 	{
 		if (err)
 		{
+			//TODO: need to find a way to return an error message to the client.
 			console.log(err);
-			response.send({success: false, msg: 'Internal error.'});
+			
 		}
 		else if(rows.length === 0)
 		{
@@ -76,7 +97,6 @@ methods.createConversation = function(connection, callbackFunction, recipient1, 
 	}
 	
 	//First, run a query to see if a conversation between these two recipients already exists.
-	console.log("Checking for conversation btween users " + recipient1 + " and " + recipient2);
 	connection.query("select * from Conversation conv where exists (select * from User_Converation_Assoc where conversationId = conv.iD and internalUserId = " + recipient1 + ") and exists (select * from User_Converation_Assoc where conversationId = conv.iD and internalUserId = " + recipient2 + ")", checkIfConversationAlreadyExistsCallback);
 }
 
