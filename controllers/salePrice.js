@@ -27,9 +27,7 @@ methods.getSuggestedSalePrice = function(request, response, connection)
 		
 		//Insert code here to calculate the suggest sale price...................
 		console.log('Insert code here to calculate the suggest sale price...................');
-		var suggestedSalePriceInfo = [];
-		suggestedSalePriceInfo.push({isbn: providedIsbn, suggestSalePrice: '51.46', reason: 'The lowest price currently listed is $51.46.'});
-		response.send(suggestedSalePriceInfo);
+		response.json({isbn: providedIsbn, suggestSalePrice: '51.46', reason: 'The lowest price currently listed is $51.46.'});
 	}
 	authenticate.checkToken(request, response, afterCheckTokenCallback);
 }
