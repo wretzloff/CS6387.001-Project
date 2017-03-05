@@ -37,6 +37,13 @@ methods.post_forSaleEntries = function(connection, callbackFunction, rowToInsert
 	connection.query("Insert into ForSale SET ?", rowToInsert, callbackFunction);
 }
 
+methods.insert_Transaction = function(connection, callbackFunction, buyer, dateTime, convId, forSaleEntry)
+{
+	//INSERT INTO  Transactions (iD , buyer_InternalUserId , transactionDateTime , status , conversationId , forSaleId) VALUES (NULL ,  '2', NOW( ) ,  '0',  '4',  '2');
+	var rowToInsert = {buyer_InternalUserId:buyer, transactionDateTime: dateTime, status: 0, conversationId: convId, forSaleId: forSaleEntry};
+	connection.query("Insert into Transactions SET ?", rowToInsert, callbackFunction);
+}
+
 methods.get_possibleTransactionStatuses = function(connection, callbackFunction)
 {
 	connection.query("select * from transactionStatus_type", callbackFunction);
@@ -104,7 +111,6 @@ methods.createConversation = function(connection, callbackFunction, recipient1, 
 
 methods.insert_Message = function(connection, callbackFunction, to, from, dateTime, content, convId)
 {
-	//INSERT INTO Message ( iD ,  to_InternalUserId, from_InternalUserId, messageDateTime, messageContent, read_unread, conversationId) VALUES (NULL, '1', '2', NOW(), 'Will R wants to buy your book "Applying UML and Patterns"! ', 'unread', '4');
 	var rowToInsert = {to_InternalUserId:to,from_InternalUserId:from, messageDateTime: dateTime, messageContent: content, read_unread: 'unread', conversationId: convId};
 	connection.query("Insert into Message SET ?", rowToInsert, callbackFunction);
 }

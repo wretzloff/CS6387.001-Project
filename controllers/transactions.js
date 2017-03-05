@@ -16,7 +16,26 @@ methods.buyBook = function(request, response, connection)
 		var buyerId = internalUserId;
 		var convId;
 		var sellerId;
+		var dateTimeOfTransaction = moment(new Date()).format("YYYY-MM-DD HH:mm:ss");
 		
+		
+		function insert_Transaction_callback(err,result)
+		{
+			if (err) 
+			{
+				console.log(err);
+				response.send({success: false, msg: 'Internal error.'});
+			}
+			else
+			{
+				response.send({success: true, msg: 'Book has put on hold.'});
+			}
+		}
+		
+		function createTransaction()
+		{
+			dal.insert_Transaction(connection, insert_Transaction_callback, buyerId, dateTimeOfTransaction, convId, providedForSaleId)
+		}
 		
 		function insert_Message_callback(err,result)
 		{
@@ -27,23 +46,25 @@ methods.buyBook = function(request, response, connection)
 			}
 			else
 			{
-				response.send("Message sent from buyer (" + buyerId + ") to seller (" + sellerId + ") that the book has been bought. This endpoint is still under construction.");
+				//Successfully sent an automated message from buyer to seller.
+				//Now, need to create a new transaction.
+				createTransaction();
 			}
 		}
 		
 		function sendAutomatedMessageFromBuyerToSeller()
 		{
-			var dateTimeOfMessage = moment(new Date()).format("YYYY-MM-DD HH:mm:ss");
-			dal.insert_Message(connection, insert_Message_callback, sellerId, buyerId, dateTimeOfMessage, '_ wants to buy your book _ !', convId)
+			//TODO: fix up the automated message
+			dal.insert_Message(connection, insert_Message_callback, sellerId, buyerId, dateTimeOfTransaction, '_ wants to buy your book _ !', convId)
 		}
 		
+		//TODO: before continuing on to create a conversation, need to check that this ForSaleEntry doesn't already have a pending or completed transaction.
+		//Otherwise, client can accidentally be allowed to creeate a transaction for a For Sale entry that already has a Transaction.
 		function createConversation_callback(conversationId)
 		{
 			convId = conversationId;
 			sendAutomatedMessageFromBuyerToSeller();		
 		}
-		
-		
 		
 		function get_forSaleEntries_by_iD_callback(err, rows, fields)
 		{
@@ -53,7 +74,7 @@ methods.buyBook = function(request, response, connection)
 				response.send({success: false, msg: 'Internal error.'});
 			}
 			else if(rows.length === 0)
-			{
+			{ 
 				response.send({success: false, msg: 'Error. No For Sale Entries with this iD exist.'});
 			}
 			else
@@ -64,19 +85,6 @@ methods.buyBook = function(request, response, connection)
 		}
 		
 		dal.get_forSaleEntries_by_iD(connection, get_forSaleEntries_by_iD_callback, providedForSaleId);
-		//1. Get the ForSaleEntry record from the database so we know who the seller is.
-		// select * from ForSale where iD = providedForSaleId
-		//2. Check if a row already exists in the Conversation table between these two users.
-		//select * from Conversation conv where exists (select * from User_Converation_Assoc where conversationId = conv.iD and internalUserId = internalUserId) and exists (select * from User_Converation_Assoc where conversationId = conv.iD and internalUserId = seller_InternalUserId)
-		//3. If the conversation does not already exist, create one.
-		//INSERT INTO  Conversation (iD) VALUES (NULL);
-		//INSERT INTO User_Converation_Assoc (internalUserId, conversationId) VALUES (internalUserId, result.insertId)
-		//INSERT INTO User_Converation_Assoc (internalUserId, conversationId) VALUES (seller_InternalUserId, result.insertId)
-		//4. Now that we have a Conversation to tie it to, create a Transaction.
-		//INSERT INTO  Transactions (iD , buyer_InternalUserId , transactionDateTime , status , conversationId , forSaleId) VALUES (NULL ,  '2', NOW( ) ,  '0',  '4',  '2');
-		//5. Now, the system needs to send an automated message from the buyer to the seller.
-		//INSERT INTO Message ( iD ,  to_InternalUserId, from_InternalUserId, messageDateTime, messageContent, read_unread, conversationId) VALUES (NULL, '1', '2', NOW(), 'Will R wants to buy your book "Applying UML and Patterns"! ', 'unread', '4');
-		
 	}
 	
 	authenticate.checkToken(request, response, afterCheckTokenCallback);
