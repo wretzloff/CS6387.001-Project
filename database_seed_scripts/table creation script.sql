@@ -31,7 +31,6 @@ CREATE TABLE ForSale (
     price decimal(6,2) NOT NULL,
     description varchar(255) NOT NULL,
     bookCondition int NOT NULL,
-    status int NOT NULL,
     CONSTRAINT ForSale_pk PRIMARY KEY (iD)
 );
 
@@ -106,15 +105,8 @@ CREATE TABLE dummy_User_Enrollment (
     enrolledClass varchar(255) NOT NULL,
     enrolledClassName varchar(255) NOT NULL,
     semester varchar(255) NOT NULL,
-    CONSTRAINT dummy_User_Enrollment_pk PRIMARY KEY (internalUserId,enrolledClass,semester)
+    CONSTRAINT dummy_User_Enrollment_pk PRIMARY KEY (internalUserId,enrolledClass)
 );
-
--- Table: forSaleStatus_type
-CREATE TABLE forSaleStatus_type (
-    id int NOT NULL,
-    description varchar(255) NOT NULL,
-    CONSTRAINT forSaleStatus_type_pk PRIMARY KEY (id)
-) COMMENT 'This table hold a list valid values that can be stored in the status column of the ForSale table.';
 
 -- Table: transactionStatus_type
 CREATE TABLE transactionStatus_type (
@@ -139,10 +131,6 @@ ALTER TABLE ForSale ADD CONSTRAINT ForSale_User FOREIGN KEY ForSale_User (seller
 -- Reference: ForSale_condition_type (table: ForSale)
 ALTER TABLE ForSale ADD CONSTRAINT ForSale_condition_type FOREIGN KEY ForSale_condition_type (bookCondition)
     REFERENCES condition_type (id);
-
--- Reference: ForSale_status_type (table: ForSale)
-ALTER TABLE ForSale ADD CONSTRAINT ForSale_status_type FOREIGN KEY ForSale_status_type (status)
-    REFERENCES forSaleStatus_type (id);
 
 -- Reference: Message_Conversation (table: Message)
 ALTER TABLE Message ADD CONSTRAINT Message_Conversation FOREIGN KEY Message_Conversation (conversationId)

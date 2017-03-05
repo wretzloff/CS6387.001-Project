@@ -17,13 +17,6 @@ insert into condition_type (id, description) values ('4', 'Used - Acceptable');
 
 
 
-
-insert into forSaleStatus_type (id, description) values ('0', 'For Sale');
-insert into forSaleStatus_type (id, description) values ('1', 'On Hold');
-insert into forSaleStatus_type (id, description) values ('2', 'Sold');
-
-
-
 insert into transactionStatus_type (id, description) values ('0', 'Pending');
 insert into transactionStatus_type (id, description) values ('1', 'Completed');
 insert into transactionStatus_type (id, description) values ('2', 'Cancelled');
@@ -63,10 +56,10 @@ insert into dummy_User_Enrollment (internalUserID, enrolledClass, enrolledClassN
 
 
 
-insert into ForSale (iD, seller_InternalUserId, postedDateTime, ISBN, author, price, description, bookCondition, status) 
-VALUES (NULL, '1', NOW(), '9780133778816', 'GADDIS', '37.92', 'Light wear, some hilighting', '0', '0');
+insert into ForSale (iD, seller_InternalUserId, postedDateTime, ISBN, author, price, description, bookCondition) 
+VALUES (NULL, '1', NOW(), '9780133778816', 'GADDIS', '37.92', 'Light wear, some hilighting', '0');
 
-insert into ForSale (iD, seller_InternalUserId, postedDateTime, ISBN, author, price, description, bookCondition, status) 
-VALUES (NULL, '7', NOW(), '9780133778816', 'GADDIS', '999.99', 'Great book! Well worth the price!', '0', '0');
+insert into ForSale (iD, seller_InternalUserId, postedDateTime, ISBN, author, price, description, bookCondition) 
+VALUES (NULL, '7', NOW(), '9780133778816', 'GADDIS', '999.99', 'Great book! Well worth the price!', '0');
 
 
