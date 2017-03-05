@@ -65,6 +65,11 @@ var utdtextbookexchange_app = function() {
 			forSaleEntries.postBookForSale(request, response, connection);
 		}
 		
+		self.getRoutes['/forSaleEntries/condition'] = function(request, response) 
+		{
+			forSaleEntries.getPossibleConditionTypes(request, response, connection);
+		}
+		
 		self.getRoutes['/salePrice/thirdParty/isbn/:isbn'] = function(request, response) 
 		{
 			salePrice.getThirdPartySalePrice(request, response, connection);

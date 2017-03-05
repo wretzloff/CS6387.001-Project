@@ -55,6 +55,24 @@ methods.getForSaleEntriesByUser = function(request, response, connection)
 	authenticate.checkToken(request, response, afterCheckTokenCallback);
 }
 
+methods.getPossibleConditionTypes = function(request, response, connection)
+{
+	function get_possibleConditionTypes_callback(err, rows, fields)
+	{
+		if (!err)
+		{
+			response.json(rows);
+		}
+		else
+		{
+			console.log(err);
+			response.send({success: false, msg: 'Internal error.'});
+		}
+	}
+	
+	dal.get_possibleConditionTypes(connection, get_possibleConditionTypes_callback);
+}
+
 methods.postBookForSale = function(request, response, connection)
 {
 	function afterCheckTokenCallback(internalUserId)
