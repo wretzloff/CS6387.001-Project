@@ -441,6 +441,31 @@
                 }]
             }
         },
+        "/transactions/status": {
+            "get": {
+                "tags": ["transactions"],
+                "summary": "Get all the possible values for a Transaction's status, along with a description of each.",
+                "description": "",
+                "operationId": "getPossibleTransactionStatuses",
+                "produces": ["application/json"],
+                "parameters": [],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/transactionStatusRecord"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error.",
+                        "schema": {
+                            "$ref": "#/definitions/500Result"
+                        }
+                    }
+                },
+                "security": []
+            }
+        },
         "/transactions/transaction/{transactionId}/complete": {
             "post": {
                 "tags": ["transactions"],
@@ -897,8 +922,28 @@
 						    "default": "https://www.amazon.com/Starting-Control-Structures-through-Objects/dp/0133778819/ref=sr_1_1?ie=UTF8&qid=1487534860&sr=8-1&keywords=9780133778816"
 				      }
 			     }
+		},
+		"Student": {
+        "type": "object",
+        "required": [ "name" ],
+        "properties": {
+            "name": {
+                "type": "string"
+            }
+        }
+    },
+    "transactionStatusRecord": {
+        "type": "object",
+        "properties": {
+			"id": {
+				"type": "string",
+				"default": "0"
+			},
+			"description": {
+				"type": "string",
+				"default": "Pending"
+			}
 		}
-      
     }
-    
-}
+    }
+}   
