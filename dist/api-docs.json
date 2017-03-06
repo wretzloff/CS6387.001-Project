@@ -236,6 +236,14 @@
                 "operationId": "postBookForSale",
                 "produces": ["application/json"],
                 "parameters": [{
+                    "name": "title",
+                    "in": "formData",
+                    "description": "Title of the book being posted for sale.",
+                    "required": true,
+                    "type": "string",
+                    "default": "STARTING OUT WITH C++ FROM CNTRL (LOOSEPGS)(W/OUT ACCESS)"
+                },
+				{
                     "name": "isbn",
                     "in": "formData",
                     "description": "ISBN of the book being posted for sale.",

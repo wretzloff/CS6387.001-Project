@@ -79,25 +79,15 @@ methods.postBookForSale = function(request, response, connection)
 	{
 		//Get the parameters from the body of the HTTP POST message
 		var providedInternalUserId = parseInt(internalUserId);
+		var providedTitle = request.body.title;
 		var providedIsbn = request.body.isbn;
 		var providedAuthor = request.body.author;
 		var providedPrice = parseFloat(request.body.price);
 		var providedCondition = parseInt(request.body.condition);
 		var providedDescription = request.body.description;
 		var providedDate = moment(new Date()).format("YYYY-MM-DD HH:mm:ss");
-		var providedStatus = 0;
-		console.log(providedInternalUserId);
-		console.log(providedIsbn);
-		console.log(providedAuthor);
-		console.log(providedPrice);
-		console.log(providedCondition);
-		console.log(providedDescription);
-		console.log(providedDate);
-		console.log(providedStatus);
-		
-		
-		var rowToInsert = {seller_InternalUserId:providedInternalUserId,postedDateTime:providedDate,ISBN:providedIsbn,author:providedAuthor,price:providedPrice,description:providedDescription,bookCondition:providedCondition,status:providedStatus};
-		function post_forSaleEntriesCallback(err,result)
+
+		function insert_forSaleEntriesCallback(err,result)
 		{
 			if(!err)
 			{
@@ -105,12 +95,13 @@ methods.postBookForSale = function(request, response, connection)
 			}	
 			else
 			{
+				console.log(err);
 				response.send({success: false, msg: 'Problem posting your book. Please try again.'});
 			}
 		}
 		
 		//Insert the record into the database.
-		dal.post_forSaleEntries(connection, post_forSaleEntriesCallback, rowToInsert)
+		dal.insert_forSaleEntries(connection, insert_forSaleEntriesCallback, providedInternalUserId, providedDate, providedTitle, providedIsbn, providedAuthor, providedPrice, providedDescription, providedCondition)
 	}
 			
 	authenticate.checkToken(request, response, afterCheckTokenCallback)
