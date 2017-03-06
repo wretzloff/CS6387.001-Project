@@ -56,10 +56,10 @@ insert into dummy_User_Enrollment (internalUserID, enrolledClass, enrolledClassN
 
 
 
-insert into ForSale (iD, seller_InternalUserId, postedDateTime, ISBN, author, price, description, bookCondition) 
-VALUES (NULL, '1', NOW(), '9780133778816', 'GADDIS', '37.92', 'Light wear, some hilighting', '0');
+insert into ForSale (iD, seller_InternalUserId, postedDateTime, title, ISBN, author, price, description, bookCondition) 
+VALUES (NULL, '1', NOW(), 'STARTING OUT WITH C++ FROM CNTRL (LOOSEPGS)(W/OUT ACCESS)', '9780133778816', 'GADDIS', '37.92', 'Light wear, some hilighting', '0');
 
-insert into ForSale (iD, seller_InternalUserId, postedDateTime, ISBN, author, price, description, bookCondition) 
-VALUES (NULL, '7', NOW(), '9780133778816', 'GADDIS', '999.99', 'Great book! Well worth the price!', '0');
+insert into ForSale (iD, seller_InternalUserId, postedDateTime, title, ISBN, author, price, description, bookCondition) 
+VALUES (NULL, '7', NOW(), 'STARTING OUT WITH C++ FROM CNTRL (LOOSEPGS)(W/OUT ACCESS)', '9780133778816', 'GADDIS', '999.99', 'Great book! Well worth the price!', '0');
 
 

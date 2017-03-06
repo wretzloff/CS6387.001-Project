@@ -26,6 +26,7 @@ CREATE TABLE ForSale (
     iD int NOT NULL AUTO_INCREMENT,
     seller_InternalUserId int NOT NULL,
     postedDateTime timestamp NULL,
+    title varchar(255) NOT NULL DEFAULT 'insert title here',
     ISBN varchar(13) NOT NULL,
     author varchar(255) NOT NULL,
     price decimal(6,2) NOT NULL,
