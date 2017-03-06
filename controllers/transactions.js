@@ -59,12 +59,17 @@ methods.buyBook = function(request, response, connection)
 			dal.insert_Message(connection, insert_Message_callback, sellerId, buyerId, dateTimeOfTransaction, "_ wants to buy your book " + bookIsbn + "!", convId)
 		}
 		
-		//TODO: before continuing on to create a conversation, need to check that this ForSaleEntry doesn't already have a pending or completed transaction.
-		//Otherwise, client can accidentally be allowed to creeate a transaction for a For Sale entry that already has a Transaction.
 		function createConversation_callback(conversationId)
 		{
 			convId = conversationId;
 			sendAutomatedMessageFromBuyerToSeller();		
+		}
+		
+		//TODO: before continuing on to create a conversation, need to check that this ForSaleEntry doesn't already have a pending or completed transaction.
+		//Otherwise, client can accidentally be allowed to creeate a transaction for a For Sale entry that already has a Transaction.
+		function generateConversation()
+		{
+			dal.createConversation(connection, createConversation_callback, internalUserId, sellerId);
 		}
 		
 		function get_forSaleEntries_by_iD_callback(err, rows, fields)
@@ -82,7 +87,9 @@ methods.buyBook = function(request, response, connection)
 			{
 				sellerId = rows[0].seller_InternalUserId;
 				bookIsbn = rows[0].ISBN;
-				dal.createConversation(connection, createConversation_callback, internalUserId, sellerId);
+				
+				//Now that we have know there is an existing For Sale Entry, next step is to generate a conversation between the buyer and seller.
+				generateConversation();
 			}
 		}
 		
