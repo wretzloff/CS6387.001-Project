@@ -16,6 +16,7 @@ methods.buyBook = function(request, response, connection)
 		var buyerId = internalUserId;
 		var convId;
 		var sellerId;
+		var bookIsbn;
 		var dateTimeOfTransaction = moment(new Date()).format("YYYY-MM-DD HH:mm:ss");
 		
 		
@@ -55,7 +56,7 @@ methods.buyBook = function(request, response, connection)
 		function sendAutomatedMessageFromBuyerToSeller()
 		{
 			//TODO: fix up the automated message
-			dal.insert_Message(connection, insert_Message_callback, sellerId, buyerId, dateTimeOfTransaction, '_ wants to buy your book _ !', convId)
+			dal.insert_Message(connection, insert_Message_callback, sellerId, buyerId, dateTimeOfTransaction, "_ wants to buy your book " + bookIsbn + "!", convId)
 		}
 		
 		//TODO: before continuing on to create a conversation, need to check that this ForSaleEntry doesn't already have a pending or completed transaction.
@@ -80,6 +81,7 @@ methods.buyBook = function(request, response, connection)
 			else
 			{
 				sellerId = rows[0].seller_InternalUserId;
+				bookIsbn = rows[0].ISBN;
 				dal.createConversation(connection, createConversation_callback, internalUserId, sellerId);
 			}
 		}
