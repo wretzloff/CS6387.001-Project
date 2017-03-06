@@ -14,6 +14,7 @@ methods.buyBook = function(request, response, connection)
 		
 		//Declare variables that will be set and used throughout this request.
 		var buyerId = internalUserId;
+		var buyerNickname;
 		var convId;
 		var sellerId;
 		var bookIsbn;
@@ -55,8 +56,8 @@ methods.buyBook = function(request, response, connection)
 		
 		function sendAutomatedMessageFromBuyerToSeller()
 		{
-			//TODO: fix up the automated message
-			dal.insert_Message(connection, insert_Message_callback, sellerId, buyerId, dateTimeOfTransaction, "_ wants to buy your book " + bookIsbn + "!", convId)
+			//TODO: fix up the automated message to use the book's title instead of ISBN.
+			dal.insert_Message(connection, insert_Message_callback, sellerId, buyerId, dateTimeOfTransaction, buyerNickname + " wants to buy your book " + bookIsbn + "!", convId)
 		}
 		
 		function createConversation_callback(conversationId)
@@ -70,6 +71,31 @@ methods.buyBook = function(request, response, connection)
 		function generateConversation()
 		{
 			dal.createConversation(connection, createConversation_callback, internalUserId, sellerId);
+		}
+		
+		function get_User_by_internalUserId_callback(err, rows, fields)
+		{
+			if (err)
+			{
+				console.log(err);
+				response.send({success: false, msg: 'Internal error.'});
+			}
+			else if(rows.length === 0)
+			{ 
+				response.send({success: false, msg: 'Error. Could not fetch buyer nickname.'});
+			}
+			else
+			{
+				buyerNickname = rows[0].nickname;
+				
+				//Now that we have the nickname of the buyer, next step is to generate a conversation between the buyer and seller.
+				generateConversation();
+			}
+		}
+		
+		function getBuyerNickname()
+		{
+			dal.get_User_by_internalUserId(connection, get_User_by_internalUserId_callback, buyerId);
 		}
 		
 		function get_forSaleEntries_by_iD_callback(err, rows, fields)
@@ -88,8 +114,9 @@ methods.buyBook = function(request, response, connection)
 				sellerId = rows[0].seller_InternalUserId;
 				bookIsbn = rows[0].ISBN;
 				
-				//Now that we have know there is an existing For Sale Entry, next step is to generate a conversation between the buyer and seller.
-				generateConversation();
+				//Now that we have know there is an existing For Sale Entry, next step is to get the nickname of the buyer so that an automated message
+				//can be sent form buyer to seller.
+				getBuyerNickname();
 			}
 		}
 		
