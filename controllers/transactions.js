@@ -60,10 +60,15 @@ methods.buyBook = function(request, response, connection)
 			dal.insert_Message(connection, insert_Message_callback, sellerId, buyerId, dateTimeOfTransaction, buyerNickname + " wants to buy your book " + bookIsbn + "!", convId)
 		}
 		
-		function createConversation_callback(conversationId)
+		function setConversationId(conversationId)
 		{
 			convId = conversationId;
 			sendAutomatedMessageFromBuyerToSeller();		
+		}
+		
+		function createConversation_callback(conversationId)
+		{
+			setConversationId(conversationId);		
 		}
 		
 		//TODO: before continuing on to create a conversation, need to check that this ForSaleEntry doesn't already have a pending or completed transaction.
@@ -71,6 +76,30 @@ methods.buyBook = function(request, response, connection)
 		function generateConversation()
 		{
 			dal.createConversation(connection, createConversation_callback, internalUserId, sellerId);
+		}
+		
+		function get_conversation_by_recipients_callback(err, rows, fields)
+		{
+			if (err)
+			{
+				console.log(err);
+				response.send({success: false, msg: 'Internal error.'});
+			}
+			else if(rows.length === 0)
+			{ 
+				generateConversation();
+			}
+			else
+			{
+				//The query returned a previously existing Conversation record between these two users.
+				//Get the conversation ID and send it alont to setConversationId().
+				setConversationId(rows[0].iD);
+			}
+		}
+		
+		function checkIfConversationAlreadyExists()
+		{
+			dal.get_conversation_by_recipients(connection, get_conversation_by_recipients_callback, internalUserId, sellerId);
 		}
 		
 		function get_User_by_internalUserId_callback(err, rows, fields)
@@ -88,8 +117,8 @@ methods.buyBook = function(request, response, connection)
 			{
 				buyerNickname = rows[0].nickname;
 				
-				//Now that we have the nickname of the buyer, next step is to generate a conversation between the buyer and seller.
-				generateConversation();
+				//Now that we have the nickname of the buyer, next step is to check if a conversation between the buyer and seller already exists.
+				checkIfConversationAlreadyExists();
 			}
 		}
 		
@@ -111,6 +140,7 @@ methods.buyBook = function(request, response, connection)
 			}
 			else
 			{
+				//TODO: before moving on, need to put in a check to make sure that the buyer ID is not the same as the seller ID. Buyer cannot buy his own book.
 				sellerId = rows[0].seller_InternalUserId;
 				bookIsbn = rows[0].ISBN;
 				

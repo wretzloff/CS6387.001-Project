@@ -52,8 +52,12 @@ methods.get_possibleTransactionStatuses = function(connection, callbackFunction)
 	connection.query("select * from transactionStatus_type", callbackFunction);
 }
 
-//Inserts a conversation record between the two specified recipients if it does not already exist.
-//TODO: Most of this should probably live in the Business Logic layer instead of the Data Access Layer.
+methods.get_conversation_by_recipients = function(connection, callbackFunction, recipient1, recipient2)
+{
+	connection.query("select * from Conversation conv where exists (select * from User_Converation_Assoc where conversationId = conv.iD and internalUserId = " + recipient1 + ") and exists (select * from User_Converation_Assoc where conversationId = conv.iD and internalUserId = " + recipient2 + ")", callbackFunction);
+}
+
+//Inserts a record into the conversation table, and then inserts an association to this new conversation for each of the two recipients.
 methods.createConversation = function(connection, callbackFunction, recipient1, recipient2)
 {
 	
@@ -82,34 +86,8 @@ methods.createConversation = function(connection, callbackFunction, recipient1, 
 		});
 	}
 	
-	function insertNewConversationRecord()
-	{
-		var insertRecord = {iD: 'NULL'};
-		connection.query("Insert into Conversation SET ?", insertRecord, insertNewConversationRecordCallback);
-	}
-	
-	function checkIfConversationAlreadyExistsCallback(err, rows, fields)
-	{
-		if (err)
-		{
-			//TODO: need to find a way to return an error message to the client.
-			console.log(err);
-			
-		}
-		else if(rows.length === 0)
-		{
-			//There are no results, so this means there is no existing conversation between these two users. So we need to create one.
-			insertNewConversationRecord();
-		}
-		else
-		{
-			//The query returned a previously existing Conversation record between these two users, so just send the ID of that conversation to the callback function.
-			callbackFunction(rows[0].iD);
-		}
-	}
-	
-	//First, run a query to see if a conversation between these two recipients already exists.
-	connection.query("select * from Conversation conv where exists (select * from User_Converation_Assoc where conversationId = conv.iD and internalUserId = " + recipient1 + ") and exists (select * from User_Converation_Assoc where conversationId = conv.iD and internalUserId = " + recipient2 + ")", checkIfConversationAlreadyExistsCallback);
+	var insertRecord = {iD: 'NULL'};
+	connection.query("Insert into Conversation SET ?", insertRecord, insertNewConversationRecordCallback);
 }
 
 methods.insert_Message = function(connection, callbackFunction, to, from, dateTime, content, convId)
