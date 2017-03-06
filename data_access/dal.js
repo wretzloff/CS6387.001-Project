@@ -35,8 +35,6 @@ methods.get_possibleConditionTypes = function(connection, callbackFunction)
 	connection.query("select * from condition_type", callbackFunction);
 }
 
-//TODO: refactor so that the caller passes in the fields to be inserted, and then build rowToInsert here in the Data Access Layer.
-//Data Access Layer should be responsible for building this record. Business Logic should not be aware of the columns in the database.
 methods.insert_forSaleEntries = function(connection, callbackFunction, providedInternalUserId, providedDate, providedTitle, providedIsbn, providedAuthor, providedPrice, providedDescription, providedCondition)
 {
 	var rowToInsert = {seller_InternalUserId:providedInternalUserId,postedDateTime:providedDate,title:providedTitle,ISBN:providedIsbn,author:providedAuthor,price:providedPrice,description:providedDescription,bookCondition:providedCondition};
@@ -45,7 +43,6 @@ methods.insert_forSaleEntries = function(connection, callbackFunction, providedI
 
 methods.insert_Transaction = function(connection, callbackFunction, buyer, dateTime, convId, forSaleEntry)
 {
-	//INSERT INTO  Transactions (iD , buyer_InternalUserId , transactionDateTime , status , conversationId , forSaleId) VALUES (NULL ,  '2', NOW( ) ,  '0',  '4',  '2');
 	var rowToInsert = {buyer_InternalUserId:buyer, transactionDateTime: dateTime, status: 0, conversationId: convId, forSaleId: forSaleEntry};
 	connection.query("Insert into Transactions SET ?", rowToInsert, callbackFunction);
 }
