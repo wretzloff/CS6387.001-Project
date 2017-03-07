@@ -982,6 +982,11 @@
 				      "msg": {
 					      "type": "string",
 						  "default": "Your message has been sent."
+				      },
+					  "messageId": {
+					      "type": "integer",
+						  "format": "int",
+						  "default": 176
 				      }
 			     }
 		},

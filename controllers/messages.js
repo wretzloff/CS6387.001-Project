@@ -13,6 +13,33 @@ methods.sendMessage = function(request, response, connection)
 		var providedConversationId = request.body.conversationId;
 		var providedMessage = request.body.message;
 		
+		//Declare variables that will be set and used throughout this request.
+		var recipient;
+		
+		function insert_Message_callback(err,result)
+		{
+			if (err) 
+			{
+				console.log(err);
+				response.status(500).send({success: false, msg: 'Internal error.'});
+			}
+			else
+			{
+				//Successfully sent the message
+				response.send({success: true, msg: 'Your message has been sent.', messageId: result.insertId});
+			}
+		}
+		
+		function insertMessage()
+		{
+			console.log("About to call dal.insert_Message:");
+			console.log(recipient);
+			console.log(internalUserId);
+			console.log(providedMessage);
+			console.log(providedConversationId);
+			dal.insert_Message(connection, insert_Message_callback, recipient, internalUserId, providedMessage, providedConversationId);
+		}
+		
 		function get_conversation_by_iD_callback(err, rows, fields)
 		{
 			if (err)
@@ -30,7 +57,18 @@ methods.sendMessage = function(request, response, connection)
 				//Check to make sure that one of these two rows represents the sender.
 				if(rows[0].internalUserId === internalUserId || rows[1].internalUserId === internalUserId)
 				{
-					response.send({success: true, msg: 'Your message has been sent.'});
+					//We've verified that the specified conversation exists and this user has access to it.
+					//Next, we need to identify the recipient.
+					if(rows[0].internalUserId === internalUserId)
+					{
+						recipient = rows[1].internalUserId;
+					}
+					else
+					{
+						recipient = rows[0].internalUserId;
+					}
+					//Next, we need to insert the message.
+					insertMessage();
 				}
 				else
 				{

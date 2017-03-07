@@ -1,3 +1,5 @@
+var moment 						= require('moment');
+
 var methods = {};
 
 methods.get_User_by_netId = function(connection, callbackFunction, netId)
@@ -92,9 +94,14 @@ methods.createConversation = function(connection, callbackFunction, recipient1, 
 	connection.query("Insert into Conversation SET ?", insertRecord, insertNewConversationRecordCallback);
 }
 
-methods.insert_Message = function(connection, callbackFunction, to, from, dateTime, content, convId)
+//TODO: need to change column name of read_unread to just unread.
+//TODO: need to change insert value from "unread" to 1, where 1 represents true.
+methods.insert_Message = function(connection, callbackFunction, to, from, content, convId)
 {
+	var dateTime = moment(new Date()).format("YYYY-MM-DD HH:mm:ss");
+	
 	var rowToInsert = {to_InternalUserId:to,from_InternalUserId:from, messageDateTime: dateTime, messageContent: content, read_unread: 'unread', conversationId: convId};
+	console.log(rowToInsert);
 	connection.query("Insert into Message SET ?", rowToInsert, callbackFunction);
 }
 
