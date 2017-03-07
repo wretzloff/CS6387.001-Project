@@ -10,6 +10,7 @@ var authenticate		= require('./controllers/authenticate');
 var forSaleEntries		= require('./controllers/forSaleEntries');
 var myBooks				= require('./controllers/my-books');
 var transactions		= require('./controllers/transactions');
+var messages			= require('./controllers/messages');
 var salePrice			= require('./controllers/salePrice');
 //var datetime			= require('dateformat');
 var server_port 		= process.env.OPENSHIFT_NODEJS_PORT || 3000
@@ -63,12 +64,12 @@ var utdtextbookexchange_app = function() {
 		self.postRoutes['/forSaleEntries'] = function(request, response) 
 		{
 			forSaleEntries.postBookForSale(request, response, connection);
-		}
+		};
 		
 		self.getRoutes['/forSaleEntries/condition'] = function(request, response) 
 		{
 			forSaleEntries.getPossibleConditionTypes(request, response, connection);
-		}
+		};
 		
 		self.getRoutes['/salePrice/thirdParty/isbn/:isbn'] = function(request, response) 
 		{
@@ -83,27 +84,32 @@ var utdtextbookexchange_app = function() {
 		self.getRoutes['/transactions/userId/:userId'] = function(request, response) 
 		{
 			transactions.getTransactionsByUser(request, response, connection);
-		}
+		};
 		
 		self.getRoutes['/transactions/transaction/:transactionId'] = function(request, response) 
 		{
 			transactions.getTransactionById(request, response, connection);
-		}
+		};
 		
 		self.getRoutes['/transactions/status'] = function(request, response) 
 		{
 			transactions.getPossibleTransactionStatuses(request, response, connection);
-		}
+		};
 		
 		self.postRoutes['/transactions/transaction/:transactionId/cancel'] = function(request, response) 
 		{
 			transactions.markTransactionCancelled(request, response, connection);
-		}
+		};
 		
 		self.postRoutes['/transactions'] = function(request, response) 
 		{
 			transactions.buyBook(request, response, connection);
-		}
+		};
+		
+		self.postRoutes['/messages'] = function(request, response) 
+		{
+			messages.sendMessage(request, response, connection);
+		};
 		
 		self.postRoutes['/authenticate'] = function(request, response) 
 		{
