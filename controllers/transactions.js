@@ -17,7 +17,7 @@ methods.buyBook = function(request, response, connection)
 		var buyerNickname;
 		var convId;
 		var sellerId;
-		var bookIsbn;
+		var bookTitle;
 		var dateTimeOfTransaction = moment(new Date()).format("YYYY-MM-DD HH:mm:ss");
 		
 		
@@ -57,7 +57,7 @@ methods.buyBook = function(request, response, connection)
 		function sendAutomatedMessageFromBuyerToSeller()
 		{
 			//TODO: fix up the automated message to use the book's title instead of ISBN.
-			dal.insert_Message(connection, insert_Message_callback, sellerId, buyerId, buyerNickname + " wants to buy your book " + bookIsbn + "!", convId)
+			dal.insert_Message(connection, insert_Message_callback, sellerId, buyerId, buyerNickname + " wants to buy your book " + bookTitle + "!", convId)
 		}
 		
 		function setConversationId(conversationId)
@@ -180,7 +180,7 @@ methods.buyBook = function(request, response, connection)
 			else
 			{
 				sellerId = rows[0].seller_InternalUserId;
-				bookIsbn = rows[0].ISBN;
+				bookTitle = rows[0].title;
 				
 				if(sellerId === buyerId)
 				{

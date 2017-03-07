@@ -111,6 +111,11 @@ var utdtextbookexchange_app = function() {
 			transactions.buyBook(request, response, connection);
 		};
 		
+		self.getRoutes['/messages/conversations/:userId'] = function(request, response) 
+		{
+			//messages.__(request, response, connection);
+		};
+		
 		self.postRoutes['/messages'] = function(request, response) 
 		{
 			messages.sendMessage(request, response, connection);
