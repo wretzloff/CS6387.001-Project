@@ -22,6 +22,10 @@
         "description": "For operations regarding transactions"
     },
     {
+        "name": "messages",
+        "description": "For operations regarding messages"
+    },
+    {
         "name": "salePrice",
         "description": "For operations regarding a book's sale price"
     }],
@@ -581,6 +585,47 @@
                 }]
             }
         },
+        "/messages/conversations/{userId}": {
+            "get": {
+                "tags": ["messages"],
+                "summary": "Get a list of conversations for the given User Id",
+                "description": "Side effects: none",
+                "operationId": "getConversationsByUser",
+                "produces": ["application/json"],
+                "parameters": [{
+                    "name": "userId",
+                    "in": "path",
+                    "description": "User Id of user for which you want conversations.",
+                    "required": true,
+                    "type": "integer",
+                    "format": "int",
+                    "default": 1
+                }],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/200getConversationsResult"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/401Result"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error.",
+                        "schema": {
+                            "$ref": "#/definitions/500Result"
+                        }
+                    }
+                },
+                "security": [{
+                    "authorization": []
+                }]
+            }
+        },
         "/salePrice/suggested/isbn/{isbn}": {
             "get": {
                 "tags": ["salePrice"],
@@ -758,6 +803,12 @@
 					      "type": "string",
 						  "default": "Transaction has been cancelled."
 				      }
+			     }
+		},
+		"200getConversationsResult": {
+			    "type": "array",
+			    "items": {
+				      "$ref": "#/definitions/conversation"
 			     }
 		},
 		"200suggestedSalePriceResult": {
@@ -980,6 +1031,55 @@
 				    "type": "string",
 				    "default": "New"
 			    }
+		    }
+    },
+    "message": {
+        "type": "object",
+        "properties": {
+          "messageId": {
+				    "type": "integer",
+				    "format": "int",
+            "default": 57
+			    },
+			    "messageDateTime": {
+				    "type": "string",
+				    "default": "2017-02-22 00:02:40"
+			    },
+			    "messageContent": {
+				    "type": "string",
+				    "default": "Let's meet in the student union Friday afternoon. I can pay cash."
+			    },
+			    "read": {
+				    "type": "integer",
+				    "format": "int",
+            "default": 1
+			    }
+		    }
+    },
+    "conversation": {
+        "type": "object",
+        "properties": {
+			    "conversationId": {
+				    "type": "integer",
+				    "format": "int",
+            "default": 1
+			    },
+			    "conversationPartner": {
+				    "type": "string",
+				    "default": "Jonathan R."
+			    },
+			    "numOfUnreadMessages": {
+				    "type": "integer",
+				    "format": "int",
+            "default": 2
+			    },
+			    "latestMessage": {
+				        "type": "array",
+				        "items": {
+				          "$ref": "#/definitions/message" 
+				        }
+				      }
+			    
 		    }
     }
     }
