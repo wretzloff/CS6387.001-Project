@@ -11,7 +11,6 @@ drop table if exists User_Converation_Assoc;
 drop table if exists Conversation;
 drop table if exists User;
 drop table if exists condition_type;
-drop table if exists forSaleStatus_type;
 drop table if exists transactionStatus_type;
 
 -- tables
@@ -42,7 +41,7 @@ CREATE TABLE Message (
     from_InternalUserId int NOT NULL,
     messageDateTime timestamp NOT NULL,
     messageContent varchar(255) NOT NULL,
-    read_unread int NOT NULL,
+    unread int NOT NULL,
     conversationId int NOT NULL,
     CONSTRAINT Message_pk PRIMARY KEY (iD)
 );
@@ -162,3 +161,4 @@ ALTER TABLE dummy_User_Enrollment ADD CONSTRAINT dummy_User_Enrollment_User FORE
     REFERENCES User (internalUserId);
 
 -- End of file.
+

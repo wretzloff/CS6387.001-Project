@@ -30,7 +30,7 @@ methods.buyBook = function(request, response, connection)
 			}
 			else
 			{
-				response.send({success: true, msg: 'Book has put on hold.'});
+				response.send({success: true, msg: 'Book has put on hold.', transactionId: result.insertId});
 			}
 		}
 		

@@ -37,6 +37,7 @@ methods.get_possibleConditionTypes = function(connection, callbackFunction)
 	connection.query("select * from condition_type", callbackFunction);
 }
 
+//TODO: calculate our own date here, instead of asking the caller to pass it in.
 methods.insert_forSaleEntries = function(connection, callbackFunction, providedInternalUserId, providedDate, providedTitle, providedIsbn, providedAuthor, providedPrice, providedDescription, providedCondition)
 {
 	var rowToInsert = {seller_InternalUserId:providedInternalUserId,postedDateTime:providedDate,title:providedTitle,ISBN:providedIsbn,author:providedAuthor,price:providedPrice,description:providedDescription,bookCondition:providedCondition};
@@ -94,13 +95,11 @@ methods.createConversation = function(connection, callbackFunction, recipient1, 
 	connection.query("Insert into Conversation SET ?", insertRecord, insertNewConversationRecordCallback);
 }
 
-//TODO: need to change column name of read_unread to just unread.
-//TODO: need to change insert value from "unread" to 1, where 1 represents true.
 methods.insert_Message = function(connection, callbackFunction, to, from, content, convId)
 {
 	var dateTime = moment(new Date()).format("YYYY-MM-DD HH:mm:ss");
 	
-	var rowToInsert = {to_InternalUserId:to,from_InternalUserId:from, messageDateTime: dateTime, messageContent: content, read_unread: 'unread', conversationId: convId};
+	var rowToInsert = {to_InternalUserId:to,from_InternalUserId:from, messageDateTime: dateTime, messageContent: content, unread: 1, conversationId: convId};
 	console.log(rowToInsert);
 	connection.query("Insert into Message SET ?", rowToInsert, callbackFunction);
 }

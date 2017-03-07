@@ -937,6 +937,11 @@
 				      "msg": {
 					      "type": "string",
 						  "default": "Book has put on hold."
+				      },
+					  "transactionId": {
+					      "type": "integer",
+						  "format": "int",
+						  "default": 952
 				      }
 			     }
 		},
