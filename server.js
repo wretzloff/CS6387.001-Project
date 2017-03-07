@@ -51,6 +51,11 @@ var utdtextbookexchange_app = function() {
 			myBooks.getMyBooks(request, response, connection);
         };
 		
+		self.getRoutes['/my-books/cover/isbn/:isbn'] = function(request, response) 
+		{
+			myBooks.getBookCover(request, response, connection);
+        };
+		
 		self.getRoutes['/forSaleEntries/isbn/:isbn'] = function(request, response) 
 		{
 			forSaleEntries.getForSaleEntriesByIsbn(request, response, connection);

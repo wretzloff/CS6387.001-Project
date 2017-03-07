@@ -7,6 +7,11 @@ var dal         		= require('../data_access/dal');
 
 var methods = {};
 
+methods.getBookCover = function(request, response, connection)
+{
+	response.send("Under construction");
+}
+
 methods.getMyBooks = function(request, response, connection)
 {
 	//Get the userId provided in the query string. Technically, we don't even need this, because when we decode the authorization token,  
