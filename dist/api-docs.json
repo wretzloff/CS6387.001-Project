@@ -1149,36 +1149,45 @@
 						"format": "int",
 						"default": 139
 					},
-						"buyerOrSeller": {
+					"buyerOrSeller": {
 						"type": "string",
 						"default": "seller"
 					},
-						"buyer_Nickname": {
+					"buyer_Nickname": {
 					    "type": "string",
 						"default": "Daren C"
 					},
-						"buyer_InternalUserId": {
+					"buyer_InternalUserId": {
 					    "type": "integer",
 					    "format": "int",
 						"default": 2
 				    },
-						"transactionDateTime": {
+					"transactionDateTime": {
 					    "type": "string",
 						"default": "2017-02-22 00:02:40"
 				    },
-						"title": {
+					"status": {
+					    "type": "string",
+						"default": "Pending"
+				    },
+					"conversationId": {
+					    "type": "integer",
+					    "format": "int",
+						"default": 87
+				    },
+					"title": {
 					    "type": "string",
 						"default": "Software Engineering for Dummies"
 					},
-						"author": {
+					"author": {
 					    "type": "string",
 						"default": "Wallace Wang"
 					},
-						"ISBN": {
+					"ISBN": {
 					    "type": "string",
 						"default": "9780133778816"
 				    },
-						"price": {
+					"price": {
 					    "type": "number",
 					    "format": "double",
 						"default": 101.99
