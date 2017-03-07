@@ -20,7 +20,7 @@ methods.getForSaleEntriesByIsbn = function(request, response, connection)
 			else
 			{
 				console.log(err);
-				response.send({success: false, msg: 'Internal error.'});
+				response.status(500).send({success: false, msg: 'Internal error.'});
 			}
 		}
 		
@@ -45,7 +45,7 @@ methods.getForSaleEntriesByUser = function(request, response, connection)
 			else
 			{
 				console.log(err);
-				response.send({success: false, msg: 'Internal error.'});
+				response.status(500).send({success: false, msg: 'Internal error.'});
 			}
 		}
 		
@@ -66,7 +66,7 @@ methods.getPossibleConditionTypes = function(request, response, connection)
 		else
 		{
 			console.log(err);
-			response.send({success: false, msg: 'Internal error.'});
+			response.status(500).send({success: false, msg: 'Internal error.'});
 		}
 	}
 	
@@ -96,7 +96,7 @@ methods.postBookForSale = function(request, response, connection)
 			else
 			{
 				console.log(err);
-				response.send({success: false, msg: 'Problem posting your book. Please try again.'});
+				response.status(500).send({success: false, msg: 'Problem posting your book. Please try again.'});
 			}
 		}
 		
