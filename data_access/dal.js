@@ -41,6 +41,11 @@ methods.insert_forSaleEntries = function(connection, callbackFunction, providedI
 	connection.query("Insert into ForSale SET ?", rowToInsert, callbackFunction);
 }
 
+methods.get_transactions_by_ForSaleId = function(connection, callbackFunction, forSaleId)
+{
+	connection.query("SELECT * from Transactions where forSaleId = " + forSaleId, callbackFunction);
+}
+
 methods.insert_Transaction = function(connection, callbackFunction, buyer, dateTime, convId, forSaleEntry)
 {
 	var rowToInsert = {buyer_InternalUserId:buyer, transactionDateTime: dateTime, status: 0, conversationId: convId, forSaleId: forSaleEntry};

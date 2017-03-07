@@ -26,7 +26,7 @@ methods.buyBook = function(request, response, connection)
 			if (err) 
 			{
 				console.log(err);
-				response.send({success: false, msg: 'Internal error.'});
+				response.status(500).send({success: false, msg: 'Internal error.'});
 			}
 			else
 			{
@@ -44,7 +44,7 @@ methods.buyBook = function(request, response, connection)
 			if (err) 
 			{
 				console.log(err);
-				response.send({success: false, msg: 'Internal error.'});
+				response.status(500).send({success: false, msg: 'Internal error.'});
 			}
 			else
 			{
@@ -71,8 +71,6 @@ methods.buyBook = function(request, response, connection)
 			setConversationId(conversationId);		
 		}
 		
-		//TODO: before continuing on to create a conversation, need to check that this ForSaleEntry doesn't already have a pending or completed transaction.
-		//Otherwise, client can accidentally be allowed to creeate a transaction for a For Sale entry that already has a Transaction.
 		function generateConversation()
 		{
 			dal.createConversation(connection, createConversation_callback, internalUserId, sellerId);
@@ -83,7 +81,7 @@ methods.buyBook = function(request, response, connection)
 			if (err)
 			{
 				console.log(err);
-				response.send({success: false, msg: 'Internal error.'});
+				response.status(500).send({success: false, msg: 'Internal error.'});
 			}
 			else if(rows.length === 0)
 			{ 
@@ -107,11 +105,11 @@ methods.buyBook = function(request, response, connection)
 			if (err)
 			{
 				console.log(err);
-				response.send({success: false, msg: 'Internal error.'});
+				response.status(500).send({success: false, msg: 'Internal error.'});
 			}
 			else if(rows.length === 0)
 			{ 
-				response.send({success: false, msg: 'Error. Could not fetch buyer nickname.'});
+				response.status(500).send({success: false, msg: 'Error. Could not fetch buyer nickname.'});
 			}
 			else
 			{
@@ -127,26 +125,57 @@ methods.buyBook = function(request, response, connection)
 			dal.get_User_by_internalUserId(connection, get_User_by_internalUserId_callback, buyerId);
 		}
 		
+		function get_transactions_by_ForSaleId_callback(err, rows, fields)
+		{
+			if (err)
+			{
+				console.log(err);
+				response.status(500).send({success: false, msg: 'Internal error.'});
+			}
+			
+			else
+			{
+				//Loop through the transactions associated with this For Sale entry and check each status.
+				for (var i in rows) 
+				{
+					//If the transaction row's status is either pending or completed, then return an error to the client.
+					if(rows[i].status === 0 || rows[i].status === 2)
+					{
+						response.status(400).send({success: false, msg: 'The specified For Sale entry already has a transaction associated with it.'});
+					}
+				}
+				
+				//If we made it this far, then none of the transactions have a status of pending or completed.
+				//Now that we have verified that there is not already a transaction for this For Sale entry, next step is to get the nickname of the buyer 
+				//so that an automated message can be sent form buyer to seller.
+				getBuyerNickname();
+				
+			}
+		}
+		
+		function checkThatTransactionDoesNotAlreadyExist()
+		{
+			dal.get_transactions_by_ForSaleId(connection, get_transactions_by_ForSaleId_callback, providedForSaleId);
+		}
+		
 		function get_forSaleEntries_by_iD_callback(err, rows, fields)
 		{
 			if (err)
 			{
 				console.log(err);
-				response.send({success: false, msg: 'Internal error.'});
+				response.status(500).send({success: false, msg: 'Internal error.'});
 			}
 			else if(rows.length === 0)
 			{ 
-				response.send({success: false, msg: 'Error. No For Sale Entries with this iD exist.'});
+				response.status(400).send({success: false, msg: 'No For Sale Entries with this iD exist.'});
 			}
 			else
 			{
-				//TODO: before moving on, need to put in a check to make sure that the buyer ID is not the same as the seller ID. Buyer cannot buy his own book.
 				sellerId = rows[0].seller_InternalUserId;
 				bookIsbn = rows[0].ISBN;
 				
-				//Now that we have know there is an existing For Sale Entry, next step is to get the nickname of the buyer so that an automated message
-				//can be sent form buyer to seller.
-				getBuyerNickname();
+				//Now that we have know there is an existing For Sale Entry, next step is to make sure that there are no transactions tied to it.
+				checkThatTransactionDoesNotAlreadyExist();
 			}
 		}
 		
@@ -198,7 +227,7 @@ methods.getPossibleTransactionStatuses = function(request, response, connection)
 		else
 		{
 			console.log(err);
-			response.send({success: false, msg: 'Internal error.'});
+			response.status(500).send({success: false, msg: 'Internal error.'});
 		}
 	}
 	
