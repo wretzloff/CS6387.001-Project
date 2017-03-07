@@ -85,7 +85,6 @@ methods.postBookForSale = function(request, response, connection)
 		var providedPrice = parseFloat(request.body.price);
 		var providedCondition = parseInt(request.body.condition);
 		var providedDescription = request.body.description;
-		var providedDate = moment(new Date()).format("YYYY-MM-DD HH:mm:ss");
 
 		function insert_forSaleEntriesCallback(err,result)
 		{
@@ -101,7 +100,7 @@ methods.postBookForSale = function(request, response, connection)
 		}
 		
 		//Insert the record into the database.
-		dal.insert_forSaleEntries(connection, insert_forSaleEntriesCallback, providedInternalUserId, providedDate, providedTitle, providedIsbn, providedAuthor, providedPrice, providedDescription, providedCondition)
+		dal.insert_forSaleEntries(connection, insert_forSaleEntriesCallback, providedInternalUserId, providedTitle, providedIsbn, providedAuthor, providedPrice, providedDescription, providedCondition)
 	}
 			
 	authenticate.checkToken(request, response, afterCheckTokenCallback)
