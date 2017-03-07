@@ -96,6 +96,11 @@ var utdtextbookexchange_app = function() {
 			transactions.getPossibleTransactionStatuses(request, response, connection);
 		};
 		
+		self.postRoutes['/transactions/transaction/:transactionId/complete'] = function(request, response) 
+		{
+			transactions.markTransactionComplete(request, response, connection);
+		};
+		
 		self.postRoutes['/transactions/transaction/:transactionId/cancel'] = function(request, response) 
 		{
 			transactions.markTransactionCancelled(request, response, connection);
