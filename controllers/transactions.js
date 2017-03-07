@@ -66,9 +66,17 @@ methods.buyBook = function(request, response, connection)
 			sendAutomatedMessageFromBuyerToSeller();		
 		}
 		
-		function createConversation_callback(conversationId)
+		function createConversation_callback(conversationId, err)
 		{
-			setConversationId(conversationId);		
+			if (err) 
+			{
+				console.log(err);
+				response.status(500).send({success: false, msg: 'Internal error.'});
+			}
+			else
+			{
+				setConversationId(conversationId);
+			}
 		}
 		
 		function generateConversation()
@@ -174,8 +182,15 @@ methods.buyBook = function(request, response, connection)
 				sellerId = rows[0].seller_InternalUserId;
 				bookIsbn = rows[0].ISBN;
 				
-				//Now that we have know there is an existing For Sale Entry, next step is to make sure that there are no transactions tied to it.
-				checkThatTransactionDoesNotAlreadyExist();
+				if(sellerId === buyerId)
+				{
+					response.status(400).send({success: false, msg: 'Buyer is the same as seller.'});
+				}
+				else
+				{
+					//Now that we have know there is an existing For Sale Entry, next step is to make sure that there are no transactions tied to it.
+					checkThatTransactionDoesNotAlreadyExist();
+				}
 			}
 		}
 		

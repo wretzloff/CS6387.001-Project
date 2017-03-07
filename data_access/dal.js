@@ -79,15 +79,7 @@ methods.createConversation = function(connection, callbackFunction, recipient1, 
 		
 		connection.query("INSERT INTO User_Converation_Assoc (internalUserId, conversationId) VALUES ?", [values], function(err) 
 		{
-			if (err) 
-			{
-				//TODO: need to find a way to return an error message to the client.
-				console.log(err);
-			}
-			else
-			{
-				callbackFunction(conversationId);
-			}
+			callbackFunction(conversationId, err);
 		});
 	}
 	
