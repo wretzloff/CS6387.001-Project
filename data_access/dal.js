@@ -57,6 +57,11 @@ methods.get_possibleTransactionStatuses = function(connection, callbackFunction)
 	connection.query("select * from transactionStatus_type", callbackFunction);
 }
 
+methods.get_conversation_by_iD = function(connection, callbackFunction, conversationId)
+{
+	connection.query("select * from User_Converation_Assoc where conversationId = " + conversationId, callbackFunction);
+}
+
 methods.get_conversation_by_recipients = function(connection, callbackFunction, recipient1, recipient2)
 {
 	connection.query("select * from Conversation conv where exists (select * from User_Converation_Assoc where conversationId = conv.iD and internalUserId = " + recipient1 + ") and exists (select * from User_Converation_Assoc where conversationId = conv.iD and internalUserId = " + recipient2 + ")", callbackFunction);
