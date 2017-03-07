@@ -685,6 +685,65 @@
                 }]
             }
         },
+        "/messages/{conversationId}/limit/{limit}/after/{startingWithId}": {
+            "get": {
+                "tags": ["messages"],
+                "summary": "a list of the X messages within the conversation that were received after :startingWithId, excluding the message specified by :startingWithId",
+                "description": "Side effects: none",
+                "operationId": "getMessagesAfter",
+                "produces": ["application/json"],
+                "parameters": [{
+                    "name": "conversationId",
+                    "in": "path",
+                    "description": "Conversation Id of conversation for which you want messages.",
+                    "required": true,
+                    "type": "integer",
+                    "format": "int",
+                    "default": 1
+                },
+                {
+                    "name": "limit",
+                    "in": "path",
+                    "description": "Number of messages that you want returned.",
+                    "required": true,
+                    "type": "integer",
+                    "format": "int",
+                    "default": 1
+                },
+                {
+                    "name": "startingWithId",
+                    "in": "path",
+                    "description": "Message Id of message to start counting at.",
+                    "required": true,
+                    "type": "integer",
+                    "format": "int",
+                    "default": 1
+                }],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/200getmessagesResult"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/401Result"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error.",
+                        "schema": {
+                            "$ref": "#/definitions/500Result"
+                        }
+                    }
+                },
+                "security": [{
+                    "authorization": []
+                }]
+            }
+        },
         "/salePrice/suggested/isbn/{isbn}": {
             "get": {
                 "tags": ["salePrice"],
