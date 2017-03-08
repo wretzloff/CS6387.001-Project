@@ -9,7 +9,23 @@ methods.getConversationsByUser = function(request, response, connection)
 {
 	function afterCheckTokenCallback(internalUserId)
 	{
-		response.send('Under construction.');
+		var providedUserId = request.params.userId;
+		
+		function get_conversation_by_internalUserId_callback(err, rows, fields)
+		{
+			if (err)
+			{
+				console.log(err);
+				response.status(500).send({success: false, msg: 'Internal error.'});
+			}
+			else
+			{
+				response.send('Under construction.');
+			}
+		}
+		
+		//First, get the specified conversation and ensure that this user is part of that conversation.
+		dal.get_conversation_by_internalUserId(connection, get_conversation_by_internalUserId_callback, providedUserId);
 	}
 	
 	authenticate.checkToken(request, response, afterCheckTokenCallback);
