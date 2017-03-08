@@ -9,78 +9,82 @@ var methods = {};
 
 methods.getBookCover = function(request, response, connection)
 {
-	response.send("Under construction");
+	var afterCheckTokenCallback = function(internalUserId){
+		response.send("Under construction");
+	}	
+	
+	authenticate.checkToken(request, response, afterCheckTokenCallback);
 }
 
 methods.getMyBooks = function(request, response, connection)
 {
 	//Get the userId provided in the query string. Technically, we don't even need this, because when we decode the authorization token,  
-			//that gives us the internalUserId. We'll use that, since it's more secure.
-			var providedUserId = request.params.userId;
-			var productionOrStubBooks = request.params.productionOrStubBooks;
+	//that gives us the internalUserId. We'll use that, since it's more secure.
+	var providedUserId = request.params.userId;
+	var productionOrStubBooks = request.params.productionOrStubBooks;
 			
-			//Define the function that will be called after each call to UTD Coursebook.
-			var booksArray = [];
-			var getBooksForClassCallbackFunction = function(numOfClasses, classNum, className, classbooks)
-			{
-				booksArray.push({classNumber: classNum, className: className, classbooks: classbooks});
-				console.log('numofClasses: ' + numOfClasses + 'classNum: ' + classNum);
-				if(booksArray.length >= numOfClasses)
+	//Define the function that will be called after each call to UTD Coursebook.
+	var booksArray = [];
+	var getBooksForClassCallbackFunction = function(numOfClasses, classNum, className, classbooks)
+	{
+		booksArray.push({classNumber: classNum, className: className, classbooks: classbooks});
+		console.log('numofClasses: ' + numOfClasses + 'classNum: ' + classNum);
+		if(booksArray.length >= numOfClasses)
+		{
+			response.contentType('application/json');
+			response.json(booksArray);
+		}
+	}
+				
+	//Define a function tht will be called after the checkToken() function has finished validating the authorization token.
+	var afterCheckTokenCallback = function(internalUserId){
+		var get_dummyUserEnrollment_by_internalUserId_callback = function(err, classRows, fields)
+		{
+			if (!err)
+			{	
+				//If there were no rows found, then just return and empty array.
+				if(classRows.length === 0)
 				{
 					response.contentType('application/json');
-					response.json(booksArray);
+					response.json({});
 				}
-			}
-						
-			//Define a function tht will be called after the checkToken() function has finished validating the authorization token.
-			var afterCheckTokenCallback = function(internalUserId){
-				var get_dummyUserEnrollment_by_internalUserId_callback = function(err, classRows, fields)
+				else //Else, loop through each class and fetch the books for that class, and add them to the response.
 				{
-					if (!err)
-					{	
-						//If there were no rows found, then just return and empty array.
-						if(classRows.length === 0)
-						{
-							response.contentType('application/json');
-							response.json({});
-						}
-						else //Else, loop through each class and fetch the books for that class, and add them to the response.
-						{
-							for (var i in classRows) 
-							{
-								var classNumber = classRows[i].enrolledClass + '.' + classRows[i].semester;
-								var className = classRows[i].enrolledClassName;
-								//If the dummy flag has been set, then just return fake books. Otherwise, carry on and actually make calls to coursebook.
-								if(productionOrStubBooks === 'stub')
-								{
-									var fakeBooksArray = [];
-									fakeBooksArray.push(
-									{
-										bookName: 'STARTING OUT WITH C++ FROM CNTRL (LOOSEPGS)(W/OUT ACCESS)', 
-										bookEdition: 'PH 8th Edition 2015', 
-										bookAuthor: 'GADDIS',
-										bookISBN: '9780133778816',
-										book_required_recommended: 'Required Text'
-									});
-									getBooksForClassCallbackFunction(classRows.length, classNumber, className, fakeBooksArray);
-								}
-								else
-								{
-									getBooksForClass(classRows.length, classNumber, className, getBooksForClassCallbackFunction);
-								}
-							}
-						}
-					}
-					else
+					for (var i in classRows) 
 					{
-						console.log(err);
-						response.status(500).send({success: false, msg: 'Internal Server Error. Please try again later.'});
+						var classNumber = classRows[i].enrolledClass + '.' + classRows[i].semester;
+						var className = classRows[i].enrolledClassName;
+						//If the dummy flag has been set, then just return fake books. Otherwise, carry on and actually make calls to coursebook.
+						if(productionOrStubBooks === 'stub')
+						{
+							var fakeBooksArray = [];
+							fakeBooksArray.push(
+							{
+								bookName: 'STARTING OUT WITH C++ FROM CNTRL (LOOSEPGS)(W/OUT ACCESS)', 
+								bookEdition: 'PH 8th Edition 2015', 
+								bookAuthor: 'GADDIS',
+								bookISBN: '9780133778816',
+								book_required_recommended: 'Required Text'
+							});
+							getBooksForClassCallbackFunction(classRows.length, classNumber, className, fakeBooksArray);
+						}
+						else
+						{
+							getBooksForClass(classRows.length, classNumber, className, getBooksForClassCallbackFunction);
+						}
 					}
 				}
-				
-				dal.get_dummyUserEnrollment_by_internalUserId(connection, get_dummyUserEnrollment_by_internalUserId_callback, internalUserId);
 			}
-			authenticate.checkToken(request, response, afterCheckTokenCallback);
+			else
+			{
+				console.log(err);
+				response.status(500).send({success: false, msg: 'Internal Server Error. Please try again later.'});
+			}
+		}
+		
+		dal.get_dummyUserEnrollment_by_internalUserId(connection, get_dummyUserEnrollment_by_internalUserId_callback, internalUserId);
+	}
+	authenticate.checkToken(request, response, afterCheckTokenCallback);
 }
 
 
