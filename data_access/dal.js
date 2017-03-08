@@ -62,6 +62,14 @@ methods.get_possibleTransactionStatuses = function(connection, callbackFunction)
 
 methods.get_conversation_by_iD = function(connection, callbackFunction, conversationId)
 {
+	if(conversationId.constructor == Array)
+	{
+		console.log("type array");		
+	}
+	else
+	{
+		console.log("type single value");
+	}
 	connection.query("select * from User_Converation_Assoc where conversationId = " + conversationId, callbackFunction);
 }
 

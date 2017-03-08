@@ -12,6 +12,20 @@ methods.getConversationsByUser = function(request, response, connection)
 		var providedUserId = request.params.userId;
 		var conversationsArray = [];
 		
+		function get_conversation_by_iD_callback(err, rows, fields)
+		{
+			if (err)
+			{
+				console.log(err);
+				response.status(500).send({success: false, msg: 'Internal error.'});
+			}
+			else
+			{
+				response.json({underconstruction: conversationsArray});
+			}
+			
+		}
+		
 		function get_conversations_by_internalUserId_callback(err, rows, fields)
 		{
 			if (err)
@@ -21,11 +35,16 @@ methods.getConversationsByUser = function(request, response, connection)
 			}
 			else
 			{
+				var tempConversationArray = [];
+				//Loop through the results to get the ID of each conversation that this user is part of.
 				for (var i in rows) 
 				{
-					conversationsArray.push({conversationId: rows[i].conversationId});
+					tempConversationArray.push(rows[i].conversationId);
+					//conversationsArray.push({conversationId: rows[i].conversationId});
 				}
-				response.json(conversationsArray);
+				
+				//Next step is to populate the conversation partner for each of those conversations.
+				dal.get_conversation_by_iD(connection, get_conversation_by_iD_callback, tempConversationArray)
 			}
 		}
 		
