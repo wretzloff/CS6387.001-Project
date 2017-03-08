@@ -21,12 +21,19 @@ methods.getConversationsByUser = function(request, response, connection)
 			}
 			else
 			{
-				//TODO: continue working here.
+				//Each of these results represents a recipient in a conversation.
+				//Loop through the results and pick out the records that represent other users. These represent the current user's "conversation partners".
 				for (var i in rows) 
 				{
-					console.log("internalUserId: " + rows[i].internalUserId + " conversationId: " + rows[i].conversationId);
+					if(rows[i].internalUserId !== internalUserId)
+					{
+						conversationsArray.push({conversationId: rows[i].conversationId, conversationPartner: rows[i].nickname});
+					}
+					
 				}
-				response.json({underconstruction: conversationsArray});
+				
+				//TODO: continue working here
+				response.json(conversationsArray);
 			}
 			
 		}
@@ -40,15 +47,14 @@ methods.getConversationsByUser = function(request, response, connection)
 			}
 			else
 			{
-				var tempConversationArray = [];
 				//Loop through the results to get the ID of each conversation that this user is part of.
+				var tempConversationArray = [];
 				for (var i in rows) 
 				{
 					tempConversationArray.push(rows[i].conversationId);
-					//conversationsArray.push({conversationId: rows[i].conversationId});
 				}
 				
-				//Next step is to populate the conversation partner for each of those conversations.
+				//Pass this array of conversation IDs to the data access layer to get the recipients of each conversation.
 				dal.get_conversation_by_iD(connection, get_conversation_by_iD_callback, tempConversationArray)
 			}
 		}
