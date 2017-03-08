@@ -21,6 +21,11 @@ methods.getConversationsByUser = function(request, response, connection)
 			}
 			else
 			{
+				//TODO: continue working here.
+				for (var i in rows) 
+				{
+					console.log("internalUserId: " + rows[i].internalUserId + " conversationId: " + rows[i].conversationId);
+				}
 				response.json({underconstruction: conversationsArray});
 			}
 			
