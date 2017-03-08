@@ -5,6 +5,16 @@ var methods = {};
 
 
 
+methods.getConversationsByUser = function(request, response, connection)
+{
+	function afterCheckTokenCallback(internalUserId)
+	{
+		response.send('Under construction.');
+	}
+	
+	authenticate.checkToken(request, response, afterCheckTokenCallback);
+}
+
 methods.sendMessage = function(request, response, connection)
 {
 	function afterCheckTokenCallback(internalUserId)
@@ -32,11 +42,6 @@ methods.sendMessage = function(request, response, connection)
 		
 		function insertMessage()
 		{
-			console.log("About to call dal.insert_Message:");
-			console.log(recipient);
-			console.log(internalUserId);
-			console.log(providedMessage);
-			console.log(providedConversationId);
 			dal.insert_Message(connection, insert_Message_callback, recipient, internalUserId, providedMessage, providedConversationId);
 		}
 		

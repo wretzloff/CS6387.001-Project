@@ -120,7 +120,7 @@ var utdtextbookexchange_app = function() {
 		
 		self.getRoutes['/messages/conversations/:userId'] = function(request, response) 
 		{
-			//messages.__(request, response, connection);
+			messages.getConversationsByUser(request, response, connection);
 		};
 		
 		self.postRoutes['/messages'] = function(request, response) 
