@@ -65,9 +65,9 @@ methods.get_conversation_by_iD = function(connection, callbackFunction, conversa
 	connection.query("select * from User_Converation_Assoc where conversationId = " + conversationId, callbackFunction);
 }
 
-methods.get_conversation_by_internalUserId = function(connection, callbackFunction, internalUserId)
+methods.get_conversations_by_internalUserId = function(connection, callbackFunction, internalUserId)
 {
-	connection.query("select * from User_Converation_Assoc where internalUserId = " + internalUserId, callbackFunction);
+	connection.query("select distinct conversationId from User_Converation_Assoc  where internalUserId = " + internalUserId, callbackFunction);
 }
 
 methods.get_conversation_by_recipients = function(connection, callbackFunction, recipient1, recipient2)

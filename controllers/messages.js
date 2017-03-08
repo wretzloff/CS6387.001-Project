@@ -10,8 +10,9 @@ methods.getConversationsByUser = function(request, response, connection)
 	function afterCheckTokenCallback(internalUserId)
 	{
 		var providedUserId = request.params.userId;
+		var conversationsArray = [];
 		
-		function get_conversation_by_internalUserId_callback(err, rows, fields)
+		function get_conversations_by_internalUserId_callback(err, rows, fields)
 		{
 			if (err)
 			{
@@ -20,12 +21,16 @@ methods.getConversationsByUser = function(request, response, connection)
 			}
 			else
 			{
-				response.send('Under construction.');
+				for (var i in rows) 
+				{
+					conversationsArray.push({conversationId: rows[i].conversationId});
+				}
+				response.json(conversationsArray);
 			}
 		}
 		
 		//First, get the specified conversation and ensure that this user is part of that conversation.
-		dal.get_conversation_by_internalUserId(connection, get_conversation_by_internalUserId_callback, providedUserId);
+		dal.get_conversations_by_internalUserId(connection, get_conversations_by_internalUserId_callback, providedUserId);
 	}
 	
 	authenticate.checkToken(request, response, afterCheckTokenCallback);
