@@ -92,7 +92,7 @@
                     "format": "int",
                     "default": 1
                 },
-				        {
+				{
                     "name": "productionOrStubBooks",
                     "in": "path",
                     "description": "either 'stub' or 'production'",
@@ -105,6 +105,46 @@
                         "description": "OK",
                         "schema": {
                             "$ref": "#/definitions/200myBooksResult"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/401Result"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error.",
+                        "schema": {
+                            "$ref": "#/definitions/500Result"
+                        }
+                    }
+                },
+                "security": [{
+                    "authorization": []
+                }]
+            }
+        },
+        "/my-books/cover/isbn/{isbn}": {
+            "get": {
+                "tags": ["my-books"],
+                "summary": "Get a book's cover image",
+                "description": "Side effects: none",
+                "operationId": "getBookCover",
+                "produces": ["application/json"],
+                "parameters": [{
+                    "name": "isbn",
+                    "in": "path",
+                    "description": "ISBN of book for which you want the cover",
+                    "required": true,
+                    "type": "string",
+                    "default": "9780133778816"
+                }],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/200bookCoverResult"
                         }
                     },
                     "401": {
@@ -1286,6 +1326,85 @@
 				      }
 			    
 		    }
-    }
+    },
+    "200bookCoverResult": {
+	    "type": "object",
+		"properties": {
+			"isbn": {
+				"type": "string",
+				"default": "9780133778816"
+			},
+			"smallPic": {
+				"type": "object",
+				"properties": {
+					"url": {
+						"type": "string",
+						"default": "https://images-na.ssl-images-amazon.com/images/ihefeufe.jpg"
+					},
+					"units": {
+						"type": "string",
+						"default": "pixels"
+					},
+					"height": {
+						"type": "integer",
+						"format": "int",
+						"default": 390
+					},
+					"width": {
+						"type": "integer",
+						"format": "int",
+						"default": 390
+					}
+				}
+			},
+			"mediumPic": {
+				"type": "object",
+				"properties": {
+					"url": {
+						"type": "string",
+						"default": "https://images-na.ssl-images-amazon.com/images/kjwdnwqjnd.jpg"
+					},
+					"units": {
+						"type": "string",
+						"default": "pixels"
+					},
+					"height": {
+						"type": "integer",
+						"format": "int",
+						"default": 700
+					},
+					"width": {
+						"type": "integer",
+						"format": "int",
+						"default": 700
+					}
+				}
+			},
+			"largePic": {
+				"type": "object",
+				"properties": {
+					"url": {
+						"type": "string",
+						"default": "https://images-na.ssl-images-amazon.com/images/oifebflkn.jpg"
+					},
+					"units": {
+						"type": "string",
+						"default": "pixels"
+					},
+					"height": {
+						"type": "integer",
+						"format": "int",
+						"default": 1000
+					},
+					"width": {
+						"type": "integer",
+						"format": "int",
+						"default": 1000
+					}
+				}
+			}
+		}
+	}
+    
     }
 }   
