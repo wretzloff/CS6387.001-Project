@@ -103,7 +103,7 @@ methods.createConversation = function(connection, callbackFunction, recipient1, 
 
 methods.get_messages_by_conversationId = function(connection, callbackFunction, conversationId)
 {
-	connection.query("select * from Message where conversationId = " + conversationId, callbackFunction);
+	connection.query("select * from Message where conversationId = " + conversationId + " order by messageDateTime desc", callbackFunction);
 }
 
 methods.get_unreadMessages_by_conversationIdAndInternalUserId = function(connection, callbackFunction, conversationId, internalUserId)
