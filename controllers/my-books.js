@@ -28,7 +28,6 @@ methods.getMyBooks = function(request, response, connection)
 	var getBooksForClassCallbackFunction = function(numOfClasses, classNum, className, classbooks)
 	{
 		booksArray.push({classNumber: classNum, className: className, classbooks: classbooks});
-		console.log('numofClasses: ' + numOfClasses + 'classNum: ' + classNum);
 		if(booksArray.length >= numOfClasses)
 		{
 			response.contentType('application/json');

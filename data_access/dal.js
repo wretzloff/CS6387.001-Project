@@ -101,6 +101,16 @@ methods.createConversation = function(connection, callbackFunction, recipient1, 
 	connection.query("Insert into Conversation SET ?", insertRecord, insertNewConversationRecordCallback);
 }
 
+methods.get_messages_by_conversationId = function(connection, callbackFunction, conversationId)
+{
+	connection.query("select * from Message where conversationId = " + conversationId, callbackFunction);
+}
+
+methods.get_unreadMessages_by_conversationIdAndInternalUserId = function(connection, callbackFunction, conversationId, internalUserId)
+{
+	connection.query("select conversationId, to_internalUserId, count(*) as 'numUnreadMessages' from Message where unread = 1 and conversationId = " + conversationId + " and to_InternalUserId = " + internalUserId + " group by conversationId, to_internalUserId", callbackFunction);
+}
+
 methods.insert_Message = function(connection, callbackFunction, to, from, content, convId)
 {
 	var dateTime = moment(new Date()).format("YYYY-MM-DD HH:mm:ss");

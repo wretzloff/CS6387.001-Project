@@ -12,30 +12,88 @@ methods.getConversationsByUser = function(request, response, connection)
 		var providedUserId = request.params.userId;
 		var conversationsArray = [];
 		
-		function get_conversation_by_iD_callback(err, rows, fields)
+		
+		function getLatestMessage()
 		{
-			if (err)
+			var returnArray = [];
+			for (var key in conversationsArray) 
 			{
-				console.log(err);
-				response.status(500).send({success: false, msg: 'Internal error.'});
+				returnArray.push((conversationsArray[key]));
 			}
-			else
+			response.send(returnArray);
+		}
+		
+		function getNumOfUnreadMessages()
+		{
+			var counter = 0;
+			for (var key in conversationsArray) 
 			{
-				//Each of these results represents a recipient in a conversation.
-				//Loop through the results and pick out the records that represent other users. These represent the current user's "conversation partners".
-				for (var i in rows) 
-				{
-					if(rows[i].internalUserId !== internalUserId)
+				dal.get_unreadMessages_by_conversationIdAndInternalUserId(connection, function(err, rows, fields){
+					if (err)
 					{
-						conversationsArray.push({conversationId: rows[i].conversationId, conversationPartner: rows[i].nickname});
+						console.log(err);
+						response.status(500).send({success: false, msg: 'Internal error.'});
 					}
-					
-				}
-				
-				//TODO: continue working here
-				response.json(conversationsArray);
+					else
+					{
+						counter++;
+						var conversationIdOfRow = rows[0].conversationId;
+						var numOfUnreadMessagesForThisConversation = rows[0].numUnreadMessages;
+						var conversation = conversationsArray[conversationIdOfRow];
+						conversation.numOfUnreadMessages = numOfUnreadMessagesForThisConversation;
+						
+						//Once the counter hits the length of the array, we know that we've populated the number of unread messages for 
+						//each conversation in the array.
+						//Next step is to get the last message for each conversation.
+						if(counter >= Object.keys(conversationsArray).length)
+						{
+							getLatestMessage();
+						}
+					}
+				}, key, internalUserId)
 			}
 			
+			
+		}
+		
+		function getConversationPartners()
+		{
+			var counter = 0;
+			for (var key in conversationsArray) 
+			{
+				dal.get_conversation_by_iD(connection, function(err, rows, fields){
+					if (err)
+					{
+						console.log(err);
+						response.status(500).send({success: false, msg: 'Internal error.'});
+					}
+					else
+					{
+						counter++;
+						
+						//The "rows" array should contain 2 records, each of which represents an association between a user and a conversation.
+						//One of the rows will represent this user, and the other row will represent the other user in the conversation.
+						if(rows[0].internalUserId !== internalUserId)
+						{
+							var conversation = conversationsArray[rows[0].conversationId];
+							conversation.partner = rows[0].nickname;
+						}
+						else
+						{
+							var conversation = conversationsArray[rows[1].conversationId];
+							conversation.partner = rows[1].nickname;
+						}
+						
+						//Once the counter hits the length of the array, we know that we've found the conversation partner for 
+						//each conversation in the array.
+						//Next step is to get the number of unread messages for each conversation.
+						if(counter >= Object.keys(conversationsArray).length)
+						{
+							getNumOfUnreadMessages();
+						}	
+					}
+				}, key)
+			}
 		}
 		
 		function get_conversations_by_internalUserId_callback(err, rows, fields)
@@ -48,18 +106,17 @@ methods.getConversationsByUser = function(request, response, connection)
 			else
 			{
 				//Loop through the results to get the ID of each conversation that this user is part of.
-				var tempConversationArray = [];
 				for (var i in rows) 
 				{
-					tempConversationArray.push(rows[i].conversationId);
+					conversationsArray[rows[i].conversationId] = {conversationId: rows[i].conversationId};
 				}
 				
-				//Pass this array of conversation IDs to the data access layer to get the recipients of each conversation.
-				dal.get_conversation_by_iD(connection, get_conversation_by_iD_callback, tempConversationArray)
+				//At this point, we have an array of conversation IDs. Next, for each of those conversation IDs, we need to get the user's conversation partner.
+				getConversationPartners();
 			}
 		}
 		
-		//First, get the specified conversation and ensure that this user is part of that conversation.
+		//First, run a query to get the conversation IDs of the conversations that this user is part of.
 		dal.get_conversations_by_internalUserId(connection, get_conversations_by_internalUserId_callback, providedUserId);
 	}
 	
