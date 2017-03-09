@@ -123,6 +123,11 @@ var utdtextbookexchange_app = function() {
 			messages.getConversationsByUser(request, response, connection);
 		};
 		
+		self.getRoutes['/messages/:conversationId/limit/:limit/before/:startingWithId'] = function(request, response) 
+		{
+			messages.getMessagesBefore(request, response, connection);
+		};
+		
 		self.postRoutes['/messages'] = function(request, response) 
 		{
 			messages.sendMessage(request, response, connection);

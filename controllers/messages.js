@@ -158,6 +158,11 @@ methods.getConversationsByUser = function(request, response, connection)
 	authenticate.checkToken(request, response, afterCheckTokenCallback);
 }
 
+methods.getMessagesBefore = function(request, response, connection)
+{
+	response.send("under construction");
+}
+
 methods.sendMessage = function(request, response, connection)
 {
 	function afterCheckTokenCallback(internalUserId)
