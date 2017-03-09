@@ -12,8 +12,7 @@ methods.getConversationsByUser = function(request, response, connection)
 		var providedUserId = request.params.userId;
 		var conversationsArray = [];
 		
-		
-		function getLatestMessage()
+		function sendResponseArray()
 		{
 			var returnArray = [];
 			for (var key in conversationsArray) 
@@ -21,6 +20,42 @@ methods.getConversationsByUser = function(request, response, connection)
 				returnArray.push((conversationsArray[key]));
 			}
 			response.send(returnArray);
+		}
+		
+		function getLatestMessage()
+		{
+			var counter = 0;
+			for (var key in conversationsArray) 
+			{
+				dal.get_messages_by_conversationId(connection, function(err, rows, fields){
+					if (err)
+					{
+						console.log(err);
+						response.status(500).send({success: false, msg: 'Internal error.'});
+					}
+					else
+					{
+						counter++;
+						var conversationIdOfRow = rows[0].conversationId;
+						var conversation = conversationsArray[conversationIdOfRow];
+						
+						conversation.latestMessage = {
+							messageId: rows[0].iD,
+							messageDateTime: rows[0].messageDateTime,
+							messageContent: rows[0].messageContent,
+							unread: rows[0].unread
+						};
+						
+						//Once the counter hits the length of the array, we know that we've populated the latest message for 
+						//each conversation in the array.
+						//Next step is to format the response and send back to client.
+						if(counter >= Object.keys(conversationsArray).length)
+						{
+							sendResponseArray();
+						}
+					}
+				}, key)
+			}
 		}
 		
 		function getNumOfUnreadMessages()
@@ -76,12 +111,12 @@ methods.getConversationsByUser = function(request, response, connection)
 						if(rows[0].internalUserId !== internalUserId)
 						{
 							var conversation = conversationsArray[rows[0].conversationId];
-							conversation.partner = rows[0].nickname;
+							conversation.conversationPartner = rows[0].nickname;
 						}
 						else
 						{
 							var conversation = conversationsArray[rows[1].conversationId];
-							conversation.partner = rows[1].nickname;
+							conversation.conversationPartner = rows[1].nickname;
 						}
 						
 						//Once the counter hits the length of the array, we know that we've found the conversation partner for 

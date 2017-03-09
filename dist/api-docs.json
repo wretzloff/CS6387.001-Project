@@ -1294,7 +1294,7 @@
 				    "type": "string",
 				    "default": "Let's meet in the student union Friday afternoon. I can pay cash."
 			    },
-			    "read": {
+			    "unread": {
 				    "type": "integer",
 				    "format": "int",
             "default": 1
@@ -1307,7 +1307,7 @@
 			    "conversationId": {
 				    "type": "integer",
 				    "format": "int",
-            "default": 1
+					"default": 1
 			    },
 			    "conversationPartner": {
 				    "type": "string",
@@ -1316,14 +1316,12 @@
 			    "numOfUnreadMessages": {
 				    "type": "integer",
 				    "format": "int",
-            "default": 2
+					"default": 2
 			    },
 			    "latestMessage": {
-				        "type": "array",
-				        "items": {
-				          "$ref": "#/definitions/message" 
-				        }
-				      }
+				        "type": "object",
+				        "$ref": "#/definitions/message"
+				 }
 			    
 		    }
     },
