@@ -183,28 +183,8 @@ methods.getMessagesBefore = function(request, response, connection)
 			}
 			else
 			{
-				//Loop through the rows until we find the one with the with the specified "Starting With ID"
-				var foundIndex;
-				for (var i in rows) 
-				{
-					console.log(rows[i]);
-					if(rows[i].iD === providedStartingWithId)
-					{
-						foundIndex = i;
-						break;
-					}
-				}
-			
-				//If, for whatever reason, the a row with the specified "Starting With ID" index wasn't found, then just start with 
-				//the the most recent message.
-				if(!foundIndex)
-				{
-					foundIndex = rows.length - 1;
-					console.log(foundIndex);
-				}
-				
-				//Now that we found the row specified by the "Starting With ID", we can determine the first row and last row that we need to return.
-				var rowLastIndex = foundIndex;
+				//First, determine the first and last record in the result set that we need to return.
+				var rowLastIndex = findRowWithSpecifiedMessageId(rows, providedStartingWithId);
 				var rowFirstIndex = rowLastIndex - providedLimit + 1;
 				if(rowFirstIndex < 0)
 				{
@@ -302,6 +282,28 @@ methods.sendMessage = function(request, response, connection)
 	authenticate.checkToken(request, response, afterCheckTokenCallback);
 }
 
-
+function findRowWithSpecifiedMessageId(rows, providedStartingWithId)
+{
+	//Loop through the rows until we find the one with the with the specified "Starting With ID"
+	var foundIndex;
+	for (var i in rows) 
+	{
+		console.log(rows[i]);
+		if(rows[i].iD === providedStartingWithId)
+		{
+			foundIndex = i;
+			break;
+		}
+	}
+	
+	//If, for whatever reason, the a row with the specified "Starting With ID" index wasn't found, then just start with 
+	//the the most recent message.
+	if(!foundIndex)
+	{
+		foundIndex = rows.length - 1;
+	}
+	
+	return foundIndex;
+}
 
 module.exports = methods;
