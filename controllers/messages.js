@@ -163,7 +163,69 @@ methods.getConversationsByUser = function(request, response, connection)
 
 methods.getMessagesBefore = function(request, response, connection)
 {
-	response.send("under construction");
+	function afterCheckTokenCallback(internalUserId)
+	{
+		var providedConversationId = request.params.conversationId;
+		var providedLimit = request.params.limit;
+		if(providedLimit < 1)
+		{
+			providedLimit = 1
+		}
+		var providedStartingWithId = request.params.startingWithId;
+		var returnArray = [];
+		
+		function get_messages_by_conversationId_callback(err, rows, fields)
+		{
+			if (err) 
+			{
+				console.log(err);
+				response.status(500).send({success: false, msg: 'Internal error.'});
+			}
+			else
+			{
+				//Loop through the rows until we find the one with the with the specified "Starting With ID"
+				var foundIndex;
+				for (var i in rows) 
+				{
+					console.log(rows[i]);
+					if(rows[i].iD === providedStartingWithId)
+					{
+						foundIndex = i;
+						break;
+					}
+				}
+			
+				//If, for whatever reason, the a row with the specified "Starting With ID" index wasn't found, then just start with 
+				//the the most recent message.
+				if(!foundIndex)
+				{
+					foundIndex = rows.length - 1;
+					console.log(foundIndex);
+				}
+				
+				//Now that we found the row specified by the "Starting With ID", we can determine the first row and last row that we need to return.
+				var rowLastIndex = foundIndex;
+				var rowFirstIndex = rowLastIndex - providedLimit + 1;
+				if(rowFirstIndex < 0)
+				{
+					rowFirstIndex = 0;
+				}
+				
+				//We will load the first row, last row, and every row in between, into the response.
+				for (i = rowFirstIndex; i <= rowLastIndex; i++) 
+				{
+					returnArray.push({messageId: rows[i].iD, to: rows[i].to_InternalUserId, from: rows[i].from_InternalUserId, dateTime: rows[i].messageDateTime, content: rows[i].messageContent});
+				}
+				
+				//TODO: need to mark messages as read.
+				response.json(returnArray);
+			}
+		}
+		
+		dal.get_messages_by_conversationId(connection, get_messages_by_conversationId_callback, providedConversationId);
+	}
+	
+	authenticate.checkToken(request, response, afterCheckTokenCallback);
 }
 
 methods.sendMessage = function(request, response, connection)
