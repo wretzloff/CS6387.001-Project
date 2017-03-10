@@ -36,14 +36,17 @@ methods.getConversationsByUser = function(request, response, connection)
 					else
 					{
 						counter++;
-						var conversationIdOfRow = rows[0].conversationId;
+						
+						//The rows are ordered by date, so we need to get the last message in the list.
+						var lastRowIndex = rows.length - 1;
+						var conversationIdOfRow = rows[lastRowIndex].conversationId;
 						var conversation = conversationsArray[conversationIdOfRow];
 						
 						conversation.latestMessage = {
-							messageId: rows[0].iD,
-							messageDateTime: rows[0].messageDateTime,
-							messageContent: rows[0].messageContent,
-							unread: rows[0].unread
+							messageId: rows[lastRowIndex].iD,
+							messageDateTime: rows[lastRowIndex].messageDateTime,
+							messageContent: rows[lastRowIndex].messageContent,
+							unread: rows[lastRowIndex].unread
 						};
 						
 						//Once the counter hits the length of the array, we know that we've populated the latest message for 
