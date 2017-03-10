@@ -194,7 +194,7 @@ methods.getMessagesBefore = function(request, response, connection)
 				//We will load the first row, last row, and every row in between, into the response.
 				for (i = rowFirstIndex; i <= rowLastIndex; i++) 
 				{
-					returnArray.push({messageId: rows[i].iD, to: rows[i].to_InternalUserId, from: rows[i].from_InternalUserId, dateTime: rows[i].messageDateTime, content: rows[i].messageContent});
+					returnArray.push({messageId: rows[i].iD, to: rows[i].to_InternalUserId, from: rows[i].from_InternalUserId, messageDateTime: rows[i].messageDateTime, messageContent: rows[i].messageContent, unread: rows[0].unread});
 				}
 				
 				//TODO: need to mark messages as read.
