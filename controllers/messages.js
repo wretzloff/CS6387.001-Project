@@ -161,12 +161,7 @@ methods.getMessagesBefore = function(request, response, connection)
 	{
 		var providedConversationId = request.params.conversationId;
 		var providedLimit = request.params.limit;
-		if(providedLimit < 1)
-		{
-			providedLimit = 1
-		}
 		var providedStartingWithId = request.params.startingWithId;
-		//var returnArray = [];
 		
 		function get_messages_by_conversationId_callback(err, rows, fields)
 		{
@@ -177,20 +172,27 @@ methods.getMessagesBefore = function(request, response, connection)
 			}
 			else
 			{
-				//First, determine the first and last record in the result set that we need to return.
-				var rowLastIndex = findRowWithSpecifiedMessageId(rows, providedStartingWithId);
-				var rowFirstIndex = rowLastIndex - providedLimit + 1;
-				if(rowFirstIndex < 0)
+				//First, find the index of the row that contains the specified message ID.
+				var indexOfSpecifiedMessage = findRowWithSpecifiedMessageId(rows, providedStartingWithId);
+				
+				//Next, validate that the parameters that the user provided are valid
+				//Send an error message if invalid.
+				var validInputs = validateCheckMessageInputs(response, providedLimit, indexOfSpecifiedMessage);
+				
+				if(validInputs)
 				{
-					rowFirstIndex = 0;
+					//Next, determine the first and last record in the result set that we need to return.
+					var rowLastIndex = indexOfSpecifiedMessage;
+					var rowFirstIndex = rowLastIndex - providedLimit + 1;
+					if(rowFirstIndex < 0)
+					{
+						rowFirstIndex = 0;
+					}
+					
+					//We will load the first row, last row, and every row in between, into the response.
+					var returnArray = loadMessagesIntoArray(rows, rowFirstIndex, rowLastIndex);
+					response.json(returnArray); //TODO: need to mark messages as read.
 				}
-				
-				//We will load the first row, last row, and every row in between, into the response.
-				var returnArray = loadMessagesIntoArray(rows, rowFirstIndex, rowLastIndex);
-				
-				
-				//TODO: need to mark messages as read.
-				response.json(returnArray);
 			}
 		}
 		
@@ -324,18 +326,11 @@ function findRowWithSpecifiedMessageId(rows, providedStartingWithId)
 	var foundIndex;
 	for (var i in rows) 
 	{
-		if(rows[i].iD === providedStartingWithId)
+		if(rows[i].iD == providedStartingWithId)
 		{
 			foundIndex = i;
 			break;
 		}
-	}
-	
-	//If, for whatever reason, the a row with the specified "Starting With ID" index wasn't found, then just start with 
-	//the the most recent message.
-	if(!foundIndex)
-	{
-		foundIndex = rows.length - 1;
 	}
 	
 	return foundIndex;
@@ -366,4 +361,18 @@ function loadMessagesIntoArray(rows, firstIndex, lastIndex)
 	return returnArray;
 }
 
+function  validateCheckMessageInputs(response, providedLimit, indexOfSpecifiedMessage)
+{
+	if(!(providedLimit > 0))
+	{
+		response.status(403).send({success: false, msg: 'Limit must be greater than 0.'});
+		return false;
+	}
+	else if(!indexOfSpecifiedMessage)
+	{
+		response.status(403).send({success: false, msg: 'The specified message does not exist in the specified conversation.'});
+		return false;
+	}
+	return true;
+}
 module.exports = methods;
