@@ -41,13 +41,7 @@ methods.getConversationsByUser = function(request, response, connection)
 						var lastRowIndex = rows.length - 1;
 						var conversationIdOfRow = rows[lastRowIndex].conversationId;
 						var conversation = conversationsArray[conversationIdOfRow];
-						
-						conversation.latestMessage = {
-							messageId: rows[lastRowIndex].iD,
-							messageDateTime: rows[lastRowIndex].messageDateTime,
-							messageContent: rows[lastRowIndex].messageContent,
-							unread: rows[lastRowIndex].unread
-						};
+						conversation.latestMessage = convertMessageRowToJson(rows[lastRowIndex]);
 						
 						//Once the counter hits the length of the array, we know that we've populated the latest message for 
 						//each conversation in the array.
@@ -194,7 +188,8 @@ methods.getMessagesBefore = function(request, response, connection)
 				//We will load the first row, last row, and every row in between, into the response.
 				for (i = rowFirstIndex; i <= rowLastIndex; i++) 
 				{
-					returnArray.push({messageId: rows[i].iD, to: rows[i].to_InternalUserId, from: rows[i].from_InternalUserId, messageDateTime: rows[i].messageDateTime, messageContent: rows[i].messageContent, unread: rows[0].unread});
+					var message = convertMessageRowToJson(rows[i]);
+					returnArray.push(message);
 				}
 				
 				//TODO: need to mark messages as read.
@@ -288,7 +283,6 @@ function findRowWithSpecifiedMessageId(rows, providedStartingWithId)
 	var foundIndex;
 	for (var i in rows) 
 	{
-		console.log(rows[i]);
 		if(rows[i].iD === providedStartingWithId)
 		{
 			foundIndex = i;
@@ -304,6 +298,11 @@ function findRowWithSpecifiedMessageId(rows, providedStartingWithId)
 	}
 	
 	return foundIndex;
+}
+
+function convertMessageRowToJson(row)
+{
+	return {messageId: row.iD, to: row.to_InternalUserId, from: row.from_InternalUserId, messageDateTime: row.messageDateTime, messageContent: row.messageContent, unread: row.unread};
 }
 
 module.exports = methods;
