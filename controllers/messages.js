@@ -303,6 +303,17 @@ function getMessages(request, response, connection, beforeOrAfter)
 		var providedLimit = request.params.limit;
 		var providedStartingWithId = request.params.startingWithId;
 		
+		
+		function markMessagesAsRead(returnArray)
+		{
+			var lastMessage = returnArray[returnArray.length - 1];
+			var lastMessageId = lastMessage.messageId;
+			
+			dal.update_messagesAsRead_by_messageIdAndUserId(connection, function(){
+				response.json(returnArray)
+			}, internalUserId, providedConversationId, lastMessageId);
+		}
+		
 		function get_messages_by_conversationId_callback(err, rows, fields)
 		{
 			if (err) 
@@ -346,7 +357,9 @@ function getMessages(request, response, connection, beforeOrAfter)
 					
 					//We will load the first row, last row, and every row in between, into the response.
 					var returnArray = loadMessagesIntoArray(rows, rowFirstIndex, rowLastIndex);
-					response.json(returnArray); //TODO: need to mark messages as read.
+					
+					//Lastly, send the final array to markMessagesAsRead() so that we can mark these messages as read in the database.
+					markMessagesAsRead(returnArray);
 				}
 			}
 		}

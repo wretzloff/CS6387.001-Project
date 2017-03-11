@@ -118,4 +118,11 @@ methods.insert_Message = function(connection, callbackFunction, to, from, conten
 	connection.query("Insert into Message SET ?", rowToInsert, callbackFunction);
 }
 
+methods.update_messagesAsRead_by_messageIdAndUserId = function(connection, callbackFunction, userId, conversationId, messageId)
+{
+	console.log("dal: userId: " + userId);
+	console.log("dal: messageId: " + messageId);
+	connection.query("UPDATE Message SET unread = 0 where to_InternalUserId = " + userId + " and conversationId = " + conversationId + " and id <= " + messageId, callbackFunction);
+}
+
 module.exports = methods;
