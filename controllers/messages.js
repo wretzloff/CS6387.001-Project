@@ -308,8 +308,6 @@ function getMessages(request, response, connection, beforeOrAfter)
 		{
 			var lastMessage = returnArray[returnArray.length - 1];
 			var lastMessageId = lastMessage.messageId;
-			console.log("lastMessage: " + lastMessage);
-			console.log("lastMessageId: " + lastMessageId);
 			
 			dal.update_messagesAsRead_by_messageIdAndUserId(connection, function(){
 				response.json(returnArray)
