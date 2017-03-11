@@ -200,6 +200,7 @@ methods.buyBook = function(request, response, connection)
 	authenticate.checkToken(request, response, afterCheckTokenCallback);
 }
 
+//TODO: need to implement this
 methods.getTransactionsByUser = function(request, response, connection)
 {
 	function afterCheckTokenCallback(internalUserId)
@@ -215,6 +216,7 @@ methods.getTransactionsByUser = function(request, response, connection)
 	authenticate.checkToken(request, response, afterCheckTokenCallback);
 }
 
+//TODO: need to implement this
 methods.getTransactionById = function(request, response, connection)
 {
 	function afterCheckTokenCallback(internalUserId)
@@ -249,6 +251,7 @@ methods.getPossibleTransactionStatuses = function(request, response, connection)
 	dal.get_possibleTransactionStatuses(connection, get_possibleTransactionStatuses_callback);
 }
 
+//TODO: need to implement this
 methods.markTransactionComplete = function(request, response, connection)
 {
 	function afterCheckTokenCallback(internalUserId)
@@ -264,6 +267,7 @@ methods.markTransactionComplete = function(request, response, connection)
 	authenticate.checkToken(request, response, afterCheckTokenCallback);
 }
 
+//TODO: need to implement this
 methods.markTransactionCancelled = function(request, response, connection)
 {
 	function afterCheckTokenCallback(internalUserId)

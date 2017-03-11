@@ -115,6 +115,7 @@ methods.getBookCover = function(request, response, connection)
 	authenticate.checkToken(request, response, afterCheckTokenCallback);
 }
 
+//TODO: need to handle the HTML scraping better for classes that have textbook options from a set.
 methods.getMyBooks = function(request, response, connection)
 {
 	//Get the userId provided in the query string. Technically, we don't even need this, because when we decode the authorization token,  
