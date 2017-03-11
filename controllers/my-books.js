@@ -7,7 +7,7 @@ var dal         		= require('../data_access/dal');
 
 var methods = {};
 
-const {OperationHelper}=require('apac');
+/*const {OperationHelper}=require('apac');
 var fs = require('fs');
 const helper=new OperationHelper({
 	awsId: 'AKIAJ3YH7GEDD7KSRQNA',
@@ -87,29 +87,30 @@ function fetch(isbn,response,callback){
 		      console.error("Something went wrong! ", err);
 		  });
 }
-
+*/
 
 
 
 
 methods.getBookCover = function(request, response, connection)
 {
-	
+	/*
 	//call back when cover is fetched
 	var getCoverCallbackFunction = function(data)
 	{
 		response.contentType('application/json');
 		response.json(data);
 
-	}
+	}*/
 	var afterCheckTokenCallback = function(internalUserId){
-		var isbn_13 = request.params.isbn;	
+		/*var isbn_13 = request.params.isbn;	
 		
 		fetch(isbn_13,response,function(err,data){
 			console.log(data);
 			getCoverCallbackFunction(data);
 		});
-			
+		*/
+		response.send("Endpoint temporarily disabled.");
 	}	
 	
 	authenticate.checkToken(request, response, afterCheckTokenCallback);

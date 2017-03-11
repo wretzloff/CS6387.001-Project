@@ -2,7 +2,7 @@ var authenticate         		= require('./authenticate');
 var dal         				= require('../data_access/dal');
 var http 				= require('http');
 var methods = {};
-
+/*
 const {OperationHelper}=require('apac');
 var fs = require('fs');
 const helper=new OperationHelper({
@@ -150,29 +150,29 @@ function fetchLowestPrice(isbn,response,callback){
 		  });
 
 }
-
+*/
 
 methods.getThirdPartySalePrice = function(request, response, connection)
 {	
-	//call back when price is fetched
+	/*//call back when price is fetched
 	var getThirdPartySalePriceCallbackFunction = function(ListPrice,DetailPageURL)
 	{
 		response.contentType('application/json');
 		response.json({'price': ListPrice, 'source': 'Amazon', 'link':DetailPageURL});
 
-	}
+	}*/
 	
 	function afterCheckTokenCallback(internalUserId)
 	{
-		//isbn should be 13digits now
+		/*//isbn should be 13digits now
 
 		var isbn_13 = request.params.isbn;	
 
 		fetch(isbn_13,response,function(err,data){
 			getThirdPartySalePriceCallbackFunction(data.price,data.link);
 		});
-			
-		
+		*/	
+		response.send("endpoint temporarily disabled");
 	}
 	authenticate.checkToken(request, response, afterCheckTokenCallback);
 	
@@ -180,7 +180,7 @@ methods.getThirdPartySalePrice = function(request, response, connection)
 
 methods.getSuggestedSalePrice = function(request, response, connection)
 {
-	var res;
+	/*var res;
 	var isbn;
 	//	call back when price is fetched
 	var getSuggestSalePriceCallbackFunction = function(price,isbn_org,cheaperSeller)
@@ -226,10 +226,10 @@ methods.getSuggestedSalePrice = function(request, response, connection)
 		console.log("output"+outputprice);
 		getSuggestSalePriceCallbackFunction(outputprice,isbn,cheaperSeller);
 	}
-	
+	*/
 	function afterCheckTokenCallback(internalUserId)
 	{
-		//isbn should be 13digits now
+		/*//isbn should be 13digits now
 		var isbn_13 = request.params.isbn;
 		isbn=isbn_13;
 		fetchLowestPrice(isbn_13,response,function(err,data){
@@ -237,8 +237,8 @@ methods.getSuggestedSalePrice = function(request, response, connection)
 			console.log("data:"+data.price);
 			res=data;
 			dal.get_forSaleEntries_by_isbn(connection, get_lowest_price_by_isbn_callback,isbn_13);
-		});
-		
+		});*/
+		response.send("endpoint temporarily disabled");
 	}
 	authenticate.checkToken(request, response, afterCheckTokenCallback);
 }
