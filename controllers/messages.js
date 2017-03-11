@@ -157,99 +157,12 @@ methods.getConversationsByUser = function(request, response, connection)
 
 methods.getMessagesBefore = function(request, response, connection)
 {
-	function afterCheckTokenCallback(internalUserId)
-	{
-		var providedConversationId = request.params.conversationId;
-		var providedLimit = request.params.limit;
-		var providedStartingWithId = request.params.startingWithId;
-		
-		function get_messages_by_conversationId_callback(err, rows, fields)
-		{
-			if (err) 
-			{
-				console.log(err);
-				response.status(500).send({success: false, msg: 'Internal error.'});
-			}
-			else
-			{
-				//First, find the index of the row that contains the specified message ID.
-				var indexOfSpecifiedMessage = findRowWithSpecifiedMessageId(rows, providedStartingWithId);
-				
-				//Next, validate that the parameters that the user provided are valid
-				//Send an error message if invalid.
-				var validInputs = validateCheckMessageInputs(response, providedLimit, indexOfSpecifiedMessage);
-				
-				if(validInputs)
-				{
-					//Next, determine the first and last record in the result set that we need to return.
-					var rowLastIndex = indexOfSpecifiedMessage;
-					var rowFirstIndex = rowLastIndex - providedLimit + 1;
-					if(rowFirstIndex < 0)
-					{
-						rowFirstIndex = 0;
-					}
-					
-					//We will load the first row, last row, and every row in between, into the response.
-					var returnArray = loadMessagesIntoArray(rows, rowFirstIndex, rowLastIndex);
-					response.json(returnArray); //TODO: need to mark messages as read.
-				}
-			}
-		}
-		
-		dal.get_messages_by_conversationId(connection, get_messages_by_conversationId_callback, providedConversationId);
-	}
-	
-	authenticate.checkToken(request, response, afterCheckTokenCallback);
+	getMessages(request, response, connection, "before")
 }
 
 methods.getMessagesAfter = function(request, response, connection)
 {
-	function afterCheckTokenCallback(internalUserId)
-	{
-		var providedConversationId = request.params.conversationId;
-		var providedLimit = request.params.limit;
-		var providedStartingWithId = request.params.startingWithId;
-
-		function get_messages_by_conversationId_callback(err, rows, fields)
-		{
-			if (err) 
-			{
-				console.log(err);
-				response.status(500).send({success: false, msg: 'Internal error.'});
-			}
-			else
-			{
-				//First, find the index of the row that contains the specified message ID.
-				var indexOfSpecifiedMessage = findRowWithSpecifiedMessageId(rows, providedStartingWithId);
-				
-				//Next, validate that the parameters that the user provided are valid
-				//Send an error message if invalid.
-				var validInputs = validateCheckMessageInputs(response, providedLimit, indexOfSpecifiedMessage);
-				
-				if(validInputs)
-				{
-					//First, determine the first and last record in the result set that we need to return.
-					var rowFirstIndex = indexOfSpecifiedMessage;
-					var rowLastIndex = rowFirstIndex + providedLimit - 1;
-					if(rowLastIndex > rows.length - 1)
-					{
-						console.log("rowLastIndex > rows.length - 1");
-						rowLastIndex = rows.length - 1;
-					}
-					
-					//We will load the first row, last row, and every row in between, into the response.
-					var returnArray = loadMessagesIntoArray(rows, rowFirstIndex, rowLastIndex);
-					
-					//TODO: need to mark messages as read.
-					response.json(returnArray);
-				}
-			}
-		}
-		
-		dal.get_messages_by_conversationId(connection, get_messages_by_conversationId_callback, providedConversationId);
-	}
-	
-	authenticate.checkToken(request, response, afterCheckTokenCallback);
+	getMessages(request, response, connection, "after")
 }
 
 methods.sendMessage = function(request, response, connection)
@@ -381,4 +294,67 @@ function  validateCheckMessageInputs(response, providedLimit, indexOfSpecifiedMe
 	}
 	return true;
 }
+
+function getMessages(request, response, connection, beforeOrAfter)
+{
+	function afterCheckTokenCallback(internalUserId)
+	{
+		var providedConversationId = request.params.conversationId;
+		var providedLimit = request.params.limit;
+		var providedStartingWithId = request.params.startingWithId;
+		
+		function get_messages_by_conversationId_callback(err, rows, fields)
+		{
+			if (err) 
+			{
+				console.log(err);
+				response.status(500).send({success: false, msg: 'Internal error.'});
+			}
+			else
+			{
+				//First, find the index of the row that contains the specified message ID.
+				var indexOfSpecifiedMessage = findRowWithSpecifiedMessageId(rows, providedStartingWithId);
+				
+				//Next, validate that the parameters that the user provided are valid
+				//Send an error message if invalid.
+				var validInputs = validateCheckMessageInputs(response, providedLimit, indexOfSpecifiedMessage);
+				
+				if(validInputs)
+				{
+					var rowFirstIndex;
+					var rowLastIndex;
+					
+					//Next, determine the first and last record in the result set that we need to return.
+					if(beforeOrAfter == "before")
+					{
+						var rowLastIndex = indexOfSpecifiedMessage;
+						var rowFirstIndex = rowLastIndex - providedLimit + 1;
+						if(rowFirstIndex < 0)
+						{
+							rowFirstIndex = 0;
+						}
+					}
+					else if(beforeOrAfter == "after")
+					{
+						var rowFirstIndex = indexOfSpecifiedMessage;
+						var rowLastIndex = rowFirstIndex + providedLimit - 1;
+						if(rowLastIndex > rows.length - 1)
+						{
+							rowLastIndex = rows.length - 1;
+						}
+					}
+					
+					//We will load the first row, last row, and every row in between, into the response.
+					var returnArray = loadMessagesIntoArray(rows, rowFirstIndex, rowLastIndex);
+					response.json(returnArray); //TODO: need to mark messages as read.
+				}
+			}
+		}
+		
+		dal.get_messages_by_conversationId(connection, get_messages_by_conversationId_callback, providedConversationId);
+	}
+	
+	authenticate.checkToken(request, response, afterCheckTokenCallback);
+}
+
 module.exports = methods;
