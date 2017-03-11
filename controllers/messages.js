@@ -208,13 +208,8 @@ methods.getMessagesAfter = function(request, response, connection)
 	{
 		var providedConversationId = request.params.conversationId;
 		var providedLimit = request.params.limit;
-		if(providedLimit < 1)
-		{
-			providedLimit = 1
-		}
 		var providedStartingWithId = request.params.startingWithId;
-		var returnArray = [];
-		
+
 		function get_messages_by_conversationId_callback(err, rows, fields)
 		{
 			if (err) 
@@ -224,19 +219,30 @@ methods.getMessagesAfter = function(request, response, connection)
 			}
 			else
 			{
-				//First, determine the first and last record in the result set that we need to return.
-				var rowFirstIndex = findRowWithSpecifiedMessageId(rows, providedStartingWithId);
-				var rowLastIndex = rowLastIndex + providedLimit - 1;
-				if(rowLastIndex > rows.length - 1)
+				//First, find the index of the row that contains the specified message ID.
+				var indexOfSpecifiedMessage = findRowWithSpecifiedMessageId(rows, providedStartingWithId);
+				
+				//Next, validate that the parameters that the user provided are valid
+				//Send an error message if invalid.
+				var validInputs = validateCheckMessageInputs(response, providedLimit, indexOfSpecifiedMessage);
+				
+				if(validInputs)
 				{
-					rowLastIndex = rows.length - 1;
+					//First, determine the first and last record in the result set that we need to return.
+					var rowFirstIndex = indexOfSpecifiedMessage;
+					var rowLastIndex = rowFirstIndex + providedLimit - 1;
+					if(rowLastIndex > rows.length - 1)
+					{
+						console.log("rowLastIndex > rows.length - 1");
+						rowLastIndex = rows.length - 1;
+					}
+					
+					//We will load the first row, last row, and every row in between, into the response.
+					var returnArray = loadMessagesIntoArray(rows, rowFirstIndex, rowLastIndex);
+					
+					//TODO: need to mark messages as read.
+					response.json(returnArray);
 				}
-				
-				//We will load the first row, last row, and every row in between, into the response.
-				var returnArray = loadMessagesIntoArray(rows, rowFirstIndex, rowLastIndex);
-				
-				//TODO: need to mark messages as read.
-				response.json(returnArray);
 			}
 		}
 		
