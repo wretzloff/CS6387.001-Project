@@ -4,7 +4,7 @@ const should = chai.should();
 const chaiHttp = require('chai-http');
 chai.use(chaiHttp);
 var host = "http://localhost:3000";
-var isbn_13='9780672324536';
+var isbn_13='9780133778816';
 
 describe('GET /salePrice/thirdParty/isbn/', () => {
   it('should return list price', (done) => {
@@ -16,7 +16,6 @@ describe('GET /salePrice/thirdParty/isbn/', () => {
       res.status.should.eql(200);
       res.type.should.eql('application/json');
       res.body.should.include.keys('price','source','link');
-      res.body.price.should.eql('$64.99');
       done();
     });
   });
