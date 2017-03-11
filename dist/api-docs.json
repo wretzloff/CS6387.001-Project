@@ -933,7 +933,12 @@
 				      "token": {
 					      "type": "string",
 						  "default": "JWT eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.MQ.4p-Xcp_Aqs6evX2L8AylTbb1woTuxtlgL-Wg1QMXYYk"
-				      }
+				      },
+					  "userId": {
+					    "type": "integer",
+					    "format": "int",
+						"default": 1
+				    }
 			     }
 		},
 		"200myBooksResult": {

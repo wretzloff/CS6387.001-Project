@@ -51,7 +51,7 @@ methods.issueToken = function(request, response, connection)
 					{
 						//Using the internal user ID of the row that was just found, create a token and return it to the client.
 						var token = jwt.encode(rows[0].internalUserId, authenticationSecret);
-						response.json({success: true, token: 'JWT ' + token});
+						response.json({success: true, token: 'JWT ' + token, userId: rows[0].internalUserId});
 					}
 					else
 					{
