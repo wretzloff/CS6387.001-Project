@@ -748,7 +748,7 @@
                     "required": true,
                     "type": "integer",
                     "format": "int",
-                    "default": 1
+                    "default": 15
                 },
                 {
                     "name": "startingWithId",
@@ -757,7 +757,7 @@
                     "required": true,
                     "type": "integer",
                     "format": "int",
-                    "default": 1
+                    "default": 57
                 }],
                 "responses": {
                     "200": {
@@ -1305,9 +1305,8 @@
 				    "default": "Let's meet in the student union Friday afternoon. I can pay cash."
 			    },
 			    "unread": {
-				    "type": "integer",
-				    "format": "int",
-            "default": 1
+				    "type": "boolean",
+					"default": true
 			    }
 		    }
     },

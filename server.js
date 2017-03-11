@@ -128,6 +128,11 @@ var utdtextbookexchange_app = function() {
 			messages.getMessagesBefore(request, response, connection);
 		};
 		
+		self.getRoutes['/messages/:conversationId/limit/:limit/after/:startingWithId'] = function(request, response) 
+		{
+			messages.getMessagesAfter(request, response, connection);
+		};
+		
 		self.postRoutes['/messages'] = function(request, response) 
 		{
 			messages.sendMessage(request, response, connection);

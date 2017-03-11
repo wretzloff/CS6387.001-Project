@@ -166,7 +166,7 @@ methods.getMessagesBefore = function(request, response, connection)
 			providedLimit = 1
 		}
 		var providedStartingWithId = request.params.startingWithId;
-		var returnArray = [];
+		//var returnArray = [];
 		
 		function get_messages_by_conversationId_callback(err, rows, fields)
 		{
@@ -186,11 +186,52 @@ methods.getMessagesBefore = function(request, response, connection)
 				}
 				
 				//We will load the first row, last row, and every row in between, into the response.
-				for (i = rowFirstIndex; i <= rowLastIndex; i++) 
+				var returnArray = loadMessagesIntoArray(rows, rowFirstIndex, rowLastIndex);
+				
+				
+				//TODO: need to mark messages as read.
+				response.json(returnArray);
+			}
+		}
+		
+		dal.get_messages_by_conversationId(connection, get_messages_by_conversationId_callback, providedConversationId);
+	}
+	
+	authenticate.checkToken(request, response, afterCheckTokenCallback);
+}
+
+methods.getMessagesAfter = function(request, response, connection)
+{
+	function afterCheckTokenCallback(internalUserId)
+	{
+		var providedConversationId = request.params.conversationId;
+		var providedLimit = request.params.limit;
+		if(providedLimit < 1)
+		{
+			providedLimit = 1
+		}
+		var providedStartingWithId = request.params.startingWithId;
+		var returnArray = [];
+		
+		function get_messages_by_conversationId_callback(err, rows, fields)
+		{
+			if (err) 
+			{
+				console.log(err);
+				response.status(500).send({success: false, msg: 'Internal error.'});
+			}
+			else
+			{
+				//First, determine the first and last record in the result set that we need to return.
+				var rowFirstIndex = findRowWithSpecifiedMessageId(rows, providedStartingWithId);
+				var rowLastIndex = rowLastIndex + providedLimit - 1;
+				if(rowLastIndex > rows.length - 1)
 				{
-					var message = convertMessageRowToJson(rows[i]);
-					returnArray.push(message);
+					rowLastIndex = rows.length - 1;
 				}
+				
+				//We will load the first row, last row, and every row in between, into the response.
+				var returnArray = loadMessagesIntoArray(rows, rowFirstIndex, rowLastIndex);
 				
 				//TODO: need to mark messages as read.
 				response.json(returnArray);
@@ -302,7 +343,27 @@ function findRowWithSpecifiedMessageId(rows, providedStartingWithId)
 
 function convertMessageRowToJson(row)
 {
-	return {messageId: row.iD, to: row.to_InternalUserId, from: row.from_InternalUserId, messageDateTime: row.messageDateTime, messageContent: row.messageContent, unread: row.unread};
+	var unread;
+	if(row.unread)
+	{
+		unread = true;
+	}
+	else
+	{
+		unread = false;
+	}
+	return {messageId: row.iD, to: row.to_InternalUserId, from: row.from_InternalUserId, messageDateTime: row.messageDateTime, messageContent: row.messageContent, unread: unread};
+}
+
+function loadMessagesIntoArray(rows, firstIndex, lastIndex)
+{
+	var returnArray = [];
+	for (i = firstIndex; i <= lastIndex; i++) 
+	{
+		var message = convertMessageRowToJson(rows[i]);
+		returnArray.push(message);
+	}
+	return returnArray;
 }
 
 module.exports = methods;
