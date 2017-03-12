@@ -39,9 +39,8 @@ function fetch(isbn,response,callback){
 
 //9780133778816
 /*
-const {OperationHelper}=require('apac');
-var fs = require('fs');
-const helper=new OperationHelper({
+const OperationHelper =require('apac').OperationHelper;
+var helper=new OperationHelper({
 	awsId: 'AKIAJ3YH7GEDD7KSRQNA',
 	awsSecret: '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',
 	assocId: 'pqHU6FtV+X/LhCVSGwxlgzC5hfXJiaaVw8RszTgK'
