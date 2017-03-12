@@ -18,7 +18,8 @@ methods.getForSaleEntriesByIsbn = function(request, response, connection)
 				var forSaleEntriesArray = [];
 				for (var i in rows)
 				{
-					forSaleEntriesArray.push({forSaleId: rows[i].forSaleId, isbn: rows[i].isbn, author: rows[i].author, price: rows[i].price, description: rows[i].description, condition: rows[i].bookCondition});
+					var forSaleEntry = convertForSaleEntryRowToJson(rows[i]);
+					forSaleEntriesArray.push(forSaleEntry);
 				}
 				response.send(forSaleEntriesArray);
 			}
@@ -48,7 +49,8 @@ methods.getForSaleEntriesByUser = function(request, response, connection)
 				var forSaleEntriesArray = [];
 				for (var i in rows)
 				{
-					forSaleEntriesArray.push({forSaleId: rows[i].forSaleId, isbn: rows[i].isbn, author: rows[i].author, price: rows[i].price, description: rows[i].description, condition: rows[i].bookCondition});
+					var forSaleEntry = convertForSaleEntryRowToJson(rows[i]);
+					forSaleEntriesArray.push(forSaleEntry);
 				}
 				response.send(forSaleEntriesArray);
 			}
@@ -115,6 +117,11 @@ methods.postBookForSale = function(request, response, connection)
 	}
 			
 	authenticate.checkToken(request, response, afterCheckTokenCallback)
+}
+
+function convertForSaleEntryRowToJson(row)
+{
+	return {forSaleId: row.forSaleId, isbn: row.isbn, author: row.author, price: row.price, description: row.description, condition: row.bookCondition};
 }
 
 module.exports = methods;
