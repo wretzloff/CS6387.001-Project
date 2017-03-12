@@ -56,7 +56,6 @@ methods.buyBook = function(request, response, connection)
 		
 		function sendAutomatedMessageFromBuyerToSeller()
 		{
-			//TODO: fix up the automated message to use the book's title instead of ISBN.
 			dal.insert_Message(connection, insert_Message_callback, sellerId, buyerId, buyerNickname + " wants to buy your book " + bookTitle + "!", convId)
 		}
 		
