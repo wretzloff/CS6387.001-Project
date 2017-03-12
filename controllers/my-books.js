@@ -1,6 +1,7 @@
 var http 				= require('http');
 var https 				= require('https');
 var cheerio 			= require('cheerio');
+var fs 					= require('fs');
 
 var authenticate        = require('./authenticate');
 var dal         		= require('../data_access/dal');
@@ -8,7 +9,6 @@ var dal         		= require('../data_access/dal');
 var methods = {};
 
 /*const {OperationHelper}=require('apac');
-var fs = require('fs');
 const helper=new OperationHelper({
 	awsId: 'AKIAJ3YH7GEDD7KSRQNA',
 	awsSecret: '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',
