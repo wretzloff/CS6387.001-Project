@@ -969,6 +969,11 @@
 				      "msg": {
 					      "type": "string",
 						  "default": "Book has been posted for sale."
+				      },
+					  "forSaleId": {
+					      "type": "integer",
+						  "format": "int",
+						  "default": 265
 				      }
 			     }
 		},

@@ -103,7 +103,7 @@ methods.postBookForSale = function(request, response, connection)
 		{
 			if(!err)
 			{
-				response.send({success: true, msg: 'Book has been posted for sale.'}); 
+				response.send({success: true, msg: 'Book has been posted for sale.', forSaleId: result.insertId}); 
 			}	
 			else
 			{
