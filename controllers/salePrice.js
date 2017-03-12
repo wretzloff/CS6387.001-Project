@@ -1,7 +1,43 @@
 var authenticate         		= require('./authenticate');
 var dal         				= require('../data_access/dal');
-var http 				= require('http');
+var http 						= require('http');
+var amazon 						= require('amazon-product-api');
 var methods = {};
+
+var client = amazon.createClient({
+  awsId: "AKIAJ3YH7GEDD7KSRQNA",
+  awsSecret: "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",
+  awsTag: "pqHU6FtV+X/LhCVSGwxlgzC5hfXJiaaVw8RszTgK"
+});
+
+
+function fetch(isbn,response,callback){	
+	client.itemLookup({
+		searchIndex: 'Books',
+		idType: 'ISBN',
+		itemId: '9780133778816',
+		responseGroup: 'ItemAttributes,Offers,Images'
+	}, 
+	function(err, results, response) {
+		if (err) 
+		{
+			console.log(err);
+		} 
+		else 
+		{
+			console.log(results);
+			var res = new Object();
+			res['price']='50.00';
+			res['lowestprice']='49.00';
+			res['link']='https://www.amazon.com/Starting-Control-Structures-through-Objects/dp/0133778819%3FSubscriptionId%3DAKIAJ3YH7GEDD7KSRQNA%26tag%3DpqHU6FtV+X/LhCVSGwxlgzC5hfXJiaaVw8RszTgK%26linkCode%3Dxm2%26camp%3D2025%26creative%3D165953%26creativeASIN%3D0133778819';
+			callback(null, res);
+		}
+	});
+}
+
+
+
+//9780133778816
 /*
 const {OperationHelper}=require('apac');
 var fs = require('fs');
@@ -154,25 +190,26 @@ function fetchLowestPrice(isbn,response,callback){
 
 methods.getThirdPartySalePrice = function(request, response, connection)
 {	
-	/*//call back when price is fetched
+	//call back when price is fetched
 	var getThirdPartySalePriceCallbackFunction = function(ListPrice,DetailPageURL)
 	{
+		console.log('in callback!!');
+		console.log("ListPrice: " + ListPrice);
+		console.log("DetailPageURL: " + DetailPageURL);
 		response.contentType('application/json');
 		response.json({'price': ListPrice, 'source': 'Amazon', 'link':DetailPageURL});
 
-	}*/
+	}
 	
 	function afterCheckTokenCallback(internalUserId)
 	{
-		/*//isbn should be 13digits now
-
+		//isbn should be 13 digits
 		var isbn_13 = request.params.isbn;	
 
 		fetch(isbn_13,response,function(err,data){
 			getThirdPartySalePriceCallbackFunction(data.price,data.link);
 		});
-		*/	
-		response.send("endpoint temporarily disabled");
+			
 	}
 	authenticate.checkToken(request, response, afterCheckTokenCallback);
 	
