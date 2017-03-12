@@ -85,7 +85,6 @@ methods.getPossibleConditionTypes = function(request, response, connection)
 	dal.get_possibleConditionTypes(connection, get_possibleConditionTypes_callback);
 }
 
-//TODO: In addition to the "book has been posted for sale" message, also return the For Sale ID of the new record.
 methods.postBookForSale = function(request, response, connection)
 {
 	function afterCheckTokenCallback(internalUserId)
