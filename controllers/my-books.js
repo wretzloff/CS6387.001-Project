@@ -1,7 +1,7 @@
 var http 				= require('http');
 var https 				= require('https');
 var cheerio 			= require('cheerio');
-var fs 					= require('fs');
+var fs 					= require('fs'); //TODO: is this needed anymore?
 
 var authenticate        = require('./authenticate');
 var dal         		= require('../data_access/dal');
