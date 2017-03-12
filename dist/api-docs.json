@@ -1162,28 +1162,33 @@
 		"forSaleRecord": {
 			    "type": "object",
 			    "properties": {
-				      "forSaleId": {
+					"forSaleId": {
 						"type": "integer",
 						"format": "int",
 						"default": 217
-				      },
-				      "isbn": {
-					      "type": "string",
-						    "default": "9780133778816"
-				      },
+				    },
+				    "isbn": {
+					    "type": "string",
+						"default": "9780133778816"
+				    },
 				      "author": {
-					      "type": "string",
-						    "default": "GADDIS"
-				      },
-				      "price": {
-					      "type": "number",
-					      "format": "double",
-						    "default": 37.92
-				      },
-				      "description": {
-					      "type": "string",
-						    "default": "Light wear, some hilighting"
-				      }
+					    "type": "string",
+						"default": "GADDIS"
+				    },
+				    "price": {
+					    "type": "number",
+					    "format": "double",
+						"default": 37.92
+				    },
+				    "description": {
+					    "type": "string",
+						"default": "Light wear, some hilighting"
+				    },
+					"condition": {
+						"type": "integer",
+						"format": "int",
+						"default": 0
+				    }
 			     }
 		},
 		"transactionRecord": {

@@ -5,8 +5,6 @@ var authenticate         		= require('./authenticate');
 
 var methods = {};
 
-//TODO: don't simply return the rows that we got from the database, because if the database columns change, then the format of the JSON will also change.
-//Instead, define names in the JSON that are independent of the database columns.
 methods.getForSaleEntriesByIsbn = function(request, response, connection)
 {
 	function afterCheckTokenCallback(internalUserId)
@@ -17,7 +15,12 @@ methods.getForSaleEntriesByIsbn = function(request, response, connection)
 		{
 			if (!err)
 			{
-				response.json(rows);
+				var forSaleEntriesArray = [];
+				for (var i in rows)
+				{
+					forSaleEntriesArray.push({forSaleId: rows[i].forSaleId, isbn: rows[i].isbn, author: rows[i].author, price: rows[i].price, description: rows[i].description, condition: rows[i].bookCondition});
+				}
+				response.send(forSaleEntriesArray);
 			}
 			else
 			{
@@ -32,8 +35,6 @@ methods.getForSaleEntriesByIsbn = function(request, response, connection)
 	authenticate.checkToken(request, response, afterCheckTokenCallback);
 }
 
-//TODO: don't simply return the rows that we got from the database, because if the database columns change, then the format of the JSON will also change.
-//Instead, define names in the JSON that are independent of the database columns.
 methods.getForSaleEntriesByUser = function(request, response, connection)
 {
 	function afterCheckTokenCallback(internalUserId)
@@ -44,7 +45,12 @@ methods.getForSaleEntriesByUser = function(request, response, connection)
 		{
 			if (!err)
 			{
-				response.json(rows);
+				var forSaleEntriesArray = [];
+				for (var i in rows)
+				{
+					forSaleEntriesArray.push({forSaleId: rows[i].forSaleId, isbn: rows[i].isbn, author: rows[i].author, price: rows[i].price, description: rows[i].description, condition: rows[i].bookCondition});
+				}
+				response.send(forSaleEntriesArray);
 			}
 			else
 			{
