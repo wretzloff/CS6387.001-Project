@@ -250,33 +250,177 @@ methods.getPossibleTransactionStatuses = function(request, response, connection)
 	dal.get_possibleTransactionStatuses(connection, get_possibleTransactionStatuses_callback);
 }
 
-//TODO: need to implement this
+/* TODO:
+	dynamically grab the numbers we need, pulling them from the DB into an enum or somesuch
+ */
 methods.markTransactionComplete = function(request, response, connection)
 {
+	var requesterId;
+	var targetStatus;
+	
+	function update_transaction_status_callback(err, rows, fields)
+	{
+		if(!err)
+		{
+		response.send({success: true, msg: 'Message has been marked ' + targetStatus + '.'});
+		}
+		else
+		{
+			console.log(err);
+			response.status(500).send({success: false, msg: 'Internal error.'});
+		}
+	}
+	
+	function get_transactioninfo_callback(err, rows, fields)
+	{
+		if(!err)
+		{
+			var buyerId = rows[0].buyerId;
+			var sellerId = rows[0].sellerId;
+			var status = rows[0].status;
+			
+			if(requesterId === buyerId)
+			{
+				switch(status)
+				{
+					case 0: //Pending
+						targetStatus = 'Completed by Buyer';
+						dal.update_transaction_status(connection, update_transaction_status_callback, providedTransactionId, 3);
+						break;
+					case 4: //Completed by Seller
+						targetStatus = 'Completed';
+						dal.update_transaction_status(connection, update_transaction_status_callback, providedTransactionId, 1);
+						break;
+					default:
+						response.status(400).send({success: false, msg: 'Transaction was not in Pending or Completed By Seller status'});
+						break;
+				}
+			}
+			else if(requesterId === sellerId)
+			{
+				switch(status)
+				{
+					case 0: //Pending
+						targetStatus = 'Completed by Seller';
+						dal.update_transaction_status(connection, update_transaction_status_callback, providedTransactionId, 4);
+						break;
+					case 3: //Completed by Buyer
+						targetStatus = 'Completed';
+						dal.update_transaction_status(connection, update_transaction_status_callback, providedTransactionId, 1);
+						break;
+					default:
+						response.status(400).send({success: false, msg: 'Transaction was not in Pending or Completed By Buyer status'});
+						break;
+				}
+			}
+			else
+			{
+				console.log(requsterId + " attempted to close a transaction they were not involved in");
+				response.status(403).send({success: false, msg: 'Not involved in that transaction.'});
+			}
+		}
+		else
+		{
+			console.log(err);
+			response.status(500).send({success: false, msg: 'Internal error.'});
+		}
+	}
+	
 	function afterCheckTokenCallback(internalUserId)
 	{
+		requesterId = internalUserId;
+		
 		var providedTransactionId = request.params.transactionId;
 		console.log(providedTransactionId);
 		
-		//Insert code here to mark the specified Transaction record as complete......
-		console.log('Insert code here to mark the specified Transaction record as complete......');
-		response.send({success: true, msg: 'Transaction has been marked complete.'});
+		dal.get_transaction_participants_and_status_by_transactionId(connection, providedTransactionId, get_transactioninfo_callback);
 	}
 	
 	authenticate.checkToken(request, response, afterCheckTokenCallback);
 }
 
-//TODO: need to implement this
 methods.markTransactionCancelled = function(request, response, connection)
 {
+	var requesterId;
+	var targetStatus;
+	var targetStatusNumber;
+	
+	function update_transaction_status_callback(err, rows, fields)
+	{
+		if(!err)
+		{
+		response.send({success: true, msg: 'Message has been marked ' + targetStatus + '.'});
+		}
+		else
+		{
+			console.log(err);
+			response.status(500).send({success: false, msg: 'Internal error.'});
+		}
+	}
+	
+	function get_transactioninfo_callback(err, rows, fields)
+	{
+		if(!err)
+		{
+			var buyerId = rows[0].buyerId;
+			var sellerId = rows[0].sellerId;
+			var status = rows[0].status;
+			
+			if(requesterId === buyerId)
+			{
+				switch(status)
+				{
+					case 0: //Pending
+						targetStatus = 'Cancelled by Buyer';
+						dal.update_transaction_status(connection, update_transaction_status_callback, providedTransactionId, 5);
+						break;
+					case 4: //Cancelled by Seller
+						targetStatus = 'Cancelled';
+						dal.update_transaction_status(connection, update_transaction_status_callback, providedTransactionId, 2);
+						break;
+					default:
+						response.status(400).send({success: false, msg: 'Transaction was not in Pending or Cancelled By Seller status'});
+						break;
+				}
+			}
+			else if(requesterId === sellerId)
+			{
+				switch(status)
+				{
+					case 0: //Pending
+						targetStatus = 'Cancelled by Seller';
+						dal.update_transaction_status(connection, update_transaction_status_callback, providedTransactionId, 6);
+						break;
+					case 3: //Cancelled by Buyer
+						targetStatus = 'Cancelled';
+						dal.update_transaction_status(connection, update_transaction_status_callback, providedTransactionId, 2);
+						break;
+					default:
+						response.status(400).send({success: false, msg: 'Transaction was not in Pending or Cancelled By Buyer status'});
+						break;
+				}
+			}
+			else
+			{
+				console.log(requsterId + " attempted to close a transaction they were not involved in");
+				response.status(403).send({success: false, msg: 'Not involved in that transaction.'});
+			}
+		}
+		else
+		{
+			console.log(err);
+			response.status(500).send({success: false, msg: 'Internal error.'});
+		}
+	}
+	
 	function afterCheckTokenCallback(internalUserId)
 	{
+		requesterId = internalUserId;
+		
 		var providedTransactionId = request.params.transactionId;
 		console.log(providedTransactionId);
 		
-		//Insert code here to mark the specified Transaction record as cancelled......
-		console.log('Insert code here to mark the specified Transaction record as cancelled......');
-		response.send({success: true, msg: 'Transaction has been cancelled.'});
+		dal.get_transaction_participants_and_status_by_transactionId(connection, providedTransactionId, get_transactioninfo_callback);
 	}
 	
 	authenticate.checkToken(request, response, afterCheckTokenCallback);
