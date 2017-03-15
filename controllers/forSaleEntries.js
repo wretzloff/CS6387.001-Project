@@ -5,6 +5,7 @@ var authenticate         		= require('./authenticate');
 
 var methods = {};
 
+//TODO: in addition to returning condition code, need to also return the condition description - "Like New", etc.
 methods.getForSaleEntriesByIsbn = function(request, response, connection)
 {
 	function afterCheckTokenCallback(internalUserId)

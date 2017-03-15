@@ -5,6 +5,7 @@ var authenticationSecret 		= 'thisIsASecretKeyThatWillPickedRandomly';
 
 var methods = {};
 
+//TODO: in addition to returning the token and user ID, also return the user's nickname.
 methods.checkToken = function(request, response, callbackFunction)
 {
 	//First, check that the token was provided.
