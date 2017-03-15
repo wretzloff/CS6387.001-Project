@@ -36,6 +36,9 @@ methods.getForSaleEntriesByIsbn = function(request, response, connection)
 	authenticate.checkToken(request, response, afterCheckTokenCallback);
 }
 
+//TODO: in addition to returning For Sale entries that have no transactions or cancelled transactions, need to also return entries that have a pending transaction. 
+//TODO: for each For Sale entry that we return, it needs to have a status (For Sale, On Hold, or Sold).
+
 methods.getForSaleEntriesByUser = function(request, response, connection)
 {
 	function afterCheckTokenCallback(internalUserId)
