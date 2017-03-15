@@ -8,7 +8,6 @@ var dal         		= require('../data_access/dal');
 
 var methods = {};
 
-const {OperationHelper}=require('apac');
 const OperationHelper =require('apac').OperationHelper;
 var helper=new OperationHelper({
 	awsId: 'AKIAJ3YH7GEDD7KSRQNA',
