@@ -4,41 +4,10 @@ var http 						= require('http');
 var amazon 						= require('amazon-product-api');
 var methods = {};
 
-var client = amazon.createClient({
-  awsId: "AKIAJ3YH7GEDD7KSRQNA",
-  awsSecret: "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",
-  awsTag: "pqHU6FtV+X/LhCVSGwxlgzC5hfXJiaaVw8RszTgK"
-});
-
-
-function fetch(isbn,response,callback){	
-	client.itemLookup({
-		searchIndex: 'Books',
-		idType: 'ISBN',
-		itemId: '9780133778816',
-		responseGroup: 'ItemAttributes,Offers,Images'
-	}, 
-	function(err, results, response) {
-		if (err) 
-		{
-			console.log(err);
-		} 
-		else 
-		{
-			console.log(results);
-			var res = new Object();
-			res['price']='50.00';
-			res['lowestprice']='49.00';
-			res['link']='https://www.amazon.com/Starting-Control-Structures-through-Objects/dp/0133778819%3FSubscriptionId%3DAKIAJ3YH7GEDD7KSRQNA%26tag%3DpqHU6FtV+X/LhCVSGwxlgzC5hfXJiaaVw8RszTgK%26linkCode%3Dxm2%26camp%3D2025%26creative%3D165953%26creativeASIN%3D0133778819';
-			callback(null, res);
-		}
-	});
-}
-
 
 
 //9780133778816
-/*
+
 const OperationHelper =require('apac').OperationHelper;
 var helper=new OperationHelper({
 	awsId: 'AKIAJ3YH7GEDD7KSRQNA',
@@ -185,7 +154,7 @@ function fetchLowestPrice(isbn,response,callback){
 		  });
 
 }
-*/
+
 
 methods.getThirdPartySalePrice = function(request, response, connection)
 {	
@@ -216,7 +185,7 @@ methods.getThirdPartySalePrice = function(request, response, connection)
 
 methods.getSuggestedSalePrice = function(request, response, connection)
 {
-	/*var res;
+	var res;
 	var isbn;
 	//	call back when price is fetched
 	var getSuggestSalePriceCallbackFunction = function(price,isbn_org,cheaperSeller)
@@ -262,10 +231,10 @@ methods.getSuggestedSalePrice = function(request, response, connection)
 		console.log("output"+outputprice);
 		getSuggestSalePriceCallbackFunction(outputprice,isbn,cheaperSeller);
 	}
-	*/
+	
 	function afterCheckTokenCallback(internalUserId)
 	{
-		/*//isbn should be 13digits now
+		//isbn should be 13digits now
 		var isbn_13 = request.params.isbn;
 		isbn=isbn_13;
 		fetchLowestPrice(isbn_13,response,function(err,data){
@@ -273,8 +242,7 @@ methods.getSuggestedSalePrice = function(request, response, connection)
 			console.log("data:"+data.price);
 			res=data;
 			dal.get_forSaleEntries_by_isbn(connection, get_lowest_price_by_isbn_callback,isbn_13);
-		});*/
-		response.send("endpoint temporarily disabled");
+		});
 	}
 	authenticate.checkToken(request, response, afterCheckTokenCallback);
 }

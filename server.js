@@ -270,6 +270,7 @@ var utdtextbookexchange_app = function() {
     self.start = function() {
         //  Start the app on the specific interface (and port).
         self.app.listen(self.port, self.ipaddress, function() {
+	    console.log("var verify:",server_port,server_ip_address);
             console.log('%s: Node server started on %s:%d ...',
                         Date(Date.now() ), self.ipaddress, self.port);
         });
