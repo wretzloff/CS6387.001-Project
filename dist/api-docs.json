@@ -1193,6 +1193,10 @@
 						"type": "integer",
 						"format": "int",
 						"default": 0
+				    },
+					"seller_nickname": {
+					    "type": "string",
+						"default": "Will R"
 				    }
 			     }
 		},
