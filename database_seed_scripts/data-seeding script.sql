@@ -20,7 +20,10 @@ insert into condition_type (id, description) values ('4', 'Used - Acceptable');
 insert into transactionStatus_type (id, description) values ('0', 'Pending');
 insert into transactionStatus_type (id, description) values ('1', 'Completed');
 insert into transactionStatus_type (id, description) values ('2', 'Cancelled');
-
+insert into transactionStatus_type (id, description) values ('3', 'Completed by Buyer');
+insert into transactionStatus_type (id, description) values ('4', 'Completed by Seller');
+insert into transactionStatus_type (id, description) values ('5', 'Cancelled by Buyer');
+insert into transactionStatus_type (id, description) values ('6', 'Cancelled by Seller');
 
 
 

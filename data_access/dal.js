@@ -60,6 +60,16 @@ methods.get_possibleTransactionStatuses = function(connection, callbackFunction)
 	connection.query("select * from transactionStatus_type", callbackFunction);
 }
 
+methods.get_transaction_participants_and_status_by_transactionId = function(connection, callbackFunction, transactionId)
+{
+	connection.query("SELECT Transactions.buyer_InternalUserId, ForSale.seller_InternalUserId, Transactions.status FROM Transactions INNER JOIN ForSale ON Transactions.forSaleId=ForSale.iD WHERE Transactions.iD=" + transactionId, callbackFunction);
+}
+
+methods.update_transaction_status = function(connection, callbackFunction, transactionId, status)
+{
+	connection.query("UPDATE Transactions SET Status="+status+" WHERE iD="+transactionId, callbackFunction);
+}
+
 methods.get_conversation_by_iD = function(connection, callbackFunction, conversationId)
 {
 	//conversationId can be either a single integer or an array of integers. Either way, it will get automatically transalated properly into the query.
