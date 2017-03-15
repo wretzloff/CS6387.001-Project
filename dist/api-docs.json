@@ -938,7 +938,11 @@
 					    "type": "integer",
 					    "format": "int",
 						"default": 1
-				    }
+					  },
+					  "userNickname": {
+					      "type": "string",
+						  "default": "Will R"
+				      }
 			     }
 		},
 		"200myBooksResult": {
@@ -1193,6 +1197,10 @@
 						"type": "integer",
 						"format": "int",
 						"default": 0
+				    },
+					"conditionDescription": {
+					    "type": "string",
+						"default": "Used - Like New"
 				    },
 					"seller_nickname": {
 					    "type": "string",

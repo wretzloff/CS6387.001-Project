@@ -5,7 +5,6 @@ var authenticationSecret 		= 'thisIsASecretKeyThatWillPickedRandomly';
 
 var methods = {};
 
-//TODO: in addition to returning the token and user ID, also return the user's nickname.
 methods.checkToken = function(request, response, callbackFunction)
 {
 	//First, check that the token was provided.
@@ -52,7 +51,7 @@ methods.issueToken = function(request, response, connection)
 					{
 						//Using the internal user ID of the row that was just found, create a token and return it to the client.
 						var token = jwt.encode(rows[0].internalUserId, authenticationSecret);
-						response.json({success: true, token: 'JWT ' + token, userId: rows[0].internalUserId});
+						response.json({success: true, token: 'JWT ' + token, userId: rows[0].internalUserId, userNickname: rows[0].nickname});
 					}
 					else
 					{
