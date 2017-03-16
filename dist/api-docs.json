@@ -1180,7 +1180,11 @@
 					    "type": "string",
 						"default": "2017-01-22 00:02:40"
 				    },
-				    "isbn": {
+				    "status": {
+					    "type": "string",
+						"default": "For Sale"
+				    },
+					"isbn": {
 					    "type": "string",
 						"default": "9780133778816"
 				    },

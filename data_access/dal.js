@@ -17,19 +17,16 @@ methods.get_dummyUserEnrollment_by_internalUserId = function(connection, callbac
 	connection.query("SELECT * from dummy_User_Enrollment where internalUserId = '" + internalUserId + "'", callbackFunction)
 }
 
-methods.get_forSaleEntries_by_isbn = function(connection, callbackFunction, isbn)
+methods.get_open_forSaleEntries_by_isbn = function(connection, callbackFunction, isbn)
 {
-	connection.query("SELECT a.iD as forSaleId, a.postedDateTime, a.isbn, a.author, a.title, a.price, a.description, a.bookCondition, d.description as 'bookConditionDescription',c.nickname from ForSale a left outer join Transactions b on a.iD=b.forSaleId left outer join User c on a.seller_InternalUserId=c.internalUserId left outer join condition_type d on a.bookCondition=d.id where a.ISBN = '" + isbn + "' and (b.status is null or b.status = '2')", callbackFunction);
+	//This will get For Sale entries for the given ISBN that have either no associated transactions, or only cancelled transactions.
+	connection.query("SELECT a.iD as forSaleId, a.postedDateTime, 'For Sale' as 'status', a.isbn, a.author, a.title, a.price, a.description, a.bookCondition, d.description as 'bookConditionDescription',c.nickname from ForSale a left outer join Transactions b on a.iD=b.forSaleId left outer join User c on a.seller_InternalUserId=c.internalUserId left outer join condition_type d on a.bookCondition=d.id where a.ISBN = '" + isbn + "' and (b.status is null or b.status = '2')", callbackFunction);
 }	
 
-methods.get_forSaleEntries_by_internalUserId = function(connection, callbackFunction, internalUserId)
+methods.get_open_forSaleEntries_by_internalUserId = function(connection, callbackFunction, internalUserId)
 {
-	//SELECT a.iD as forSaleId, a.postedDateTime, a.isbn,a.author,a.price,a.description,a.bookCondition, d.description as 'bookConditionDescription',c.nickname, b.status as 'transactionStatus' 
-	//from ForSale a 
-	//left outer join Transactions b on a.iD=b.forSaleId 
-	//left outer join User c on a.seller_InternalUserId=c.internalUserId 
-	//left outer join condition_type d on a.bookCondition=d.id where a.seller_InternalUserId = 1 and (b.status <> '1')
-	connection.query("SELECT a.iD as forSaleId, a.postedDateTime, a.isbn, a.author, a.title, a.price,a.description,a.bookCondition, d.description as 'bookConditionDescription',c.nickname from ForSale a left outer join Transactions b on a.iD=b.forSaleId left outer join User c on a.seller_InternalUserId=c.internalUserId left outer join condition_type d on a.bookCondition=d.id where a.seller_InternalUserId = '" + internalUserId + "' and (b.status is null or b.status = '2')", callbackFunction);
+	//This will get For Sale entries for the given user id that have either no associated transactions, or only cancelled transactions.
+	connection.query("SELECT a.iD as forSaleId, a.postedDateTime, 'For Sale' as 'status', a.isbn, a.author, a.title, a.price,a.description,a.bookCondition, d.description as 'bookConditionDescription',c.nickname from ForSale a left outer join Transactions b on a.iD=b.forSaleId left outer join User c on a.seller_InternalUserId=c.internalUserId left outer join condition_type d on a.bookCondition=d.id where a.seller_InternalUserId = '" + internalUserId + "' and (b.status is null or b.status = '2')", callbackFunction);
 }
 
 methods.get_forSaleEntries_by_iD = function(connection, callbackFunction, iD)

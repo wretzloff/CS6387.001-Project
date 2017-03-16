@@ -30,7 +30,7 @@ methods.getForSaleEntriesByIsbn = function(request, response, connection)
 			}
 		}
 		
-		dal.get_forSaleEntries_by_isbn(connection, get_forSaleEntries_by_isbn_callback, providedIsbn);
+		dal.get_open_forSaleEntries_by_isbn(connection, get_forSaleEntries_by_isbn_callback, providedIsbn);
 	}
 			
 	authenticate.checkToken(request, response, afterCheckTokenCallback);
@@ -45,7 +45,7 @@ methods.getForSaleEntriesByUser = function(request, response, connection)
 	{
 		var providedUserId = request.params.userId;
 		
-		function get_forSaleEntries_by_internalUserId_callback(err, rows, fields)
+		function get_open_forSaleEntries_by_internalUserId_callback(err, rows, fields)
 		{
 			if (!err)
 			{
@@ -64,7 +64,7 @@ methods.getForSaleEntriesByUser = function(request, response, connection)
 			}
 		}
 		
-		dal.get_forSaleEntries_by_internalUserId(connection, get_forSaleEntries_by_internalUserId_callback, providedUserId);
+		dal.get_open_forSaleEntries_by_internalUserId(connection, get_open_forSaleEntries_by_internalUserId_callback, providedUserId);
 	}
 			
 	authenticate.checkToken(request, response, afterCheckTokenCallback);
@@ -123,7 +123,7 @@ methods.postBookForSale = function(request, response, connection)
 
 function convertForSaleEntryRowToJson(row)
 {
-	return {forSaleId: row.forSaleId, datePosted: row.postedDateTime, isbn: row.isbn, author: row.author, title: row.title, price: row.price, description: row.description, condition: row.bookCondition, conditionDescription: row.bookConditionDescription, seller_nickname: row.nickname};
+	return {forSaleId: row.forSaleId, datePosted: row.postedDateTime, status: row.status, isbn: row.isbn, author: row.author, title: row.title, price: row.price, description: row.description, condition: row.bookCondition, conditionDescription: row.bookConditionDescription, seller_nickname: row.nickname};
 }
 
 module.exports = methods;
