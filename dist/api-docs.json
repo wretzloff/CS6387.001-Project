@@ -1184,9 +1184,13 @@
 					    "type": "string",
 						"default": "9780133778816"
 				    },
-				      "author": {
+				    "author": {
 					    "type": "string",
 						"default": "GADDIS"
+				    },
+					"title": {
+					    "type": "string",
+						"default": "STARTING OUT WITH C++ FROM CNTRL (LOOSEPGS)(W/OUT ACCESS)"
 				    },
 				    "price": {
 					    "type": "number",

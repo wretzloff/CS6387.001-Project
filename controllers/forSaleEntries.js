@@ -123,7 +123,7 @@ methods.postBookForSale = function(request, response, connection)
 
 function convertForSaleEntryRowToJson(row)
 {
-	return {forSaleId: row.forSaleId, datePosted: row.postedDateTime, isbn: row.isbn, author: row.author, price: row.price, description: row.description, condition: row.bookCondition, conditionDescription: row.bookConditionDescription, seller_nickname: row.nickname};
+	return {forSaleId: row.forSaleId, datePosted: row.postedDateTime, isbn: row.isbn, author: row.author, title: row.title, price: row.price, description: row.description, condition: row.bookCondition, conditionDescription: row.bookConditionDescription, seller_nickname: row.nickname};
 }
 
 module.exports = methods;
