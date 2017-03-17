@@ -204,12 +204,28 @@ methods.getTransactionsByUser = function(request, response, connection)
 {
 	function afterCheckTokenCallback(internalUserId)
 	{
-		//Insert code here to select all Transactions for this internalUserId where the transaction status is 0 (for Pending).
-		//Join the Transaction table to the ForSale table to get information about the book being bought/sold, like the book title, author, price, etc.
-		var transactionsArray = [];
-		transactionsArray.push({iD: '3', buyerOrSeller: 'seller', buyer_Nickname: 'Daren C', buyer_InternalUserId: '2', transactionDateTime: '2017-02-22 00:02:40', satus: 'Pending', conversationId: 1,  title: 'Software Engineering for Dummies', author: 'Wallace Wang', ISBN: '9780470108543', price: '32.67'});
-		transactionsArray.push({iD: '8', buyerOrSeller: 'buyer', seller_Nickname: 'Jonathan R', seller_InternalUserId: '5', transactionDateTime: '2017-02-24 00:07:41', satus: 'Pending', conversationId: 2,  title: 'Intermediate Algebra', author: 'Alan S. Tussy', ISBN: '9781111567675', price: '88.00'});
-		response.send(transactionsArray);
+		var providedUserId = request.params.userId;
+		function get_transactionsByUser_callback(err,rows,fields)
+		{
+			if (!err)
+			{
+				//Insert code here to select all Transactions for this internalUserId where the transaction status is 0 (for Pending).
+				//Join the Transaction table to the ForSale table to get information about the book being bought/sold, like the book title, author, price, etc.
+				var transactionsArray = [];
+				for (var i in rows)
+					{
+						var transactions = convertTransactionsRowToJson(rows[i]);
+						transactionsArray.push(transactions);
+					}
+				response.send(transactionsArray);
+			}
+			else
+			{
+				console.log(err);
+				response.status(500).send({success: false, msg: 'Internal error.'});
+			}
+		}
+		dal.get_possibletransactionsByUser(connection, get_transactionsByUser_callback, providedUserId);
 	}
 	
 	authenticate.checkToken(request, response, afterCheckTokenCallback);
@@ -220,7 +236,6 @@ methods.getTransactionById = function(request, response, connection)
 	function afterCheckTokenCallback(internalUserId)
 	{
 		var providedTransactionId = parseInt(request.params.transactionId);
-		console.log(providedTransactionId);
 		
 		//Insert code here to select from the Transaction table where the transaction ID is providedTransactionId.
 		function get_possibleTransactionsById_callback(err, rows, fields)
@@ -379,5 +394,8 @@ methods.markTransactionCancelled = function(request, response, connection)
 	
 	authenticate.checkToken(request, response, afterCheckTokenCallback);
 }
-
+function convertTransactionsRowToJson(row)
+{
+return {nickname:row.nickname,netId:row.netId,transactionId:row.transactionId,isbn:row.isbn,author:row.author,price:row.price,description:row.description,bookCondition:row.bookCondition,bookConditionDescription:row.bookConditionDescription,buyer_InternalUserId: row.buyer_InternalUserId, transactionDateTime: row.transactionDateTime, transactionStatus: row.status, conversationId: row.conversationId, forSaleId: row.forSaleId};
+}
 module.exports = methods;
