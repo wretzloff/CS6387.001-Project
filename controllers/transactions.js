@@ -215,7 +215,6 @@ methods.getTransactionsByUser = function(request, response, connection)
 	authenticate.checkToken(request, response, afterCheckTokenCallback);
 }
 
-//TODO: need to implement this
 methods.getTransactionById = function(request, response, connection)
 {
 	function afterCheckTokenCallback(internalUserId)

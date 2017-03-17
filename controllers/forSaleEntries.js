@@ -36,26 +36,58 @@ methods.getForSaleEntriesByIsbn = function(request, response, connection)
 	authenticate.checkToken(request, response, afterCheckTokenCallback);
 }
 
-//TODO: in addition to returning For Sale entries that have no transactions or cancelled transactions, need to also return entries that have a pending transaction. 
-//TODO: for each For Sale entry that we return, it needs to have a status (For Sale, On Hold, or Sold).
-
+//TODO: for any For Sale entries we return with a status of On Hold, need to also return the transaction ID of the pending transaction. 
 methods.getForSaleEntriesByUser = function(request, response, connection)
 {
 	function afterCheckTokenCallback(internalUserId)
 	{
+		//Get the parameters from the HTTP GET request
 		var providedUserId = request.params.userId;
+
+		//Declare variables that will be set and used throughout this request.		
+		var forSaleEntriesArray = [];
 		
-		function get_open_forSaleEntries_by_internalUserId_callback(err, rows, fields)
+		function get_pending_forSaleEntries_by_internalUserId_callback(err, rows, fields)
 		{
 			if (!err)
 			{
-				var forSaleEntriesArray = [];
+				//Loop through the records that were returned to the database and load them into the response array.
 				for (var i in rows)
 				{
 					var forSaleEntry = convertForSaleEntryRowToJson(rows[i]);
 					forSaleEntriesArray.push(forSaleEntry);
 				}
+				
+				//Now that we have finished loading response array, send it to the client.
 				response.send(forSaleEntriesArray);
+			}
+			else
+			{
+				console.log(err);
+				response.status(500).send({success: false, msg: 'Internal error.'});
+			}
+		}
+		
+		function getOpenTransactionsForThisUser()
+		{
+			dal.get_pending_forSaleEntries_by_internalUserId(connection, get_pending_forSaleEntries_by_internalUserId_callback, providedUserId);
+		}
+		
+		function get_open_forSaleEntries_by_internalUserId_callback(err, rows, fields)
+		{
+			if (!err)
+			{
+				//Loop through the records that were returned to the database and load them into the response array.
+				for (var i in rows)
+				{
+					var forSaleEntry = convertForSaleEntryRowToJson(rows[i]);
+					forSaleEntriesArray.push(forSaleEntry);
+				}
+				
+				//We have loaded up the For Sale Entries array with transactions that do not have a transaction associated with them.
+				//Now, we need to fetch the For Sale Entries that do have transactions associated with them.
+				getOpenTransactionsForThisUser();
+				
 			}
 			else
 			{

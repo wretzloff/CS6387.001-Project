@@ -92,6 +92,7 @@ var utdtextbookexchange_app = function() {
 			transactions.getTransactionsByUser(request, response, connection);
 		};
 		
+		//TODO: need to clean up this endpoint end-to-end 
 		self.getRoutes['/transactions/transaction/:transactionId'] = function(request, response) 
 		{
 			transactions.getTransactionById(request, response, connection);
