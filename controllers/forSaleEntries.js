@@ -35,8 +35,7 @@ methods.getForSaleEntriesByIsbn = function(request, response, connection)
 			
 	authenticate.checkToken(request, response, afterCheckTokenCallback);
 }
-
-//TODO: for any For Sale entries we return with a status of On Hold, need to also return the transaction ID of the pending transaction. 
+ 
 methods.getForSaleEntriesByUser = function(request, response, connection)
 {
 	function afterCheckTokenCallback(internalUserId)
@@ -155,7 +154,7 @@ methods.postBookForSale = function(request, response, connection)
 
 function convertForSaleEntryRowToJson(row)
 {
-	return {forSaleId: row.forSaleId, datePosted: row.postedDateTime, status: row.status, isbn: row.isbn, author: row.author, title: row.title, price: row.price, description: row.description, condition: row.bookCondition, conditionDescription: row.bookConditionDescription, seller_nickname: row.nickname};
+	return {forSaleId: row.forSaleId, datePosted: row.postedDateTime, status: row.status, transactionId: row.transactionId, isbn: row.isbn, author: row.author, title: row.title, price: row.price, description: row.description, condition: row.bookCondition, conditionDescription: row.bookConditionDescription, seller_nickname: row.nickname};
 }
 
 module.exports = methods;

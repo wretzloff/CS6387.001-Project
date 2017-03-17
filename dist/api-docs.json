@@ -1182,7 +1182,12 @@
 				    },
 				    "status": {
 					    "type": "string",
-						"default": "For Sale"
+						"default": "On Hold"
+				    },
+					"transactionId": {
+						"type": "integer",
+						"format": "int",
+						"default": 74
 				    },
 					"isbn": {
 					    "type": "string",

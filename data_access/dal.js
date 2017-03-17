@@ -20,28 +20,28 @@ methods.get_dummyUserEnrollment_by_internalUserId = function(connection, callbac
 //TODO: I think this can return duplicate records if we have one for sale entry with 2 or more cancelled transactions. Need to test this and resolve it if needed.
 //var forSaleEntrySelectString = "SELECT a.iD as forSaleId, a.postedDateTime, 'For Sale' as 'status', a.isbn, a.author, a.title, a.price, a.description, a.bookCondition, d.description as 'bookConditionDescription',c.nickname from ForSale a left outer join Transactions b on a.iD=b.forSaleId left outer join User c on a.seller_InternalUserId=c.internalUserId left outer join condition_type d on a.bookCondition=d.id where "
 var forSaleEntrySelectString = "SELECT a.iD as forSaleId, a.postedDateTime, 'For Sale' as 'status', a.isbn, a.author, a.title, a.price, a.description, a.bookCondition, d.description as 'bookConditionDescription',c.nickname, ";
-var forSaleEntryStatusForSale = "'For Sale' as 'status' ";
-var forSaleEntryStatusOnHold = "'On Hold' as 'status' ";
+var openForSaleEntrySelectString = "'For Sale' as 'status' ";
+var pendingForSaleEntrySelectString = "'On Hold' as 'status', b.iD as transactionId ";
 var forSaleEntryFrom = "from ForSale a left outer join Transactions b on a.iD=b.forSaleId left outer join User c on a.seller_InternalUserId=c.internalUserId left outer join condition_type d on a.bookCondition=d.id where ";
 methods.get_open_forSaleEntries_by_isbn = function(connection, callbackFunction, isbn)
 {
 	//This will get For Sale entries for the given ISBN that have either no associated transactions, or only cancelled transactions.
 
-	var queryString = forSaleEntrySelectString + forSaleEntryStatusForSale + forSaleEntryFrom + "a.ISBN = '" + isbn + "' and (b.status is null or b.status = '2')";
+	var queryString = forSaleEntrySelectString + openForSaleEntrySelectString + forSaleEntryFrom + "a.ISBN = '" + isbn + "' and (b.status is null or b.status = '2')";
 	connection.query(queryString, callbackFunction);
 }	
 
 methods.get_open_forSaleEntries_by_internalUserId = function(connection, callbackFunction, internalUserId)
 {
 	//This will get For Sale entries for the given user id that have either no associated transactions, or only cancelled transactions.
-	var queryString = forSaleEntrySelectString + forSaleEntryStatusForSale + forSaleEntryFrom + "a.seller_InternalUserId = '" + internalUserId + "' and (b.status is null or b.status = '2')"
+	var queryString = forSaleEntrySelectString + openForSaleEntrySelectString + forSaleEntryFrom + "a.seller_InternalUserId = '" + internalUserId + "' and (b.status is null or b.status = '2')"
 	connection.query(queryString, callbackFunction);
 }
 
 methods.get_pending_forSaleEntries_by_internalUserId = function(connection, callbackFunction, internalUserId)
 {
 	//This will get For Sale entries for the given user id that have a pending transaction associated with it.
-	var queryString = forSaleEntrySelectString + forSaleEntryStatusOnHold + forSaleEntryFrom + "a.seller_InternalUserId = '" + internalUserId + "' and b.status = '0'"
+	var queryString = forSaleEntrySelectString + pendingForSaleEntrySelectString + forSaleEntryFrom + "a.seller_InternalUserId = '" + internalUserId + "' and b.status = '0'"
 	connection.query(queryString, callbackFunction);
 }
 
