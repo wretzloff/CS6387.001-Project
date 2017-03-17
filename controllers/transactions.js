@@ -220,13 +220,25 @@ methods.getTransactionById = function(request, response, connection)
 {
 	function afterCheckTokenCallback(internalUserId)
 	{
-		var providedTransactionId = request.params.transactionId;
+		var providedTransactionId = parseInt(request.params.transactionId);
 		console.log(providedTransactionId);
 		
 		//Insert code here to select from the Transaction table where the transaction ID is providedTransactionId.
-		//...
-		
-		response.send({iD: '3', buyerOrSeller: 'seller', buyer_Nickname: 'Daren C', buyer_InternalUserId: '2', transactionDateTime: '2017-02-22 00:02:40', satus: 'Pending', conversationId: 1, title: 'Software Engineering for Dummies', author: 'Wallace Wang', ISBN: '9780470108543', price: '32.67'});
+		function get_possibleTransactionsById_callback(err, rows, fields)
+		{
+			if (!err)
+			{
+				response.json(rows);
+			}
+			else
+			{
+				console.log(err);
+				response.status(500).send({success: false, msg: 'Internal error.'});
+			}
+	}
+	
+	dal.get_possibleTransactionsById(connection, get_possibleTransactionsById_callback,providedTransactionId);
+	//response.send({iD: '3', buyerOrSeller: 'seller', buyer_Nickname: 'Daren C', buyer_InternalUserId: '2', transactionDateTime: '2017-02-22 00:02:40', satus: 'Pending', conversationId: 1, title: 'Software Engineering for Dummies', author: 'Wallace Wang', ISBN: '9780470108543', price: '32.67'});
 	}
 	
 	authenticate.checkToken(request, response, afterCheckTokenCallback);
