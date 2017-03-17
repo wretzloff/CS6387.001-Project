@@ -287,45 +287,55 @@ methods.markTransactionComplete = function(request, response, connection)
 			}
 		}
 		
-		function checkIfRequesterIsPartOfThisTransaction(buyerId, sellerId, status)
+		function checkIfTransactionIsInValidState(buyerId, sellerId, status)
 		{
 			if(internalUserId === buyerId)
-			{//If the requester is the buyer
-				switch(status)
-				{
-					case 0: //Pending
-						targetStatus = 'Completed by Buyer';
-						dal.update_transaction_status(connection, update_transaction_status_callback, providedTransactionId, 3);
-						break;
-					case 4: //Completed by Seller
-						targetStatus = 'Completed';
-						dal.update_transaction_status(connection, update_transaction_status_callback, providedTransactionId, 1);
-						break;
-					default:
-						response.status(400).send({success: false, msg: 'Transaction was not in Pending or Completed By Seller status'});
-						break;
+				{//If the requester is the buyer
+					switch(status)
+					{
+						case 0: //Pending
+							targetStatus = 'Completed by Buyer';
+							dal.update_transaction_status(connection, update_transaction_status_callback, providedTransactionId, 3);
+							break;
+						case 4: //Completed by Seller
+							targetStatus = 'Completed';
+							dal.update_transaction_status(connection, update_transaction_status_callback, providedTransactionId, 1);
+							break;
+						default:
+							response.status(400).send({success: false, msg: 'Transaction was not in Pending or Completed By Seller status'});
+							break;
+					}
 				}
-			}
-			else if(internalUserId === sellerId)
-			{//If the requester is the seller
-				switch(status)
-				{
-					case 0: //Pending
-						targetStatus = 'Completed by Seller';
-						dal.update_transaction_status(connection, update_transaction_status_callback, providedTransactionId, 4);
-						break;
-					case 3: //Completed by Buyer
-						targetStatus = 'Completed';
-						dal.update_transaction_status(connection, update_transaction_status_callback, providedTransactionId, 1);
-						break;
-					default:
-						response.status(400).send({success: false, msg: 'Transaction was not in Pending or Completed By Buyer status'});
-						break;
+				else if(internalUserId === sellerId)
+				{//If the requester is the seller
+					switch(status)
+					{
+						case 0: //Pending
+							targetStatus = 'Completed by Seller';
+							dal.update_transaction_status(connection, update_transaction_status_callback, providedTransactionId, 4);
+							break;
+						case 3: //Completed by Buyer
+							targetStatus = 'Completed';
+							dal.update_transaction_status(connection, update_transaction_status_callback, providedTransactionId, 1);
+							break;
+						default:
+							response.status(400).send({success: false, msg: 'Transaction was not in Pending or Completed By Buyer status'});
+							break;
+					}
 				}
+		}
+		
+		function checkIfRequesterIsPartOfThisTransaction(buyerId, sellerId, status)
+		{
+			if(internalUserId !== buyerId && internalUserId !== sellerId)
+			{
+				response.status(403).send({success: false, msg: 'User is not party to the specified transaction.'});
 			}
 			else
 			{
-				response.status(403).send({success: false, msg: 'Not involved in that transaction.'});
+				//We've determined that user making this request is involved in the transaction. Next step is to make sure the transaction
+				//is in a valid state prior to making this change.
+				checkIfTransactionIsInValidState(buyerId, sellerId, status);
 			}
 		}
 		
