@@ -52,6 +52,7 @@ var utdtextbookexchange_app = function() {
         };
 		
 		//TODO: Does it make sense for this function to be under the my-books endpoint? Or a different one?
+		//TODO: need to consolidate the APAC stuff into a single file so that it's not duplicate din both my-books.js and salePrice.js
 		self.getRoutes['/my-books/cover/isbn/:isbn'] = function(request, response) 
 		{
 			myBooks.getBookCover(request, response, connection);
@@ -59,12 +60,12 @@ var utdtextbookexchange_app = function() {
 		
 		self.getRoutes['/forSaleEntries/isbn/:isbn'] = function(request, response) 
 		{
-			forSaleEntries.getForSaleEntriesByIsbn(request, response, connection);
+			forSaleEntries.getOpenForSaleEntriesByIsbn(request, response, connection);
 		};
 		
 		self.getRoutes['/forSaleEntries/userId/:userId'] = function(request, response) 
 		{
-			forSaleEntries.getForSaleEntriesByUser(request, response, connection);
+			forSaleEntries.getOpenAndPendingForSaleEntriesByUser(request, response, connection);
 		};
 		
 		self.postRoutes['/forSaleEntries'] = function(request, response) 

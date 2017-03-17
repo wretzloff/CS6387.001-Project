@@ -5,7 +5,7 @@ var authenticate         		= require('./authenticate');
 
 var methods = {};
 
-methods.getForSaleEntriesByIsbn = function(request, response, connection)
+methods.getOpenForSaleEntriesByIsbn = function(request, response, connection)
 {
 	function afterCheckTokenCallback(internalUserId)
 	{
@@ -36,7 +36,7 @@ methods.getForSaleEntriesByIsbn = function(request, response, connection)
 	authenticate.checkToken(request, response, afterCheckTokenCallback);
 }
  
-methods.getForSaleEntriesByUser = function(request, response, connection)
+methods.getOpenAndPendingForSaleEntriesByUser = function(request, response, connection)
 {
 	function afterCheckTokenCallback(internalUserId)
 	{
