@@ -78,6 +78,16 @@ methods.get_possibleTransactionStatuses = function(connection, callbackFunction)
 	connection.query("select * from transactionStatus_type", callbackFunction);
 }
 
+methods.get_transaction_participants_and_status_by_transactionId = function(connection, callbackFunction, transactionId)
+{
+	connection.query("SELECT Transactions.buyer_InternalUserId, ForSale.seller_InternalUserId, Transactions.status FROM Transactions INNER JOIN ForSale ON Transactions.forSaleId=ForSale.iD WHERE Transactions.iD=" + transactionId, callbackFunction);
+}
+
+methods.update_transaction_status = function(connection, callbackFunction, transactionId, status)
+{
+	connection.query("UPDATE Transactions SET Status="+status+" WHERE iD="+transactionId, callbackFunction);
+}
+
 methods.get_possibleTransactionsById = function(connection, callbackFunction, iD)
 {
 	connection.query("SELECT iD,buyer_InternalUserId,DATE_FORMAT(transactionDateTime,'%Y-%m-%d %H:%i:%S') as transactionDateTime,status,conversationId,forSaleId from Transactions where iD = '" + iD + "'", callbackFunction);

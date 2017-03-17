@@ -261,17 +261,92 @@ methods.getPossibleTransactionStatuses = function(request, response, connection)
 	dal.get_possibleTransactionStatuses(connection, get_possibleTransactionStatuses_callback);
 }
 
-//TODO: need to implement this
+/* TODO:
+	dynamically grab the numbers we need, pulling them from the DB into an enum or somesuch
+ */
 methods.markTransactionComplete = function(request, response, connection)
 {
 	function afterCheckTokenCallback(internalUserId)
 	{
+		//Get the parameters from the body of the HTTP POST message
 		var providedTransactionId = request.params.transactionId;
-		console.log(providedTransactionId);
 		
-		//Insert code here to mark the specified Transaction record as complete......
-		console.log('Insert code here to mark the specified Transaction record as complete......');
-		response.send({success: true, msg: 'Transaction has been marked complete.'});
+		//Declare variables that will be set and used throughout this request.
+		var targetStatus;
+		
+		function update_transaction_status_callback(err, rows, fields)
+		{
+			if(!err)
+			{
+			response.send({success: true, msg: 'Message has been marked ' + targetStatus + '.'});
+			}
+			else
+			{
+				console.log(err);
+				response.status(500).send({success: false, msg: 'Internal error.'});
+			}
+		}
+		
+		function get_transactioninfo_callback(err, rows, fields)
+		{
+			if(!err)
+			{
+				console.log(rows);
+				var buyerId = rows[0].buyer_InternalUserId;
+				var sellerId = rows[0].seller_InternalUserId;
+				var status = rows[0].status;
+				console.log('buyerId: ' + buyerId);
+				console.log('sellerId: ' + sellerId);
+				console.log('status: ' + status);
+				
+				if(internalUserId === buyerId)
+				{
+					switch(status)
+					{
+						case 0: //Pending
+							targetStatus = 'Completed by Buyer';
+							dal.update_transaction_status(connection, update_transaction_status_callback, providedTransactionId, 3);
+							break;
+						case 4: //Completed by Seller
+							targetStatus = 'Completed';
+							dal.update_transaction_status(connection, update_transaction_status_callback, providedTransactionId, 1);
+							break;
+						default:
+							response.status(400).send({success: false, msg: 'Transaction was not in Pending or Completed By Seller status'});
+							break;
+					}
+				}
+				else if(internalUserId === sellerId)
+				{
+					switch(status)
+					{
+						case 0: //Pending
+							targetStatus = 'Completed by Seller';
+							dal.update_transaction_status(connection, update_transaction_status_callback, providedTransactionId, 4);
+							break;
+						case 3: //Completed by Buyer
+							targetStatus = 'Completed';
+							dal.update_transaction_status(connection, update_transaction_status_callback, providedTransactionId, 1);
+							break;
+						default:
+							response.status(400).send({success: false, msg: 'Transaction was not in Pending or Completed By Buyer status'});
+							break;
+					}
+				}
+				else
+				{
+					response.status(403).send({success: false, msg: 'Not involved in that transaction.'});
+				}
+			}
+			else
+			{
+				console.log(err);
+				response.status(500).send({success: false, msg: 'Internal error.'});
+			}
+		}
+		
+		
+		dal.get_transaction_participants_and_status_by_transactionId(connection, get_transactioninfo_callback, providedTransactionId);
 	}
 	
 	authenticate.checkToken(request, response, afterCheckTokenCallback);
