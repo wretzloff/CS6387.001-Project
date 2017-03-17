@@ -289,14 +289,23 @@ methods.markTransactionComplete = function(request, response, connection)
 		
 		function get_transaction_by_Id_callback(err, rows, fields)
 		{
-			if(!err)
+			if (err)
+			{
+				console.log(err);
+				response.status(500).send({success: false, msg: 'Internal error.'});
+			}
+			else if(rows.length === 0)
+			{ 
+				response.status(400).send({success: false, msg: 'This transaction does not exist.'});
+			}
+			else
 			{
 				var buyerId = rows[0].buyer_InternalUserId;
 				var sellerId = rows[0].seller_InternalUserId;
 				var status = rows[0].status;
 				
 				if(internalUserId === buyerId)
-				{
+				{//If the requester is the buyer
 					switch(status)
 					{
 						case 0: //Pending
@@ -313,7 +322,7 @@ methods.markTransactionComplete = function(request, response, connection)
 					}
 				}
 				else if(internalUserId === sellerId)
-				{
+				{//If the requester is the seller
 					switch(status)
 					{
 						case 0: //Pending
@@ -333,11 +342,6 @@ methods.markTransactionComplete = function(request, response, connection)
 				{
 					response.status(403).send({success: false, msg: 'Not involved in that transaction.'});
 				}
-			}
-			else
-			{
-				console.log(err);
-				response.status(500).send({success: false, msg: 'Internal error.'});
 			}
 		}
 		
