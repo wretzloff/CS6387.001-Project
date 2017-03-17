@@ -287,17 +287,13 @@ methods.markTransactionComplete = function(request, response, connection)
 			}
 		}
 		
-		function get_transactioninfo_callback(err, rows, fields)
+		function get_transaction_by_Id_callback(err, rows, fields)
 		{
 			if(!err)
 			{
-				console.log(rows);
 				var buyerId = rows[0].buyer_InternalUserId;
 				var sellerId = rows[0].seller_InternalUserId;
 				var status = rows[0].status;
-				console.log('buyerId: ' + buyerId);
-				console.log('sellerId: ' + sellerId);
-				console.log('status: ' + status);
 				
 				if(internalUserId === buyerId)
 				{
@@ -346,7 +342,7 @@ methods.markTransactionComplete = function(request, response, connection)
 		}
 		
 		
-		dal.get_transaction_participants_and_status_by_transactionId(connection, get_transactioninfo_callback, providedTransactionId);
+		dal.get_transaction_by_Id(connection, get_transaction_by_Id_callback, providedTransactionId);
 	}
 	
 	authenticate.checkToken(request, response, afterCheckTokenCallback);

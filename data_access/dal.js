@@ -67,6 +67,11 @@ methods.get_transactions_by_ForSaleId = function(connection, callbackFunction, f
 	connection.query("SELECT * from Transactions where forSaleId = " + forSaleId, callbackFunction);
 }
 
+methods.get_transaction_by_Id = function(connection, callbackFunction, transactionId)
+{
+	connection.query("SELECT * from Transactions a left outer join ForSale b ON a.forSaleId=b.iD WHERE a.iD = " + transactionId, callbackFunction);
+}
+
 methods.insert_Transaction = function(connection, callbackFunction, buyer, dateTime, convId, forSaleEntry)
 {
 	var rowToInsert = {buyer_InternalUserId:buyer, transactionDateTime: dateTime, status: 0, conversationId: convId, forSaleId: forSaleEntry};
@@ -76,11 +81,6 @@ methods.insert_Transaction = function(connection, callbackFunction, buyer, dateT
 methods.get_possibleTransactionStatuses = function(connection, callbackFunction)
 {
 	connection.query("select * from transactionStatus_type", callbackFunction);
-}
-
-methods.get_transaction_participants_and_status_by_transactionId = function(connection, callbackFunction, transactionId)
-{
-	connection.query("SELECT Transactions.buyer_InternalUserId, ForSale.seller_InternalUserId, Transactions.status FROM Transactions INNER JOIN ForSale ON Transactions.forSaleId=ForSale.iD WHERE Transactions.iD=" + transactionId, callbackFunction);
 }
 
 methods.update_transaction_status = function(connection, callbackFunction, transactionId, status)
