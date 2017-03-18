@@ -18,7 +18,7 @@ methods.get_dummyUserEnrollment_by_internalUserId = function(connection, callbac
 }
 
 //TODO: I think this can return duplicate records if we have one for sale entry with 2 or more cancelled transactions. Need to test this and resolve it if needed.
-var forSaleEntrySelectString = "SELECT a.iD as forSaleId, DATE_FORMAT(a.postedDateTime,'%Y-%m-%d %H:%i:%S')as postedDateTime, 'For Sale' as 'status', a.isbn, a.author, a.title, a.price, a.description, a.bookCondition, d.description as 'bookConditionDescription',c.nickname, ";
+var forSaleEntrySelectString = "SELECT a.iD as forSaleId, DATE_FORMAT(a.postedDateTime,'%Y-%m-%d %H:%i:%S') as postedDateTime, 'For Sale' as 'status', a.isbn, a.author, a.title, a.price, a.description, a.bookCondition, d.description as 'bookConditionDescription',c.nickname, ";
 var openForSaleEntrySelectString = "'For Sale' as 'status' ";
 var pendingForSaleEntrySelectString = "'On Hold' as 'status', b.iD as transactionId ";
 var forSaleEntryFrom = "from ForSale a left outer join Transactions b on a.iD=b.forSaleId left outer join User c on a.seller_InternalUserId=c.internalUserId left outer join condition_type d on a.bookCondition=d.id where ";
@@ -67,7 +67,7 @@ methods.get_transactions_by_ForSaleId = function(connection, callbackFunction, f
 
 methods.get_open_transactions_by_internalUserId = function(connection,callbackFunction,providedUserId)
 {
-	var queryString = "select * from Transactions a left outer join ForSale b on a.forSaleId=b.iD where a.status <> 1 and (a.buyer_InternalUserId = " + providedUserId + " or b.seller_InternalUserId = " + providedUserId + ")";
+	var queryString = "SELECT * from Transactions a left outer join ForSale b on a.forSaleId=b.iD where a.status <> 1 and (a.buyer_InternalUserId = " + providedUserId + " or b.seller_InternalUserId = " + providedUserId + ")";
 	connection.query(queryString, callbackFunction);
 }
 
