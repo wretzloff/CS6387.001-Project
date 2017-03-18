@@ -122,13 +122,14 @@ methods.getBookCover = function(request, response, connection)
 //TODO: need to handle the HTML scraping better for classes that have textbook options from a set.
 methods.getMyBooks = function(request, response, connection)
 {
-	//Get the userId provided in the query string. Technically, we don't even need this, because when we decode the authorization token,  
-	//that gives us the internalUserId. We'll use that, since it's more secure.
+	//Get the parameters from the request query string
 	var providedUserId = request.params.userId;
 	var productionOrStubBooks = request.params.productionOrStubBooks;
 			
-	//Define the function that will be called after each call to UTD Coursebook.
+	//Declare variables that will be set and used throughout this request.		
 	var booksArray = [];
+	
+	//Define the function that will be called after each call to UTD Coursebook.
 	var getBooksForClassCallbackFunction = function(numOfClasses, classNum, className, classbooks)
 	{
 		booksArray.push({classNumber: classNum, className: className, classbooks: classbooks});
