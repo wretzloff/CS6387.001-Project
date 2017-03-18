@@ -311,11 +311,11 @@ methods.markTransactionComplete = function(request, response, connection)
 				{//If the requester is the buyer
 					switch(status)
 					{
-						case 0: //Pending
+						case 0: //Current status is Pending
 							targetStatus = 'Completed by Buyer';
 							dal.update_transactionStatus_by_iD(connection, update_transactionStatus_by_iD_callback, providedTransactionId, 3);
 							break;
-						case 4: //Completed by Seller
+						case 4: //Current status is Completed by Seller
 							targetStatus = 'Completed';
 							dal.update_transactionStatus_by_iD(connection, update_transactionStatus_by_iD_callback, providedTransactionId, 1);
 							break;
@@ -328,11 +328,11 @@ methods.markTransactionComplete = function(request, response, connection)
 				{//If the requester is the seller
 					switch(status)
 					{
-						case 0: //Pending
+						case 0: //Current status is Pending
 							targetStatus = 'Completed by Seller';
 							dal.update_transactionStatus_by_iD(connection, update_transactionStatus_by_iD_callback, providedTransactionId, 4);
 							break;
-						case 3: //Completed by Buyer
+						case 3: //Current status is Completed by Buyer
 							targetStatus = 'Completed';
 							dal.update_transactionStatus_by_iD(connection, update_transactionStatus_by_iD_callback, providedTransactionId, 1);
 							break;
