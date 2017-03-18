@@ -67,7 +67,7 @@ methods.get_transactions_by_ForSaleId = function(connection, callbackFunction, f
 
 methods.get_open_transactions_by_internalUserId = function(connection,callbackFunction,providedUserId)
 {
-	var queryString = "SELECT * from Transactions a left outer join ForSale b on a.forSaleId=b.iD where a.status <> 1 and (a.buyer_InternalUserId = " + providedUserId + " or b.seller_InternalUserId = " + providedUserId + ")";
+	var queryString = "SELECT * from Transactions a left outer join ForSale b on a.forSaleId=b.iD left outer join transactionStatus_type c on a.status=c.id where a.status <> 1 and (a.buyer_InternalUserId = " + providedUserId + " or b.seller_InternalUserId = " + providedUserId + ")";
 	connection.query(queryString, callbackFunction);
 }
 

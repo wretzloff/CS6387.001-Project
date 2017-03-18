@@ -396,6 +396,7 @@ methods.markTransactionCancelled = function(request, response, connection)
 
 function convertTransactionRowToJson(row, internalUserId)
 {
+	console.log(row);
 	var jsonRow = {};
 	jsonRow.transactionId = row.iD;
 	
@@ -413,7 +414,7 @@ function convertTransactionRowToJson(row, internalUserId)
 	}
 	
 	jsonRow.transactionDateTime = row.transactionDateTime;
-	jsonRow.transactionStatus = 'under construction';
+	jsonRow.transactionStatus = row.description;
 	jsonRow.conversationId = row.conversationId;
 	jsonRow.title = row.title;
 	jsonRow.isbn = row.isbn;
