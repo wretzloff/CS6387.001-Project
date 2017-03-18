@@ -207,7 +207,12 @@ methods.getOpenTransactionsByUser = function(request, response, connection)
 		
 		function get_open_transactions_by_internalUserId_callback(err,rows,fields)
 		{
-			if (!err)
+			if (err)
+			{
+				console.log(err);
+				response.status(500).send({success: false, msg: 'Internal error.'});
+			}
+			else
 			{
 				var transactionsArray = [];
 				for (var i in rows)
@@ -216,11 +221,6 @@ methods.getOpenTransactionsByUser = function(request, response, connection)
 					transactionsArray.push(transaction);
 				}
 				response.send(transactionsArray);
-			}
-			else
-			{
-				console.log(err);
-				response.status(500).send({success: false, msg: 'Internal error.'});
 			}
 		}
 		dal.get_open_transactions_by_internalUserId(connection, get_open_transactions_by_internalUserId_callback, providedUserId);
@@ -267,14 +267,14 @@ methods.getPossibleTransactionStatuses = function(request, response, connection)
 {
 	function get_possibleTransactionStatuses_callback(err, rows, fields)
 	{
-		if (!err)
-		{
-			response.json(rows);
-		}
-		else
+		if (err)
 		{
 			console.log(err);
 			response.status(500).send({success: false, msg: 'Internal error.'});
+		}
+		else
+		{
+			response.json(rows);
 		}
 	}
 	
@@ -293,14 +293,14 @@ methods.markTransactionComplete = function(request, response, connection)
 		
 		function update_transactionStatus_by_iD_callback(err, rows, fields)
 		{
-			if(!err)
-			{
-			response.send({success: true, msg: 'Transaction has been marked ' + targetStatus + '.'});
-			}
-			else
+			if(err)
 			{
 				console.log(err);
 				response.status(500).send({success: false, msg: 'Internal error.'});
+			}
+			else
+			{
+				response.send({success: true, msg: 'Transaction has been marked ' + targetStatus + '.'});
 			}
 		}
 		

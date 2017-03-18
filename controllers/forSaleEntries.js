@@ -14,7 +14,12 @@ methods.getOpenForSaleEntriesByIsbn = function(request, response, connection)
 		
 		function get_forSaleEntries_by_isbn_callback(err, rows, fields)
 		{
-			if (!err)
+			if (err)
+			{
+				console.log(err);
+				response.status(500).send({success: false, msg: 'Internal error.'});
+			}
+			else
 			{
 				var forSaleEntriesArray = [];
 				for (var i in rows)
@@ -23,11 +28,6 @@ methods.getOpenForSaleEntriesByIsbn = function(request, response, connection)
 					forSaleEntriesArray.push(forSaleEntry);
 				}
 				response.send(forSaleEntriesArray);
-			}
-			else
-			{
-				console.log(err);
-				response.status(500).send({success: false, msg: 'Internal error.'});
 			}
 		}
 		
@@ -49,7 +49,12 @@ methods.getOpenAndPendingForSaleEntriesByUser = function(request, response, conn
 		
 		function get_pending_forSaleEntries_by_internalUserId_callback(err, rows, fields)
 		{
-			if (!err)
+			if (err)
+			{
+				console.log(err);
+				response.status(500).send({success: false, msg: 'Internal error.'});
+			}
+			else
 			{
 				//Loop through the records that were returned to the database and load them into the response array.
 				for (var i in rows)
@@ -61,11 +66,6 @@ methods.getOpenAndPendingForSaleEntriesByUser = function(request, response, conn
 				//Now that we have finished loading response array, send it to the client.
 				response.send(forSaleEntriesArray);
 			}
-			else
-			{
-				console.log(err);
-				response.status(500).send({success: false, msg: 'Internal error.'});
-			}
 		}
 		
 		function getOpenTransactionsForThisUser()
@@ -75,7 +75,12 @@ methods.getOpenAndPendingForSaleEntriesByUser = function(request, response, conn
 		
 		function get_open_forSaleEntries_by_internalUserId_callback(err, rows, fields)
 		{
-			if (!err)
+			if (err)
+			{
+				console.log(err);
+				response.status(500).send({success: false, msg: 'Internal error.'});
+			}
+			else
 			{
 				//Loop through the records that were returned to the database and load them into the response array.
 				for (var i in rows)
@@ -87,12 +92,6 @@ methods.getOpenAndPendingForSaleEntriesByUser = function(request, response, conn
 				//We have loaded up the For Sale Entries array with transactions that do not have a transaction associated with them.
 				//Now, we need to fetch the For Sale Entries that do have transactions associated with them.
 				getOpenTransactionsForThisUser();
-				
-			}
-			else
-			{
-				console.log(err);
-				response.status(500).send({success: false, msg: 'Internal error.'});
 			}
 		}
 		
@@ -106,14 +105,14 @@ methods.getPossibleConditionTypes = function(request, response, connection)
 {
 	function get_possibleConditionTypes_callback(err, rows, fields)
 	{
-		if (!err)
-		{
-			response.json(rows);
-		}
-		else
+		if (err)
 		{
 			console.log(err);
 			response.status(500).send({success: false, msg: 'Internal error.'});
+		}
+		else
+		{
+			response.json(rows);
 		}
 	}
 	
@@ -135,14 +134,14 @@ methods.postBookForSale = function(request, response, connection)
 
 		function insert_forSaleEntriesCallback(err,result)
 		{
-			if(!err)
-			{
-				response.send({success: true, msg: 'Book has been posted for sale.', forSaleId: result.insertId}); 
-			}	
-			else
+			if(err)
 			{
 				console.log(err);
 				response.status(500).send({success: false, msg: 'Problem posting your book. Please try again.'});
+			}	
+			else
+			{
+				response.send({success: true, msg: 'Book has been posted for sale.', forSaleId: result.insertId});
 			}
 		}
 		
