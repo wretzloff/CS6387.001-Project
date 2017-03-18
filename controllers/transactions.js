@@ -396,20 +396,19 @@ methods.markTransactionCancelled = function(request, response, connection)
 
 function convertTransactionRowToJson(row, internalUserId)
 {
-	console.log(row);
 	var jsonRow = {};
 	jsonRow.transactionId = row.iD;
 	
 	if(internalUserId === row.buyer_InternalUserId)
 	{
 		jsonRow.buyerOrSeller = 'buyer';
-		jsonRow.seller_Nickname =  'under construction';
+		jsonRow.seller_Nickname =  row.seller_nickname;
 		jsonRow.seller_InternalUserId = row.seller_InternalUserId;
 	}
 	else if (internalUserId === row.seller_InternalUserId)
 	{
 		jsonRow.buyerOrSeller = 'seller';
-		jsonRow.buyer_Nickname = 'under construction';
+		jsonRow.buyer_Nickname = row.buyer_nickname;
 		jsonRow.buyer_InternalUserId = row.buyer_InternalUserId;
 	}
 	
