@@ -396,21 +396,29 @@ methods.markTransactionCancelled = function(request, response, connection)
 
 function convertTransactionRowToJson(row, internalUserId)
 {
-	var jsonRow = {transactionId:row.iD, transactionDateTime: row.transactionDateTime, transactionStatus: 'under construction', conversationId: row.conversationId, title: row.title, isbn: row.isbn, author: row.author, price: row.price};
+	var jsonRow = {};
+	jsonRow.transactionId = row.iD;
 	
 	if(internalUserId === row.buyer_InternalUserId)
 	{
 		jsonRow.buyerOrSeller = 'buyer';
 		jsonRow.seller_Nickname =  'under construction';
-		jsonRow.seller_InternalUserId = 'under construction';
+		jsonRow.seller_InternalUserId = row.seller_InternalUserId;
 	}
 	else if (internalUserId === row.seller_InternalUserId)
 	{
 		jsonRow.buyerOrSeller = 'seller';
 		jsonRow.buyer_Nickname = 'under construction';
-		jsonRow.buyer_InternalUserId = 'under construction';
+		jsonRow.buyer_InternalUserId = row.buyer_InternalUserId;
 	}
 	
+	jsonRow.transactionDateTime = row.transactionDateTime;
+	jsonRow.transactionStatus = 'under construction';
+	jsonRow.conversationId = row.conversationId;
+	jsonRow.title = row.title;
+	jsonRow.isbn = row.isbn;
+	jsonRow.author = row.author;
+	jsonRow.price = row.price;
 	return jsonRow;
 }
 
