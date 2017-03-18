@@ -213,7 +213,7 @@ methods.getOpenTransactionsByUser = function(request, response, connection)
 				var transactionsArray = [];
 				for (var i in rows)
 				{
-					var transaction = convertTransactionRowToJson(rows[i]);
+					var transaction = convertTransactionRowToJson(rows[i], internalUserId);
 					transactionsArray.push(transaction);
 				}
 				response.send(transactionsArray);
@@ -394,9 +394,18 @@ methods.markTransactionCancelled = function(request, response, connection)
 	authenticate.checkToken(request, response, afterCheckTokenCallback);
 }
 
-function convertTransactionRowToJson(row)
+function convertTransactionRowToJson(row, internalUserId)
 {
-	return {transactionId:row.iD, buyerOrSeller: 'under construction', buyer_Nickname: 'under construction', buyer_InternalUserId: row.buyer_InternalUserId, transactionDateTime: row.transactionDateTime, transactionStatus: 'under construction', conversationId: row.conversationId, title: row.title, isbn: row.isbn, author: row.author, price: row.price};
+	var buyer_seller = '';
+	if(internalUserId === row.buyer_InternalUserId)
+	{
+		buyer_seller = 'buyer';
+	}
+	else if (internalUserId === row.seller_InternalUserId)
+	{
+		buyer_seller = 'seller';
+	}
+	return {transactionId:row.iD, buyerOrSeller: buyer_seller, buyer_Nickname: 'under construction', buyer_InternalUserId: row.buyer_InternalUserId, transactionDateTime: row.transactionDateTime, transactionStatus: 'under construction', conversationId: row.conversationId, title: row.title, isbn: row.isbn, author: row.author, price: row.price};
 }
 
 module.exports = methods;

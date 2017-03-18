@@ -100,7 +100,7 @@ methods.get_possibleTransactionsById = function(connection, callbackFunction, iD
 methods.get_conversation_by_iD = function(connection, callbackFunction, conversationId)
 {
 	//conversationId can be either a single integer or an array of integers. Either way, it will get automatically transalated properly into the query.
-	connection.query("select * from User_Converation_Assoc assoc join User usr on assoc.internalUserId=usr.internalUserId where conversationId in (" + conversationId + ")", callbackFunction);
+	connection.query("select * from User_Converation_Assoc assoc left outer join User usr on assoc.internalUserId=usr.internalUserId where conversationId in (" + conversationId + ")", callbackFunction);
 }
 
 methods.get_conversations_by_internalUserId = function(connection, callbackFunction, internalUserId)
