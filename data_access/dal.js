@@ -60,10 +60,10 @@ methods.insert_forSaleEntries = function(connection, callbackFunction, providedI
 	connection.query("Insert into ForSale SET ?", rowToInsert, callbackFunction);
 }
 
-//TODO: change this query to look the same as get_open_transactions_by_internalUserId() and get_transaction_by_Id()
 methods.get_transactions_by_ForSaleId = function(connection, callbackFunction, forSaleId)
 {
-	connection.query("SELECT * from Transactions where forSaleId = " + forSaleId, callbackFunction);
+	var queryString = "SELECT d.nickname as buyer_nickname, e.nickname as seller_nickname, a.iD as transactionId, DATE_FORMAT(a.transactionDateTime,'%Y-%m-%d %H:%i:%S') as formattedPostedDateTime, a.*, b.*, c.* from Transactions a left outer join ForSale b on a.forSaleId=b.iD left outer join transactionStatus_type c on a.status=c.id left outer join User d on a.buyer_InternalUserId=d.internalUserId left outer join User e on b.seller_InternalUserId=e.internalUserId where a.forSaleId = " + forSaleId;
+	connection.query(queryString, callbackFunction);
 }
 
 methods.get_open_transactions_by_internalUserId = function(connection,callbackFunction,providedUserId)

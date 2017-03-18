@@ -139,14 +139,13 @@ methods.buyBook = function(request, response, connection)
 				console.log(err);
 				response.status(500).send({success: false, msg: 'Internal error.'});
 			}
-			
 			else
 			{
 				//Loop through the transactions associated with this For Sale entry and check each status.
 				for (var i in rows) 
 				{
-					//If the transaction row's status is either pending or completed, then return an error to the client.
-					if(rows[i].status === 0 || rows[i].status === 2)
+					//If the transaction row's status is not cancelled, then we already have an open transaction for this item, so return an error to the client.
+					if(rows[i].status !== 1)
 					{
 						response.status(400).send({success: false, msg: 'The specified For Sale entry already has a transaction associated with it.'});
 					}
