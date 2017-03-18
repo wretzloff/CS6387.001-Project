@@ -393,8 +393,10 @@ methods.markTransactionCancelled = function(request, response, connection)
 	
 	authenticate.checkToken(request, response, afterCheckTokenCallback);
 }
+
 function convertTransactionsRowToJson(row)
 {
-return {nickname:row.nickname,netId:row.netId,transactionId:row.transactionId,isbn:row.isbn,author:row.author,price:row.price,description:row.description,bookCondition:row.bookCondition,bookConditionDescription:row.bookConditionDescription,buyer_InternalUserId: row.buyer_InternalUserId, transactionDateTime: row.transactionDateTime, transactionStatus: row.status, conversationId: row.conversationId, forSaleId: row.forSaleId};
+	return {transactionId:row.iD, buyerOrSeller: 'under construction', buyer_Nickname: 'under construction', buyer_InternalUserId: row.buyer_InternalUserId, transactionDateTime: row.transactionDateTime, transactionStatus: 'under construction', conversationId: row.conversationId, title: row.title, isbn: row.isbn, author: row.author, price: row.price};
 }
+
 module.exports = methods;
