@@ -230,6 +230,8 @@ methods.getOpenTransactionsByUser = function(request, response, connection)
 	authenticate.checkToken(request, response, afterCheckTokenCallback);
 }
 
+//TODO: need to put a check in place that ensures that the requeter is either the buyer or the seller. Otherwise, they should not be part of this transaction.
+//response.status(403).send({success: false, msg: 'User is not party to the specified transaction.'});
 methods.getTransactionById = function(request, response, connection)
 {
 	function afterCheckTokenCallback(internalUserId)
@@ -237,20 +239,26 @@ methods.getTransactionById = function(request, response, connection)
 		//Get the parameters from the request query string
 		var providedTransactionId = parseInt(request.params.transactionId);
 		
-		function get_possibleTransactionsById_callback(err, rows, fields)
+		function get_transaction_by_Id_callback(err, rows, fields)
 		{
-			if (!err)
-			{
-				response.json(rows);
-			}
-			else
+			if (err)
 			{
 				console.log(err);
 				response.status(500).send({success: false, msg: 'Internal error.'});
 			}
+			else if(rows.length === 0)
+			{ 
+				response.status(400).send({success: false, msg: 'This transaction does not exist.'});
+			}
+			else
+			{
+				//Get the first (and only) row. This is what we'll return to the client.
+				var transactionJsonRow = convertTransactionRowToJson(rows[0], internalUserId);
+				response.json(transactionJsonRow);
+			}
 		}
 	
-		dal.get_possibleTransactionsById(connection, get_possibleTransactionsById_callback,providedTransactionId);
+		dal.get_transaction_by_Id(connection, get_transaction_by_Id_callback,providedTransactionId);
 	}
 	
 	authenticate.checkToken(request, response, afterCheckTokenCallback);
@@ -274,9 +282,6 @@ methods.getPossibleTransactionStatuses = function(request, response, connection)
 	dal.get_possibleTransactionStatuses(connection, get_possibleTransactionStatuses_callback);
 }
 
-/* TODO:
-	dynamically grab the numbers we need, pulling them from the DB into an enum or somesuch
- */
 methods.markTransactionComplete = function(request, response, connection)
 {
 	function afterCheckTokenCallback(internalUserId)
@@ -383,7 +388,6 @@ methods.markTransactionCancelled = function(request, response, connection)
 	{
 		//Get the parameters from the request query string
 		var providedTransactionId = request.params.transactionId;
-		console.log(providedTransactionId);
 		
 		//Insert code here to mark the specified Transaction record as cancelled......
 		console.log('Insert code here to mark the specified Transaction record as cancelled......');
@@ -393,11 +397,10 @@ methods.markTransactionCancelled = function(request, response, connection)
 	authenticate.checkToken(request, response, afterCheckTokenCallback);
 }
 
-//TODO: need to convert row.transactionDateTime into a more acceptable format
 function convertTransactionRowToJson(row, internalUserId)
 {
 	var jsonRow = {};
-	jsonRow.transactionId = row.iD;
+	jsonRow.transactionId = row.transactionId;
 	
 	if(internalUserId === row.buyer_InternalUserId)
 	{
@@ -412,8 +415,8 @@ function convertTransactionRowToJson(row, internalUserId)
 		jsonRow.buyer_InternalUserId = row.buyer_InternalUserId;
 	}
 	
-	jsonRow.transactionDateTime = row.transactionDateTime;
-	jsonRow.transactionStatus = row.description;
+	jsonRow.transactionDateTime = row.formattedPostedDateTime;
+	jsonRow.status = row.description;
 	jsonRow.conversationId = row.conversationId;
 	jsonRow.title = row.title;
 	jsonRow.isbn = row.isbn;

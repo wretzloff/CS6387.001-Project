@@ -60,6 +60,7 @@ methods.insert_forSaleEntries = function(connection, callbackFunction, providedI
 	connection.query("Insert into ForSale SET ?", rowToInsert, callbackFunction);
 }
 
+//TODO: change this query to look the same as get_open_transactions_by_internalUserId() and get_transaction_by_Id()
 methods.get_transactions_by_ForSaleId = function(connection, callbackFunction, forSaleId)
 {
 	connection.query("SELECT * from Transactions where forSaleId = " + forSaleId, callbackFunction);
@@ -67,21 +68,16 @@ methods.get_transactions_by_ForSaleId = function(connection, callbackFunction, f
 
 methods.get_open_transactions_by_internalUserId = function(connection,callbackFunction,providedUserId)
 {
-	var queryString = "SELECT d.nickname as buyer_nickname, e.nickname as seller_nickname, a.*, b.*, c.* from Transactions a left outer join ForSale b on a.forSaleId=b.iD left outer join transactionStatus_type c on a.status=c.id left outer join User d on a.buyer_InternalUserId=d.internalUserId left outer join User e on b.seller_InternalUserId=e.internalUserId where a.status <> 1 and (a.buyer_InternalUserId = " + providedUserId + " or b.seller_InternalUserId = " + providedUserId + ")";
+	var queryString = "SELECT d.nickname as buyer_nickname, e.nickname as seller_nickname, a.iD as transactionId, DATE_FORMAT(a.transactionDateTime,'%Y-%m-%d %H:%i:%S') as formattedPostedDateTime, a.*, b.*, c.* from Transactions a left outer join ForSale b on a.forSaleId=b.iD left outer join transactionStatus_type c on a.status=c.id left outer join User d on a.buyer_InternalUserId=d.internalUserId left outer join User e on b.seller_InternalUserId=e.internalUserId where a.status <> 1 and (a.buyer_InternalUserId = " + providedUserId + " or b.seller_InternalUserId = " + providedUserId + ")";
 	connection.query(queryString, callbackFunction);
 }
 
 methods.get_transaction_by_Id = function(connection, callbackFunction, transactionId)
 {
-	var queryString = "SELECT d.nickname as buyer_nickname, e.nickname as seller_nickname, a.*, b.*, c.* from Transactions a left outer join ForSale b on a.forSaleId=b.iD left outer join transactionStatus_type c on a.status=c.id left outer join User d on a.buyer_InternalUserId=d.internalUserId left outer join User e on b.seller_InternalUserId=e.internalUserId where a.iD = " + transactionId;
-	console.log(queryString);
+	var queryString = "SELECT d.nickname as buyer_nickname, e.nickname as seller_nickname, a.iD as transactionId, DATE_FORMAT(a.transactionDateTime,'%Y-%m-%d %H:%i:%S') as formattedPostedDateTime, a.*, b.*, c.* from Transactions a left outer join ForSale b on a.forSaleId=b.iD left outer join transactionStatus_type c on a.status=c.id left outer join User d on a.buyer_InternalUserId=d.internalUserId left outer join User e on b.seller_InternalUserId=e.internalUserId where a.iD = " + transactionId;
 	connection.query(queryString, callbackFunction);
 }
 
-methods.get_possibleTransactionsById = function(connection, callbackFunction, iD)
-{
-	connection.query("SELECT iD,buyer_InternalUserId,DATE_FORMAT(transactionDateTime,'%Y-%m-%d %H:%i:%S') as transactionDateTime,status,conversationId,forSaleId from Transactions where iD = '" + iD + "'", callbackFunction);
-}
 
 methods.insert_Transaction = function(connection, callbackFunction, buyer, dateTime, convId, forSaleEntry)
 {
