@@ -212,10 +212,10 @@ methods.getOpenTransactionsByUser = function(request, response, connection)
 			{
 				var transactionsArray = [];
 				for (var i in rows)
-					{
-						var transactions = convertTransactionsRowToJson(rows[i]);
-						transactionsArray.push(transactions);
-					}
+				{
+					var transaction = convertTransactionRowToJson(rows[i]);
+					transactionsArray.push(transaction);
+				}
 				response.send(transactionsArray);
 			}
 			else
@@ -394,7 +394,7 @@ methods.markTransactionCancelled = function(request, response, connection)
 	authenticate.checkToken(request, response, afterCheckTokenCallback);
 }
 
-function convertTransactionsRowToJson(row)
+function convertTransactionRowToJson(row)
 {
 	return {transactionId:row.iD, buyerOrSeller: 'under construction', buyer_Nickname: 'under construction', buyer_InternalUserId: row.buyer_InternalUserId, transactionDateTime: row.transactionDateTime, transactionStatus: 'under construction', conversationId: row.conversationId, title: row.title, isbn: row.isbn, author: row.author, price: row.price};
 }
