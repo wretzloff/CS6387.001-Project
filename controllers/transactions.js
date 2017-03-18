@@ -237,7 +237,6 @@ methods.getTransactionById = function(request, response, connection)
 		//Get the parameters from the request query string
 		var providedTransactionId = parseInt(request.params.transactionId);
 		
-		//Insert code here to select from the Transaction table where the transaction ID is providedTransactionId.
 		function get_possibleTransactionsById_callback(err, rows, fields)
 		{
 			if (!err)
@@ -249,10 +248,9 @@ methods.getTransactionById = function(request, response, connection)
 				console.log(err);
 				response.status(500).send({success: false, msg: 'Internal error.'});
 			}
-	}
+		}
 	
-	dal.get_possibleTransactionsById(connection, get_possibleTransactionsById_callback,providedTransactionId);
-	//response.send({iD: '3', buyerOrSeller: 'seller', buyer_Nickname: 'Daren C', buyer_InternalUserId: '2', transactionDateTime: '2017-02-22 00:02:40', satus: 'Pending', conversationId: 1, title: 'Software Engineering for Dummies', author: 'Wallace Wang', ISBN: '9780470108543', price: '32.67'});
+		dal.get_possibleTransactionsById(connection, get_possibleTransactionsById_callback,providedTransactionId);
 	}
 	
 	authenticate.checkToken(request, response, afterCheckTokenCallback);
@@ -395,6 +393,7 @@ methods.markTransactionCancelled = function(request, response, connection)
 	authenticate.checkToken(request, response, afterCheckTokenCallback);
 }
 
+//TODO: need to convert row.transactionDateTime into a more acceptable format
 function convertTransactionRowToJson(row, internalUserId)
 {
 	var jsonRow = {};
