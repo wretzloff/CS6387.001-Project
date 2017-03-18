@@ -9,6 +9,7 @@ methods.getOpenForSaleEntriesByIsbn = function(request, response, connection)
 {
 	function afterCheckTokenCallback(internalUserId)
 	{
+		//Get the parameters from the HTTP GET request
 		var providedIsbn = request.params.isbn;
 		
 		function get_forSaleEntries_by_isbn_callback(err, rows, fields)

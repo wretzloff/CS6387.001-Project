@@ -88,9 +88,10 @@ var utdtextbookexchange_app = function() {
 			salePrice.getSuggestedSalePrice(request, response, connection);
 		};
 		
+		//TODO: need to clean up this endpoint end-to-end
 		self.getRoutes['/transactions/userId/:userId'] = function(request, response) 
 		{
-			transactions.getTransactionsByUser(request, response, connection);
+			transactions.getOpenTransactionsByUser(request, response, connection);
 		};
 		
 		//TODO: need to clean up this endpoint end-to-end 

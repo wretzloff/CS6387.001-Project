@@ -199,18 +199,17 @@ methods.buyBook = function(request, response, connection)
 	authenticate.checkToken(request, response, afterCheckTokenCallback);
 }
 
-//TODO: need to implement this
-methods.getTransactionsByUser = function(request, response, connection)
+methods.getOpenTransactionsByUser = function(request, response, connection)
 {
 	function afterCheckTokenCallback(internalUserId)
 	{
+		//Get the parameters from the HTTP GET request
 		var providedUserId = request.params.userId;
-		function get_transactionsByUser_callback(err,rows,fields)
+		
+		function get_open_transactions_by_internalUserId_callback(err,rows,fields)
 		{
 			if (!err)
 			{
-				//Insert code here to select all Transactions for this internalUserId where the transaction status is 0 (for Pending).
-				//Join the Transaction table to the ForSale table to get information about the book being bought/sold, like the book title, author, price, etc.
 				var transactionsArray = [];
 				for (var i in rows)
 					{
@@ -225,7 +224,7 @@ methods.getTransactionsByUser = function(request, response, connection)
 				response.status(500).send({success: false, msg: 'Internal error.'});
 			}
 		}
-		dal.get_possibletransactionsByUser(connection, get_transactionsByUser_callback, providedUserId);
+		dal.get_open_transactions_by_internalUserId(connection, get_open_transactions_by_internalUserId_callback, providedUserId);
 	}
 	
 	authenticate.checkToken(request, response, afterCheckTokenCallback);
