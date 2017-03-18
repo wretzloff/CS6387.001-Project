@@ -289,11 +289,11 @@ methods.markTransactionComplete = function(request, response, connection)
 		//Declare variables that will be set and used throughout this request.
 		var targetStatus;
 		
-		function update_transaction_status_callback(err, rows, fields)
+		function update_transactionStatus_by_iD_callback(err, rows, fields)
 		{
 			if(!err)
 			{
-			response.send({success: true, msg: 'Message has been marked ' + targetStatus + '.'});
+			response.send({success: true, msg: 'Transaction has been marked ' + targetStatus + '.'});
 			}
 			else
 			{
@@ -310,11 +310,11 @@ methods.markTransactionComplete = function(request, response, connection)
 					{
 						case 0: //Pending
 							targetStatus = 'Completed by Buyer';
-							dal.update_transaction_status(connection, update_transaction_status_callback, providedTransactionId, 3);
+							dal.update_transactionStatus_by_iD(connection, update_transactionStatus_by_iD_callback, providedTransactionId, 3);
 							break;
 						case 4: //Completed by Seller
 							targetStatus = 'Completed';
-							dal.update_transaction_status(connection, update_transaction_status_callback, providedTransactionId, 1);
+							dal.update_transactionStatus_by_iD(connection, update_transactionStatus_by_iD_callback, providedTransactionId, 1);
 							break;
 						default:
 							response.status(400).send({success: false, msg: 'Transaction was not in Pending or Completed By Seller status'});
@@ -327,11 +327,11 @@ methods.markTransactionComplete = function(request, response, connection)
 					{
 						case 0: //Pending
 							targetStatus = 'Completed by Seller';
-							dal.update_transaction_status(connection, update_transaction_status_callback, providedTransactionId, 4);
+							dal.update_transactionStatus_by_iD(connection, update_transactionStatus_by_iD_callback, providedTransactionId, 4);
 							break;
 						case 3: //Completed by Buyer
 							targetStatus = 'Completed';
-							dal.update_transaction_status(connection, update_transaction_status_callback, providedTransactionId, 1);
+							dal.update_transactionStatus_by_iD(connection, update_transactionStatus_by_iD_callback, providedTransactionId, 1);
 							break;
 						default:
 							response.status(400).send({success: false, msg: 'Transaction was not in Pending or Completed By Buyer status'});

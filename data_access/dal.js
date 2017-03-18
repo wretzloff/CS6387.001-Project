@@ -74,14 +74,14 @@ methods.insert_Transaction = function(connection, callbackFunction, buyer, dateT
 	connection.query("Insert into Transactions SET ?", rowToInsert, callbackFunction);
 }
 
+methods.update_transactionStatus_by_iD = function(connection, callbackFunction, transactionId, status)
+{
+	connection.query("UPDATE Transactions SET Status =" + status + " WHERE iD = " + transactionId, callbackFunction);
+}
+
 methods.get_possibleTransactionStatuses = function(connection, callbackFunction)
 {
 	connection.query("select * from transactionStatus_type", callbackFunction);
-}
-
-methods.update_transaction_status = function(connection, callbackFunction, transactionId, status)
-{
-	connection.query("UPDATE Transactions SET Status="+status+" WHERE iD="+transactionId, callbackFunction);
 }
 
 methods.get_possibleTransactionsById = function(connection, callbackFunction, iD)
@@ -154,8 +154,6 @@ methods.insert_Message = function(connection, callbackFunction, to, from, conten
 
 methods.update_messagesAsRead_by_messageIdAndUserId = function(connection, callbackFunction, userId, conversationId, messageId)
 {
-	console.log("dal: userId: " + userId);
-	console.log("dal: messageId: " + messageId);
 	connection.query("UPDATE Message SET unread = 0 where to_InternalUserId = " + userId + " and conversationId = " + conversationId + " and id <= " + messageId, callbackFunction);
 }
 
