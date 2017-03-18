@@ -9,7 +9,10 @@ methods.getConversationsByUser = function(request, response, connection)
 {
 	function afterCheckTokenCallback(internalUserId)
 	{
+		//Get the parameters from the request query string
 		var providedUserId = request.params.userId;
+		
+		//Declare variables that will be set and used throughout this request.
 		var conversationsArray = [];
 		
 		function sendResponseArray()
@@ -169,7 +172,7 @@ methods.sendMessage = function(request, response, connection)
 {
 	function afterCheckTokenCallback(internalUserId)
 	{
-		//Get the parameters from the body of the HTTP POST message
+		//Get the parameters from the request body
 		var providedConversationId = request.body.conversationId;
 		var providedMessage = request.body.message;
 		
@@ -299,10 +302,10 @@ function getMessages(request, response, connection, beforeOrAfter)
 {
 	function afterCheckTokenCallback(internalUserId)
 	{
+		//Get the parameters from the request query string
 		var providedConversationId = request.params.conversationId;
 		var providedLimit = request.params.limit;
 		var providedStartingWithId = request.params.startingWithId;
-		
 		
 		function markMessagesAsRead(returnArray)
 		{

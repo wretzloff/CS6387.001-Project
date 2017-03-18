@@ -35,8 +35,10 @@ methods.checkToken = function(request, response, callbackFunction)
 
 methods.issueToken = function(request, response, connection)
 {
+	//Get the parameters from the request body
 	var username = request.body.username;
 	var password = request.body.password;
+	
 	//If username and password were provided
 	if (username) 
 	{

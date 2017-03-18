@@ -203,7 +203,7 @@ methods.getOpenTransactionsByUser = function(request, response, connection)
 {
 	function afterCheckTokenCallback(internalUserId)
 	{
-		//Get the parameters from the HTTP GET request
+		//Get the parameters from the request query string
 		var providedUserId = request.params.userId;
 		
 		function get_open_transactions_by_internalUserId_callback(err,rows,fields)
@@ -234,6 +234,7 @@ methods.getTransactionById = function(request, response, connection)
 {
 	function afterCheckTokenCallback(internalUserId)
 	{
+		//Get the parameters from the request query string
 		var providedTransactionId = parseInt(request.params.transactionId);
 		
 		//Insert code here to select from the Transaction table where the transaction ID is providedTransactionId.
@@ -282,7 +283,7 @@ methods.markTransactionComplete = function(request, response, connection)
 {
 	function afterCheckTokenCallback(internalUserId)
 	{
-		//Get the parameters from the body of the HTTP POST message
+		//Get the parameters from the request body
 		var providedTransactionId = request.params.transactionId;
 		
 		//Declare variables that will be set and used throughout this request.
@@ -371,7 +372,6 @@ methods.markTransactionComplete = function(request, response, connection)
 			}
 		}
 		
-		
 		dal.get_transaction_by_Id(connection, get_transaction_by_Id_callback, providedTransactionId);
 	}
 	
@@ -383,6 +383,7 @@ methods.markTransactionCancelled = function(request, response, connection)
 {
 	function afterCheckTokenCallback(internalUserId)
 	{
+		//Get the parameters from the request query string
 		var providedTransactionId = request.params.transactionId;
 		console.log(providedTransactionId);
 		

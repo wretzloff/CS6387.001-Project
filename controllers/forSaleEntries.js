@@ -9,7 +9,7 @@ methods.getOpenForSaleEntriesByIsbn = function(request, response, connection)
 {
 	function afterCheckTokenCallback(internalUserId)
 	{
-		//Get the parameters from the HTTP GET request
+		//Get the parameters from the request query string
 		var providedIsbn = request.params.isbn;
 		
 		function get_forSaleEntries_by_isbn_callback(err, rows, fields)
@@ -41,7 +41,7 @@ methods.getOpenAndPendingForSaleEntriesByUser = function(request, response, conn
 {
 	function afterCheckTokenCallback(internalUserId)
 	{
-		//Get the parameters from the HTTP GET request
+		//Get the parameters from the request query string
 		var providedUserId = request.params.userId;
 
 		//Declare variables that will be set and used throughout this request.		
@@ -124,7 +124,7 @@ methods.postBookForSale = function(request, response, connection)
 {
 	function afterCheckTokenCallback(internalUserId)
 	{
-		//Get the parameters from the body of the HTTP POST message
+		//Get the parameters from the request body
 		var providedInternalUserId = parseInt(internalUserId);
 		var providedTitle = request.body.title;
 		var providedIsbn = request.body.isbn;

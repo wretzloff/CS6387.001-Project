@@ -102,7 +102,11 @@ methods.getBookCover = function(request, response, connection)
 		response.json(data);
 
 	}
-	var afterCheckTokenCallback = function(internalUserId){
+	
+	var afterCheckTokenCallback = function(internalUserId)
+	{
+		
+		//Get the parameters from the request query string
 		var isbn_13 = request.params.isbn;	
 		
 		fetch(isbn_13,response,function(err,data){

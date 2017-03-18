@@ -2,11 +2,8 @@ var authenticate         		= require('./authenticate');
 var dal         				= require('../data_access/dal');
 var http 						= require('http');
 var amazon 						= require('amazon-product-api');
+
 var methods = {};
-
-
-
-//9780133778816
 
 const OperationHelper =require('apac').OperationHelper;
 var helper=new OperationHelper({
@@ -16,7 +13,6 @@ var helper=new OperationHelper({
 });
 
 //query amazon the book's info with its isbn
-
 function fetch(isbn,response,callback){	
 	var res = new Object();
 	  helper.execute('ItemLookup', {
@@ -171,7 +167,7 @@ methods.getThirdPartySalePrice = function(request, response, connection)
 	
 	function afterCheckTokenCallback(internalUserId)
 	{
-		//isbn should be 13 digits
+		//Get the parameters from the request query string
 		var isbn_13 = request.params.isbn;	
 
 		fetch(isbn_13,response,function(err,data){
@@ -234,7 +230,7 @@ methods.getSuggestedSalePrice = function(request, response, connection)
 	
 	function afterCheckTokenCallback(internalUserId)
 	{
-		//isbn should be 13digits now
+		//Get the parameters from the request query string
 		var isbn_13 = request.params.isbn;
 		isbn=isbn_13;
 		fetchLowestPrice(isbn_13,response,function(err,data){
