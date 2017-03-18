@@ -73,7 +73,14 @@ methods.get_open_transactions_by_internalUserId = function(connection,callbackFu
 
 methods.get_transaction_by_Id = function(connection, callbackFunction, transactionId)
 {
-	connection.query("SELECT * from Transactions a left outer join ForSale b ON a.forSaleId=b.iD WHERE a.iD = " + transactionId, callbackFunction);
+	var queryString = "SELECT d.nickname as buyer_nickname, e.nickname as seller_nickname, a.*, b.*, c.* from Transactions a left outer join ForSale b on a.forSaleId=b.iD left outer join transactionStatus_type c on a.status=c.id left outer join User d on a.buyer_InternalUserId=d.internalUserId left outer join User e on b.seller_InternalUserId=e.internalUserId where a.iD = " + transactionId;
+	console.log(queryString);
+	connection.query(queryString, callbackFunction);
+}
+
+methods.get_possibleTransactionsById = function(connection, callbackFunction, iD)
+{
+	connection.query("SELECT iD,buyer_InternalUserId,DATE_FORMAT(transactionDateTime,'%Y-%m-%d %H:%i:%S') as transactionDateTime,status,conversationId,forSaleId from Transactions where iD = '" + iD + "'", callbackFunction);
 }
 
 methods.insert_Transaction = function(connection, callbackFunction, buyer, dateTime, convId, forSaleEntry)
@@ -90,11 +97,6 @@ methods.update_transactionStatus_by_iD = function(connection, callbackFunction, 
 methods.get_possibleTransactionStatuses = function(connection, callbackFunction)
 {
 	connection.query("select * from transactionStatus_type", callbackFunction);
-}
-
-methods.get_possibleTransactionsById = function(connection, callbackFunction, iD)
-{
-	connection.query("SELECT iD,buyer_InternalUserId,DATE_FORMAT(transactionDateTime,'%Y-%m-%d %H:%i:%S') as transactionDateTime,status,conversationId,forSaleId from Transactions where iD = '" + iD + "'", callbackFunction);
 }
 
 methods.get_conversation_by_iD = function(connection, callbackFunction, conversationId)
