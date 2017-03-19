@@ -46,7 +46,11 @@ methods.issueToken = function(request, response, connection)
 		{
 			function get_User_by_netId_callback(err, rows, fields)
 			{
-				if (!err)
+				if (err)
+				{
+					response.status(500).send({success: false, msg: 'Internal Server Error. Please try again later.'});
+				}
+				else
 				{
 					//If we found a match, the user should be authenticated. Don't worry about a password.
 					if(rows.length > 0)
@@ -59,10 +63,6 @@ methods.issueToken = function(request, response, connection)
 					{
 						response.status(401).send({success: false, msg: 'Invalid credentials.'});
 					}
-				}
-				else
-				{
-					response.status(500).send({success: false, msg: 'Internal Server Error. Please try again later.'});
 				}
 			}
 		

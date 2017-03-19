@@ -144,8 +144,13 @@ methods.getMyBooks = function(request, response, connection)
 	var afterCheckTokenCallback = function(internalUserId){
 		var get_dummyUserEnrollment_by_internalUserId_callback = function(err, classRows, fields)
 		{
-			if (!err)
+			if (err)
 			{	
+				console.log(err);
+				response.status(500).send({success: false, msg: 'Internal Server Error. Please try again later.'});
+			}
+			else
+			{
 				//If there were no rows found, then just return and empty array.
 				if(classRows.length === 0)
 				{
@@ -178,11 +183,6 @@ methods.getMyBooks = function(request, response, connection)
 						}
 					}
 				}
-			}
-			else
-			{
-				console.log(err);
-				response.status(500).send({success: false, msg: 'Internal Server Error. Please try again later.'});
 			}
 		}
 		
