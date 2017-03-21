@@ -64,6 +64,7 @@ methods.getConversationsByUser = function(request, response, connection)
 			for (var key in conversationsArray) 
 			{
 				dal.get_unreadMessages_by_conversationIdAndInternalUserId(connection, function(err, rows, fields){
+					console.log(rows.length)
 					if (err)
 					{
 						console.log(err);
@@ -71,11 +72,17 @@ methods.getConversationsByUser = function(request, response, connection)
 					}
 					else
 					{
+						//TODO: We were having a problem in which, if this query returned no rows, then rows[0].conversationId would be undefined so the 
+						//entire request would fail. I made hasty changes in order to get this to work, but need to come back and
+						//take a hard look at this code to see if more changes are needed.
 						counter++;
-						var conversationIdOfRow = rows[0].conversationId;
-						var numOfUnreadMessagesForThisConversation = rows[0].numUnreadMessages;
-						var conversation = conversationsArray[conversationIdOfRow];
-						conversation.numOfUnreadMessages = numOfUnreadMessagesForThisConversation;
+						if(rows.length > 0)
+						{
+							var conversationIdOfRow = rows[0].conversationId;
+							var numOfUnreadMessagesForThisConversation = rows[0].numUnreadMessages;
+							var conversation = conversationsArray[conversationIdOfRow];
+							conversation.numOfUnreadMessages = numOfUnreadMessagesForThisConversation;
+						}
 						
 						//Once the counter hits the length of the array, we know that we've populated the number of unread messages for 
 						//each conversation in the array.
@@ -143,7 +150,7 @@ methods.getConversationsByUser = function(request, response, connection)
 				//Loop through the results to get the ID of each conversation that this user is part of.
 				for (var i in rows) 
 				{
-					conversationsArray[rows[i].conversationId] = {conversationId: rows[i].conversationId};
+					conversationsArray[rows[i].conversationId] = {conversationId: rows[i].conversationId, numOfUnreadMessages: 0};
 				}
 				
 				//At this point, we have an array of conversation IDs. Next, for each of those conversation IDs, we need to get the user's conversation partner.
