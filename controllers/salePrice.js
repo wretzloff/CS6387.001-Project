@@ -237,7 +237,7 @@ methods.getSuggestedSalePrice = function(request, response, connection)
 			//get local price for isbn	
 			console.log("data:"+data.price);
 			res=data;
-			dal.get_forSaleEntries_by_isbn(connection, get_lowest_price_by_isbn_callback,isbn_13);
+			dal.get_open_forSaleEntries_by_isbn(connection, get_lowest_price_by_isbn_callback,isbn_13);
 		});
 	}
 	authenticate.checkToken(request, response, afterCheckTokenCallback);
