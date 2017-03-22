@@ -421,6 +421,8 @@ function convertTransactionRowToJson(row, internalUserId)
 	jsonRow.isbn = row.isbn;
 	jsonRow.author = row.author;
 	jsonRow.ISBN = row.ISBN;
+    jsonRow.description = row.description;
+    jsonRow.conditionDescription = row.bookConditionDescription;
 	jsonRow.price = row.price;
 	return jsonRow;
 }
