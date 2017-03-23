@@ -60,24 +60,24 @@ methods.insert_forSaleEntries = function(connection, callbackFunction, providedI
 	connection.query("Insert into ForSale SET ?", rowToInsert, callbackFunction);
 }
 
+var transactionSelectString = "SELECT d.nickname as buyer_nickname, e.nickname as seller_nickname, a.iD as transactionId, DATE_FORMAT(a.transactionDateTime,'%Y-%m-%d %H:%i:%S') as formattedPostedDateTime, b.description as bookDescription, f.description as conditionDescription, a.*, b.*, c.* from Transactions a left outer join ForSale b on a.forSaleId=b.iD left outer join transactionStatus_type c on a.status=c.id left outer join User d on a.buyer_InternalUserId=d.internalUserId left outer join User e on b.seller_InternalUserId=e.internalUserId left outer join condition_type f on b.bookCondition=f.id where ";
 methods.get_transactions_by_ForSaleId = function(connection, callbackFunction, forSaleId)
 {
-	var queryString = "SELECT d.nickname as buyer_nickname, e.nickname as seller_nickname, a.iD as transactionId, DATE_FORMAT(a.transactionDateTime,'%Y-%m-%d %H:%i:%S') as formattedPostedDateTime, a.*, b.*, c.* from Transactions a left outer join ForSale b on a.forSaleId=b.iD left outer join transactionStatus_type c on a.status=c.id left outer join User d on a.buyer_InternalUserId=d.internalUserId left outer join User e on b.seller_InternalUserId=e.internalUserId where a.forSaleId = " + forSaleId;
+	var queryString = transactionSelectString + "a.forSaleId = " + forSaleId;
 	connection.query(queryString, callbackFunction);
 }
 
 methods.get_open_transactions_by_internalUserId = function(connection,callbackFunction,providedUserId)
 {
-	var queryString = "SELECT d.nickname as buyer_nickname, e.nickname as seller_nickname, a.iD as transactionId, DATE_FORMAT(a.transactionDateTime,'%Y-%m-%d %H:%i:%S') as formattedPostedDateTime, a.*, b.*, c.* from Transactions a left outer join ForSale b on a.forSaleId=b.iD left outer join transactionStatus_type c on a.status=c.id left outer join User d on a.buyer_InternalUserId=d.internalUserId left outer join User e on b.seller_InternalUserId=e.internalUserId where a.status <> 1 and (a.buyer_InternalUserId = " + providedUserId + " or b.seller_InternalUserId = " + providedUserId + ")";
+	var queryString = transactionSelectString + "a.status <> 1 and (a.buyer_InternalUserId = " + providedUserId + " or b.seller_InternalUserId = " + providedUserId + ")";
 	connection.query(queryString, callbackFunction);
 }
 
 methods.get_transaction_by_Id = function(connection, callbackFunction, transactionId)
 {
-	var queryString = "SELECT d.nickname as buyer_nickname, e.nickname as seller_nickname, a.iD as transactionId, DATE_FORMAT(a.transactionDateTime,'%Y-%m-%d %H:%i:%S') as formattedPostedDateTime, a.*, b.*, c.* from Transactions a left outer join ForSale b on a.forSaleId=b.iD left outer join transactionStatus_type c on a.status=c.id left outer join User d on a.buyer_InternalUserId=d.internalUserId left outer join User e on b.seller_InternalUserId=e.internalUserId where a.iD = " + transactionId;
+	var queryString = transactionSelectString + "a.iD = " + transactionId;
 	connection.query(queryString, callbackFunction);
 }
-
 
 methods.insert_Transaction = function(connection, callbackFunction, buyer, dateTime, convId, forSaleEntry)
 {
@@ -143,7 +143,9 @@ methods.get_messages_by_conversationId = function(connection, callbackFunction, 
 
 methods.get_unreadMessages_by_conversationIdAndInternalUserId = function(connection, callbackFunction, conversationId, internalUserId)
 {
-	connection.query("select conversationId, to_internalUserId, count(*) as 'numUnreadMessages' from Message where unread = 1 and conversationId = " + conversationId + " and to_InternalUserId = " + internalUserId + " group by conversationId, to_internalUserId", callbackFunction);
+	var queryString = "select conversationId, to_internalUserId, count(*) as 'numUnreadMessages' from Message where unread = 1 and conversationId = " + conversationId + " and to_InternalUserId = " + internalUserId + " group by conversationId, to_internalUserId";
+	console.log(queryString);
+	connection.query(queryString, callbackFunction);
 }
 
 methods.insert_Message = function(connection, callbackFunction, to, from, content, convId)
