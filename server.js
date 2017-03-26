@@ -45,6 +45,7 @@ var utdtextbookexchange_app = function() {
             response.send('Welcome to UTD Book Exchange (Hello World)!');
         };
 		
+		//TODO: need to clean up the clean up the \n in the response.
 		//TODO: Should change this route to /my-books/:userId/productionFlag/:productionOrStubBooks
 		self.getRoutes['/my-books/:userId/:productionOrStubBooks'] = function(request, response) 
 		{

@@ -396,7 +396,6 @@ methods.markTransactionCancelled = function(request, response, connection)
 	authenticate.checkToken(request, response, afterCheckTokenCallback);
 }
 
-//TODO: in addition to the fields below, need to also add the book condition and condition description to the json row.
 function convertTransactionRowToJson(row, internalUserId)
 {
 	var jsonRow = {};
