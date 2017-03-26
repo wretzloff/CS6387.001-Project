@@ -95,6 +95,16 @@ methods.get_possibleTransactionStatuses = function(connection, callbackFunction)
 	connection.query("select * from transactionStatus_type", callbackFunction);
 }
 
+methods.get_possibleTransactionsById = function(connection, callbackFunction, iD)
+{
+	connection.query("SELECT iD,buyer_InternalUserId,DATE_FORMAT(transactionDateTime,'%Y-%m-%d %H:%i:%S') as transactionDateTime,status,conversationId,forSaleId from Transactions where iD = '" + iD + "'", callbackFunction);
+}
+methods.get_possibletransactionsByUser = function(connection,callbackFunction,providedUserId)
+{
+	var queryString = transactionSelectString + "b.buyer_InternalUserId = '" + providedUserId + "'"
+	connection.query(queryString, callbackFunction);
+}
+
 methods.get_conversation_by_iD = function(connection, callbackFunction, conversationId)
 {
 	//conversationId can be either a single integer or an array of integers. Either way, it will get automatically transalated properly into the query.
