@@ -212,7 +212,7 @@ function parseBookHTML(html)
 		});
 	})
 	
-	return JSON.stringify(arr, null, 4);
+	return arr;
 }
 
 function getBooksForClass(numOfClasses, classNumber, className, callbackFunction) 
