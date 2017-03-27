@@ -69,7 +69,7 @@ methods.get_transactions_by_ForSaleId = function(connection, callbackFunction, f
 
 methods.get_open_transactions_by_internalUserId = function(connection,callbackFunction,providedUserId)
 {
-	var queryString = transactionSelectString + "a.status <> 1 and (a.buyer_InternalUserId = " + providedUserId + " or b.seller_InternalUserId = " + providedUserId + ")";
+	var queryString = transactionSelectString + "(a.buyer_InternalUserId = " + providedUserId + " or b.seller_InternalUserId = " + providedUserId + ")";
 	connection.query(queryString, callbackFunction);
 }
 
@@ -93,16 +93,6 @@ methods.update_transactionStatus_by_iD = function(connection, callbackFunction, 
 methods.get_possibleTransactionStatuses = function(connection, callbackFunction)
 {
 	connection.query("select * from transactionStatus_type", callbackFunction);
-}
-
-methods.get_possibleTransactionsById = function(connection, callbackFunction, iD)
-{
-	connection.query("SELECT iD,buyer_InternalUserId,DATE_FORMAT(transactionDateTime,'%Y-%m-%d %H:%i:%S') as transactionDateTime,status,conversationId,forSaleId from Transactions where iD = '" + iD + "'", callbackFunction);
-}
-methods.get_possibletransactionsByUser = function(connection,callbackFunction,providedUserId)
-{
-	var queryString = transactionSelectString + "b.buyer_InternalUserId = '" + providedUserId + "'"
-	connection.query(queryString, callbackFunction);
 }
 
 methods.get_conversation_by_iD = function(connection, callbackFunction, conversationId)
