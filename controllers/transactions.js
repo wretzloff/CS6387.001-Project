@@ -202,9 +202,6 @@ methods.getOpenTransactionsByUser = function(request, response, connection)
 {
 	function afterCheckTokenCallback(internalUserId)
 	{
-		//Get the parameters from the request query string
-		var providedUserId = request.params.userId;
-		
 		function get_open_transactions_by_internalUserId_callback(err,rows,fields)
 		{
 			if (err)
