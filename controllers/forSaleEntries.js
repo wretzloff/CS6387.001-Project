@@ -41,9 +41,6 @@ methods.getOpenAndPendingForSaleEntriesByUser = function(request, response, conn
 {
 	function afterCheckTokenCallback(internalUserId)
 	{
-		//Get the parameters from the request query string
-		var providedUserId = request.params.userId;
-
 		//Declare variables that will be set and used throughout this request.		
 		var forSaleEntriesArray = [];
 		
@@ -70,7 +67,7 @@ methods.getOpenAndPendingForSaleEntriesByUser = function(request, response, conn
 		
 		function getOpenTransactionsForThisUser()
 		{
-			dal.get_pending_forSaleEntries_by_internalUserId(connection, get_pending_forSaleEntries_by_internalUserId_callback, providedUserId);
+			dal.get_pending_forSaleEntries_by_internalUserId(connection, get_pending_forSaleEntries_by_internalUserId_callback, internalUserId);
 		}
 		
 		function get_open_forSaleEntries_by_internalUserId_callback(err, rows, fields)
@@ -89,13 +86,13 @@ methods.getOpenAndPendingForSaleEntriesByUser = function(request, response, conn
 					forSaleEntriesArray.push(forSaleEntry);
 				}
 				
-				//We have loaded up the For Sale Entries array with transactions that do not have a transaction associated with them.
+				//We have loaded up the For Sale Entries array with For Sale entries that do not have a transaction associated with them.
 				//Now, we need to fetch the For Sale Entries that do have transactions associated with them.
 				getOpenTransactionsForThisUser();
 			}
 		}
 		
-		dal.get_open_forSaleEntries_by_internalUserId(connection, get_open_forSaleEntries_by_internalUserId_callback, providedUserId);
+		dal.get_open_forSaleEntries_by_internalUserId(connection, get_open_forSaleEntries_by_internalUserId_callback, internalUserId);
 	}
 			
 	authenticate.checkToken(request, response, afterCheckTokenCallback);
