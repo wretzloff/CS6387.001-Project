@@ -223,7 +223,7 @@ methods.getOpenTransactionsByUser = function(request, response, connection)
 				response.send(transactionsArray);
 			}
 		}
-		dal.get_open_transactions_by_internalUserId(connection, get_open_transactions_by_internalUserId_callback, providedUserId);
+		dal.get_open_transactions_by_internalUserId(connection, get_open_transactions_by_internalUserId_callback, internalUserId);
 	}
 	
 	authenticate.checkToken(request, response, afterCheckTokenCallback);
