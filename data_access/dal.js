@@ -25,14 +25,14 @@ var forSaleEntryFrom = "from ForSale a left outer join Transactions b on a.iD=b.
 methods.get_open_forSaleEntries_by_isbn = function(connection, callbackFunction, isbn)
 {
 	//This will get For Sale entries for the given ISBN that have either no associated transactions, or only cancelled transactions.
-	var queryString = forSaleEntrySelectString + openForSaleEntrySelectString + forSaleEntryFrom + "a.ISBN = '" + isbn + "' and (b.status is null or b.status = '2')";
+	var queryString = forSaleEntrySelectString + openForSaleEntrySelectString + forSaleEntryFrom + "a.ISBN = '" + isbn + "' and not exists (select * from Transactions where forSaleId = a.iD and status <> 2)";
 	connection.query(queryString, callbackFunction);
 }	
 
 methods.get_open_forSaleEntries_by_internalUserId = function(connection, callbackFunction, internalUserId)
 {
 	//This will get For Sale entries for the given user id that have either no associated transactions, or only cancelled transactions.
-	var queryString = forSaleEntrySelectString + openForSaleEntrySelectString + forSaleEntryFrom + "a.seller_InternalUserId = '" + internalUserId + "' and (b.status is null or b.status = '2')"
+	var queryString = forSaleEntrySelectString + openForSaleEntrySelectString + forSaleEntryFrom + "a.seller_InternalUserId = '" + internalUserId + "' and not exists (select * from Transactions where forSaleId = a.iD and status <> 2)"
 	connection.query(queryString, callbackFunction);
 }
 
