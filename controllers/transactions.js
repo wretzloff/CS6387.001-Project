@@ -199,11 +199,11 @@ methods.buyBook = function(request, response, connection)
 	authenticate.checkToken(request, response, afterCheckTokenCallback);
 }
 
-methods.getOpenTransactionsByUser = function(request, response, connection)
+methods.getTransactionsByUser = function(request, response, connection)
 {
 	function afterCheckTokenCallback(internalUserId)
 	{
-		function get_open_transactions_by_internalUserId_callback(err,rows,fields)
+		function get_transactions_by_internalUserId_callback(err,rows,fields)
 		{
 			if (err)
 			{
@@ -221,7 +221,7 @@ methods.getOpenTransactionsByUser = function(request, response, connection)
 				response.send(transactionsArray);
 			}
 		}
-		dal.get_open_transactions_by_internalUserId(connection, get_open_transactions_by_internalUserId_callback, internalUserId);
+		dal.get_transactions_by_internalUserId(connection, get_transactions_by_internalUserId_callback, internalUserId);
 	}
 	
 	authenticate.checkToken(request, response, afterCheckTokenCallback);

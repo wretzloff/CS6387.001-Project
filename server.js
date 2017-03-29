@@ -91,7 +91,7 @@ var utdtextbookexchange_app = function() {
 		
 		self.getRoutes['/transactions/userId/:userId'] = function(request, response) 
 		{
-			transactions.getOpenTransactionsByUser(request, response, connection);
+			transactions.getTransactionsByUser(request, response, connection);
 		};
 		
 		self.getRoutes['/transactions/transaction/:transactionId'] = function(request, response) 

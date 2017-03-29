@@ -67,7 +67,7 @@ methods.get_transactions_by_ForSaleId = function(connection, callbackFunction, f
 	connection.query(queryString, callbackFunction);
 }
 
-methods.get_open_transactions_by_internalUserId = function(connection,callbackFunction,providedUserId)
+methods.get_transactions_by_internalUserId = function(connection,callbackFunction,providedUserId)
 {
 	var queryString = transactionSelectString + "(a.buyer_InternalUserId = " + providedUserId + " or b.seller_InternalUserId = " + providedUserId + ")";
 	connection.query(queryString, callbackFunction);
