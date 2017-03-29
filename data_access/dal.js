@@ -17,7 +17,6 @@ methods.get_dummyUserEnrollment_by_internalUserId = function(connection, callbac
 	connection.query("SELECT * from dummy_User_Enrollment where internalUserId = '" + internalUserId + "'", callbackFunction)
 }
 
-//TODO: I think this can return duplicate records if we have one for sale entry with 2 or more cancelled transactions. Need to test this and resolve it if needed.
 var forSaleEntrySelectString = "SELECT a.iD as forSaleId, DATE_FORMAT(a.postedDateTime,'%Y-%m-%d %H:%i:%S') as postedDateTime, 'For Sale' as 'status', a.isbn, a.author, a.title, a.price, a.description, a.bookCondition, d.description as 'bookConditionDescription',c.nickname, ";
 var openForSaleEntrySelectString = "'For Sale' as 'status' ";
 var pendingForSaleEntrySelectString = "'On Hold' as 'status', b.iD as transactionId ";
