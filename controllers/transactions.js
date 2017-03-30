@@ -227,7 +227,6 @@ methods.getTransactionsByUser = function(request, response, connection)
 	authenticate.checkToken(request, response, afterCheckTokenCallback);
 }
 
-//TODO: need to put a check in place that ensures that the requeter is either the buyer or the seller. Otherwise, they should not be part of this transaction.
 methods.getTransactionById = function(request, response, connection)
 {
 	function afterCheckTokenCallback(internalUserId)
