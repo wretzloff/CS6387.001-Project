@@ -64,7 +64,6 @@ methods.getConversationsByUser = function(request, response, connection)
 			for (var key in conversationsArray) 
 			{
 				dal.get_unreadMessages_by_conversationIdAndInternalUserId(connection, function(err, rows, fields){
-					console.log(rows.length)
 					if (err)
 					{
 						console.log(err);
@@ -72,10 +71,10 @@ methods.getConversationsByUser = function(request, response, connection)
 					}
 					else
 					{
-						//TODO: We were having a problem in which, if this query returned no rows, then rows[0].conversationId would be undefined so the 
-						//entire request would fail. I made hasty changes in order to get this to work, but need to come back and
-						//take a hard look at this code to see if more changes are needed.
 						counter++;
+						
+						//If any unread messages were found, count them and set this conversation's numOfUnreadMessages.
+						//Otherwise, since no unread messages were found, numOfUnreadMessages will remain at 0.
 						if(rows.length > 0)
 						{
 							var conversationIdOfRow = rows[0].conversationId;
@@ -86,7 +85,7 @@ methods.getConversationsByUser = function(request, response, connection)
 						
 						//Once the counter hits the length of the array, we know that we've populated the number of unread messages for 
 						//each conversation in the array.
-						//Next step is to get the last message for each conversation.
+						//Next step is to populate the last message for each conversation.
 						if(counter >= Object.keys(conversationsArray).length)
 						{
 							getLatestMessage();
@@ -128,7 +127,7 @@ methods.getConversationsByUser = function(request, response, connection)
 						
 						//Once the counter hits the length of the array, we know that we've found the conversation partner for 
 						//each conversation in the array.
-						//Next step is to get the number of unread messages for each conversation.
+						//Next step is to populate the number of unread messages for each conversation.
 						if(counter >= Object.keys(conversationsArray).length)
 						{
 							getNumOfUnreadMessages();
@@ -153,7 +152,7 @@ methods.getConversationsByUser = function(request, response, connection)
 					conversationsArray[rows[i].conversationId] = {conversationId: rows[i].conversationId, numOfUnreadMessages: 0};
 				}
 				
-				//At this point, we have an array of conversation IDs. Next, for each of those conversation IDs, we need to get the user's conversation partner.
+				//At this point, we have an array of conversation IDs. Next, for each of those conversation IDs, we need to populate the user's conversation partner.
 				getConversationPartners();
 			}
 		}
