@@ -228,7 +228,6 @@ methods.getTransactionsByUser = function(request, response, connection)
 }
 
 //TODO: need to put a check in place that ensures that the requeter is either the buyer or the seller. Otherwise, they should not be part of this transaction.
-//response.status(403).send({success: false, msg: 'User is not party to the specified transaction.'});
 methods.getTransactionById = function(request, response, connection)
 {
 	function afterCheckTokenCallback(internalUserId)
@@ -250,8 +249,18 @@ methods.getTransactionById = function(request, response, connection)
 			else
 			{
 				//Get the first (and only) row. This is what we'll return to the client.
-				var transactionJsonRow = convertTransactionRowToJson(rows[0], internalUserId);
-				response.json(transactionJsonRow);
+				var transactionBuyer = rows[0].buyer_InternalUserId;
+				var transactionSeller = rows[0].seller_InternalUserId;
+				if(internalUserId === transactionBuyer || internalUserId === transactionSeller)
+				{
+					var transactionJsonRow = convertTransactionRowToJson(rows[0], internalUserId);
+					response.json(transactionJsonRow);
+				}
+				else
+				{
+					response.status(403).send({success: false, msg: 'User is not party to the specified transaction.'});
+				}
+				
 			}
 		}
 	
