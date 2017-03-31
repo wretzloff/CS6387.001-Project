@@ -45,13 +45,11 @@ var utdtextbookexchange_app = function() {
             response.send('Welcome to UTD Book Exchange (Hello World)!');
         };
 		
-		//TODO: Should change this route to /my-books/:userId/productionFlag/:productionOrStubBooks
 		self.getRoutes['/my-books/:userId/:productionOrStubBooks'] = function(request, response) 
 		{
 			myBooks.getMyBooks(request, response, connection);
         };
 		
-		//TODO: Does it make sense for this function to be under the my-books endpoint? Or a different one?
 		//TODO: need to consolidate the APAC stuff into a single file so that it's not duplicate din both my-books.js and salePrice.js
 		self.getRoutes['/my-books/cover/isbn/:isbn'] = function(request, response) 
 		{
