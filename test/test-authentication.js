@@ -1,13 +1,13 @@
-
+var config = require('./testConfig.json');
 const chai = require('chai');
 const should = chai.should();
 const chaiHttp = require('chai-http');
 chai.use(chaiHttp);
-var host = "http://localhost:3000";
+var host = config.host;
 
 
-describe('POST /Authentication', () => {
-  it('should register a new user', (done) => {
+describe('Authentication', () => {
+  it('should register a new user successfully', (done) => {
     chai.request(host)
     .post('/Authenticate')
     .send({
@@ -17,11 +17,46 @@ describe('POST /Authentication', () => {
     .end((err, res) => {
       should.not.exist(err);
       res.redirects.length.should.eql(0);
-      res.status.should.eql(200);
+      res.should.have.status(200); 
       res.type.should.eql('application/json');
       res.body.should.include.keys('success', 'token');
       res.body.success.isTrue;
       done();
     });
   });
+  
+  it('unexist user register failure', (done) => {
+	    chai.request(host)
+	    .post('/Authenticate')
+	    .send({
+	      username: 'nobody',
+	      password: 'wrongpassword'
+	    })
+	    .end((err, res) => {
+	      res.should.have.status(401); 
+	      done();
+	    });
+	  });
 });
+
+/*
+describe('POST /Authentication', () => {
+	  it('wrong password leads to register failure', (done) => {
+	    chai.request(host)
+	    .post('/Authenticate')
+	    .send({
+	      username: 'wbr071000',
+	      password: 'wrongpassword'
+	    })
+	    .end((err, res) => {
+	      res.should.have.status(401); 
+	      res.body.success.isFalse;
+	      done();
+	    });
+	  });
+	});
+*/
+
+describe('POST /Authentication', () => {
+	
+	});
