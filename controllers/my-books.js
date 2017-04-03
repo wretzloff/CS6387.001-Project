@@ -10,25 +10,18 @@ var methods = {};
 
 methods.getBookCover = function(request, response, connection)
 {
-	//call back when cover is fetched
-	var getCoverCallbackFunction = function(data)
+	var afterFetchCallback = function(err, data)
 	{
 		response.contentType('application/json');
 		response.json(data);
-
 	}
 	
 	var afterCheckTokenCallback = function(internalUserId)
 	{
-		
 		//Get the parameters from the request query string
 		var isbn_13 = request.params.isbn;	
 		
-		apacAdapter.fetch(isbn_13,response,function(err,data){
-			console.log(data);
-			getCoverCallbackFunction(data);
-		});
-
+		apacAdapter.fetch(isbn_13,response, afterFetchCallback);
 	}	
 	
 	authenticate.checkToken(request, response, afterCheckTokenCallback);
