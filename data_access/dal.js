@@ -17,7 +17,7 @@ methods.get_dummyUserEnrollment_by_internalUserId = function(connection, callbac
 	connection.query("SELECT * from dummy_User_Enrollment where internalUserId = '" + internalUserId + "'", callbackFunction)
 }
 
-var forSaleEntrySelectString = "SELECT a.iD as forSaleId, DATE_FORMAT(a.postedDateTime,'%Y-%m-%d %H:%i:%S') as postedDateTime, 'For Sale' as 'status', a.isbn, a.author, a.title, a.price, a.description, a.bookCondition, d.description as 'bookConditionDescription',c.nickname, ";
+var forSaleEntrySelectString = "SELECT a.iD as forSaleId, a.seller_InternalUserId, DATE_FORMAT(a.postedDateTime,'%Y-%m-%d %H:%i:%S') as postedDateTime, 'For Sale' as 'status', a.isbn, a.author, a.title, a.price, a.description, a.bookCondition, d.description as 'bookConditionDescription',c.nickname, ";
 var openForSaleEntrySelectString = "'For Sale' as 'status' ";
 var pendingForSaleEntrySelectString = "'On Hold' as 'status', b.iD as transactionId ";
 var forSaleEntryFrom = "from ForSale a left outer join Transactions b on a.iD=b.forSaleId left outer join User c on a.seller_InternalUserId=c.internalUserId left outer join condition_type d on a.bookCondition=d.id where ";
