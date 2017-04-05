@@ -1,18 +1,15 @@
-var config = require('./testConfig.json');
-const chai = require('chai');
-require('mocha-steps');
-const assert = require('chai').assert;
-const should = chai.should();
-const chaiHttp = require('chai-http');
+var chai = require('chai');
+var chaiHttp = require('chai-http');
 chai.use(chaiHttp);
+var assert = require('chai').assert;
+var should = chai.should();
+require('mocha-steps');
+var request = require('request');
+
+var config = require('./testConfig.json');
 var host = config.host;
 var token = 'JWT eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.Ng.Br3DB77C4acCJ7vdYG-0Lx55oCn80KR4gzV-lPYlvz4';
-var wrongtoken='JWT eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.Ng.Br3DB77C4acCJ7vdYG-0Lx55oCn80KR4gzV-lPYlvz3';
-var userid=6
-var wronguserid=1
-var isbn_13='9780133778816';
 var isbn_13_test='9780199679416';
-
 
 
 describe('Get a list of books for sale for current userid', () => {
@@ -20,7 +17,6 @@ describe('Get a list of books for sale for current userid', () => {
 	
     step("check fake book existance",function(done) {
         // add a book for specific userid
-    	var request = require('request');
     	request.get({
     	  headers:{'authorization':token},
     	  url:     host+'/forSaleEntries/isbn/'+isbn_13_test,    	  
@@ -54,7 +50,6 @@ describe('Get a list of books for sale for current userid', () => {
         // add a book for specific userid
     	//console.log(hasTestBook);
     	if(!hasTestBook){
-        	var request = require('request');
         	request.post({
         	  headers:{'authorization':token},
         	  url:     host+'/forSaleEntries',
@@ -118,7 +113,6 @@ describe('Get a list of books for sale for specific isbn', () => {
 	
     step("check fake book existance",function(done) {
         // add a book for specific userid
-    	var request = require('request');
     	request.get({
     	  headers:{'authorization':token},
     	  url:     host+'/forSaleEntries/isbn/'+isbn_13_test,    	  
@@ -152,7 +146,6 @@ describe('Get a list of books for sale for specific isbn', () => {
         // add a book for specific userid
     	//console.log(hasTestBook);
     	if(!hasTestBook){
-        	var request = require('request');
         	request.post({
         	  headers:{'authorization':token},
         	  url:     host+'/forSaleEntries',

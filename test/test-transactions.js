@@ -1,18 +1,18 @@
-var config = require('./testConfig.json');
-const chai = require('chai');
-require('mocha-steps');
-const assert = require('chai').assert;
-const should = chai.should();
-const chaiHttp = require('chai-http');
+var chai = require('chai');
+var chaiHttp = require('chai-http');
 chai.use(chaiHttp);
+var assert = require('chai').assert;
+var should = chai.should();
+require('mocha-steps');
+
+var config = require('./testConfig.json');
 var host = config.host;
 var token = 'JWT eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.Ng.Br3DB77C4acCJ7vdYG-0Lx55oCn80KR4gzV-lPYlvz4';
 var willToken='JWT eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.MQ.4p-Xcp_Aqs6evX2L8AylTbb1woTuxtlgL-Wg1QMXYYk';
-var wrongtoken='JWT eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.Ng.Br3DB77C4acCJ7vdYG-0Lx55oCn80KR4gzV-lPYlvz3';
-var userid=6
-var wronguserid=1
 var isbn_13='9780133778816';
+var userid=6
 var isbn_13_test='9780199679416';
+
 
 describe('Get transactions successful test case', () => {
 	var hasTestBook=false;

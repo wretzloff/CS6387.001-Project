@@ -1,10 +1,10 @@
-var config = require('./testConfig.json');
-const chai = require('chai');
-const should = chai.should();
-const chaiHttp = require('chai-http');
+var chai = require('chai');
+var chaiHttp = require('chai-http');
 chai.use(chaiHttp);
-var host = config.host;
+var should = chai.should();
 
+var config = require('./testConfig.json');
+var host = config.host;
 
 describe('Authentication', () => {
   it('should register a new user successfully', (done) => {

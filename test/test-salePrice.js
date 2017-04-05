@@ -1,12 +1,16 @@
-var config = require('./testConfig.json');
-const chai = require('chai');
-const should = chai.should();
-const chaiHttp = require('chai-http');
+var chai = require('chai');
+var chaiHttp = require('chai-http');
 chai.use(chaiHttp);
+var assert = require('chai').assert;
+var should = chai.should();
+require('mocha-steps');
+
+var config = require('./testConfig.json');
+var host = config.host;
 var token = 'JWT eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.Ng.Br3DB77C4acCJ7vdYG-0Lx55oCn80KR4gzV-lPYlvz4';
 var wrongtoken='JWT eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.Ng.Br3DB77C4acCJ7vdYG-0Lx55oCn80KR4gzV-lPYlvz3';
-var host = config.host;
 var isbn_13='9780133778816';
+
 
 describe('GET /salePrice/thirdParty/isbn/', () => {
   it('should return list price', (done) => {
