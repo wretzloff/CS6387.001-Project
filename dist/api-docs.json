@@ -1135,6 +1135,11 @@
 						"format": "int",
 						"default": 217
 				    },
+					"seller_InternalUserId": {
+					    "type": "integer",
+					    "format": "int",
+						"default": 1
+				    },
 					"datePosted": {
 					    "type": "string",
 						"default": "2017-01-22 00:02:40"
