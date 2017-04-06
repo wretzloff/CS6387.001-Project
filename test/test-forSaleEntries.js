@@ -5,7 +5,6 @@ var assert = require('chai').assert;
 var should = chai.should();
 require('mocha-steps');
 var request = require('request');
-
 var config = require('./testConfig.json');
 var host = config.host;
 var token = 'JWT eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.Ng.Br3DB77C4acCJ7vdYG-0Lx55oCn80KR4gzV-lPYlvz4';
