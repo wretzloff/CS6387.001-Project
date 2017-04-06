@@ -2,35 +2,72 @@ var chai = require('chai');
 var chaiHttp = require('chai-http');
 chai.use(chaiHttp);
 var should = chai.should();
+require('mocha-steps');
 
 var config = require('./testConfig.json');
 var host = config.host;
+var validUsername = 'xxt150630';
+var password = 'thisIsARandomPassword';
+var invalidUsername = 'fakeUsername';
 
-describe('Authentication', () => {
-  it('should register a new user successfully', (done) => {
-    chai.request(host)
-    .post('/Authenticate')
-    .send({
-      username: 'xxt150630',
-      password: 'thisIsARandomPassword'
-    })
-    .end((err, res) => {
-      should.not.exist(err);
-      res.redirects.length.should.eql(0);
-      res.should.have.status(200); 
-      res.type.should.eql('application/json');
-      res.body.should.include.keys('success', 'token');
-      res.body.success.isTrue;
-      done();
+describe('Valid user', () => {
+	var response;
+    step("HTTP response should be 200",function(done) {
+    	chai.request(host)
+		.post('/Authenticate')
+		.send({
+			username: validUsername,
+			password: password
+		})
+		.end((err, res) => {
+			should.not.exist(err);
+			res.should.have.status(200);
+			response = res;
+			
+			done();
+		}); 
     });
-  });
-  
+
+	step("Response type should be: application/json",function(done) {
+    	response.type.should.eql('application/json');
+		done(); 
+    });
+	
+	step("Response body should include: success",function(done) {
+		response.body.should.include.keys('success');
+		done(); 
+    });
+	
+	step("Response body success should be true",function(done) {
+		response.body.success.isTrue;
+		done(); 
+    });
+	
+	step("Response body should include: token",function(done) {
+		response.body.should.include.keys('token');
+		done(); 
+    });
+	
+	step("Response body should include: userId",function(done) {
+		response.body.should.include.keys('userId');
+		done(); 
+    });
+	
+	step("Response body should include: userNickname",function(done) {
+		response.body.should.include.keys('userNickname');
+		response.body.success.isTrue;
+		done(); 
+    });
+});
+
+describe('Invalid user', () => {
+
   it('unexist user register failure', (done) => {
 	    chai.request(host)
 	    .post('/Authenticate')
 	    .send({
-	      username: 'nobody',
-	      password: 'wrongpassword'
+	      username: invalidUsername,
+	      password: password
 	    })
 	    .end((err, res) => {
 	      res.should.have.status(401); 
@@ -39,24 +76,4 @@ describe('Authentication', () => {
 	  });
 });
 
-/*
-describe('POST /Authentication', () => {
-	  it('wrong password leads to register failure', (done) => {
-	    chai.request(host)
-	    .post('/Authenticate')
-	    .send({
-	      username: 'wbr071000',
-	      password: 'wrongpassword'
-	    })
-	    .end((err, res) => {
-	      res.should.have.status(401); 
-	      res.body.success.isFalse;
-	      done();
-	    });
-	  });
-	});
-*/
 
-describe('POST /Authentication', () => {
-	
-	});
