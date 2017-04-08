@@ -33,7 +33,13 @@ methods.getThirdPartySalePrice = function(request, response, connection)
 		var isbn_13 = request.params.isbn;	
 
 		apacAdapter.fetchListPrice(isbn_13,response,function(err,data){
-			getThirdPartySalePriceCallbackFunction(data.price,data.link);
+			if(err){
+				console.log(err);
+				response.status(500).send({success: false, msg: 'Query to AWS Server Error. Please try again later.'});
+			}else{
+				getThirdPartySalePriceCallbackFunction(data.price,data.link);
+			}
+			
 		});
 			
 	}
@@ -62,6 +68,10 @@ methods.getSuggestedSalePrice = function(request, response, connection)
 					lowestLocalPrice=Math.min(lowestLocalPrice,rows[i].price);
 				}
 				
+			}else{
+				console.log(err);
+				response.status(500).send({success: false, msg: 'Query to UTDBooks database Error. Please try again later.'});
+				
 			}
 			console.log("lowest local "+lowestLocalPrice);
 		},isbn_13);
@@ -79,8 +89,10 @@ methods.getSuggestedSalePrice = function(request, response, connection)
 				lowest3rdPartyPrice=999999;
 			else
 				lowest3rdPartyPrice=parseFloat(res.lowestprice.substring(1));
-			if (err) reject(err);
-		    else resolve(data);
+			if (err){
+				console.log(err);
+				response.status(500).send({success: false, msg: 'Query to AWS Server Error. Please try again later.'});
+			}
 		});
 		});
 	

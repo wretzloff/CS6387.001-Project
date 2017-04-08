@@ -12,8 +12,16 @@ methods.getBookCover = function(request, response, connection)
 {
 	var afterFetchCallback = function(err, data)
 	{
-		response.contentType('application/json');
-		response.json(data);
+		if (err)
+		{	
+			console.log(err);
+			response.status(500).send({success: false, msg: 'Query to AWS Server Error. Please try again later.'});
+		}
+		else
+		{
+			response.contentType('application/json');
+			response.json(data);
+		}		
 	}
 	
 	var afterCheckTokenCallback = function(internalUserId)

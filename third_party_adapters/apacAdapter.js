@@ -77,6 +77,7 @@ methods.fetch = function fetch(isbn,response,callback){
 	    		return;
 			 
 		  }).catch((err) => {
+			  callback(err,res);
 		      console.error("Something went wrong! ", err);
 		  });
 }
@@ -138,6 +139,7 @@ methods.fetchLowestPrice =function fetchLowestPrice(isbn,response,callback){
 			  }	  			 			  			 
 			 
 		  }).catch((err) => {
+			  callback(err,res);
 		      console.error("Something went wrong! ", err);
 		  });
 
@@ -218,6 +220,7 @@ methods.fetchListPrice =function fetchListPrice(isbn,response,callback){
 			  }	  			 			  			 
 			 
 		  }).catch((err) => {
+			  callback(err,res);
 		      console.error("Something went wrong! ", err);
 		  });
 
