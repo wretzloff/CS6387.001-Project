@@ -25,8 +25,8 @@ describe('Successful authentication with valid username: ' + validUser_Username,
 		})
 		.end((err, res) => {
 			should.not.exist(err);
-			res.should.have.status(200);
-			response = res;			
+			response = res;
+			response.should.have.status(200);			
 			done();
 		}); 
     });
