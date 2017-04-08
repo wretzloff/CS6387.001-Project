@@ -6,17 +6,19 @@ require('mocha-steps');
 
 var config = require('./testConfig.json');
 var host = config.host;
-var validUsername = 'xxt150630';
+var validUser_Username = 'xxt150630';
+var validUser_InternalUserId = 6;
+var validUser_Nickname = 'Xin T';
 var password = 'thisIsARandomPassword';
-var invalidUsername = 'xxt1506300';
+var invalidUser_Username = 'xxt1506300';
 
-describe('Successful authentication with valid username: ' + validUsername, () => {
+describe('Successful authentication with valid username: ' + validUser_Username, () => {
 	var response;
     step('HTTP response should be 200',function(done) {
     	chai.request(host)
 		.post('/Authenticate')
 		.send({
-			username: validUsername,
+			username: validUser_Username,
 			password: password
 		})
 		.end((err, res) => {
@@ -57,20 +59,29 @@ describe('Successful authentication with valid username: ' + validUsername, () =
 		done(); 
     });
 	
+	step('Response body "userId" should be ' + validUser_Username,function(done) {
+		response.body.userId.should.eql(validUser_InternalUserId);
+		done(); 
+    });
+	
 	step('Response body should include: "userNickname"',function(done) {
 		response.body.should.include.keys('userNickname');
-		response.body.success.isTrue;
+		done(); 
+    });
+	
+	step('Response body "userNickname" should be ' + validUser_Nickname,function(done) {
+		response.body.userNickname.should.eql(validUser_Nickname);
 		done(); 
     });
 });
 
-describe('Unsuccessful authentication with invalid username: ' + invalidUsername, () => {
+describe('Unsuccessful authentication with invalid username: ' + invalidUser_Username, () => {
 	var response;
 	step('HTTP response should be 401',function(done) {
     	chai.request(host)
 		.post('/Authenticate')
 		.send({
-			username: invalidUsername,
+			username: invalidUser_Username,
 			password: password
 		})
 		.end((err, res) => {
