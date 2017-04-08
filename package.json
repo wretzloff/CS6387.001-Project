@@ -26,6 +26,7 @@
     "mysql": "^2.5.4",
     "passport": "^0.3.0",
     "passport-jwt": "^1.2.1",
+    "promise": "^7.1.1",
     "swagger-node-express": "~2.0"
   },
   "author": "",

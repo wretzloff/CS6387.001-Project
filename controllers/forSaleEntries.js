@@ -1,5 +1,4 @@
 var moment 						= require('moment');
-
 var dal         				= require('../data_access/dal');
 var authenticate         		= require('./authenticate');
 
