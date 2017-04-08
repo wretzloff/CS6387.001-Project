@@ -13,7 +13,6 @@ var validUser_InternalUserId = 6;
 var token = 'JWT eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.Ng.Br3DB77C4acCJ7vdYG-0Lx55oCn80KR4gzV-lPYlvz4';
 var isbn_13_test='9780199679416';
 
-
 describe('Test getting list of For Sale Entries for current user', () => {
 	var response;
 	
@@ -35,11 +34,19 @@ describe('Test getting list of For Sale Entries for current user', () => {
 		done(); 
     });
 	
-	step('User should have atleast one book for sale',function(done) {
+	step('Response body should be an array of For Sale Entries',function(done) {
+		response.body.should.be.a('array');
+		done(); 
+    });
+	
+	step('Response body array should contain atleast one For Sale Entry',function(done) {
+		var numberOfForSaleEntries = Object.keys(response.body).length;
+		assert.isAbove(numberOfForSaleEntries, 0);
 		done(); 
     });
 	
 	step('All for sale entries should have a "forSaleId"',function(done) {
+		//chai.expect(response.body).to.have.all.keys('bar');
 		done(); 
     });
 	
@@ -77,6 +84,11 @@ describe('Test getting list of For Sale Entries for a specified ISBN', () => {
 	
 	step('Response type should be: application/json',function(done) {
     	response.type.should.eql('application/json');
+		done(); 
+    });
+	
+	step('Response body should be an array of For Sale Entries',function(done) {
+		response.body.should.be.a('array');
 		done(); 
     });
 	
@@ -118,7 +130,7 @@ describe('Test getting list of For Sale Entries for a specified ISBN', () => {
 });
 
 describe('Test posting a book for sale', () => {
-	    step("post a fakebook to system",function(done) {
+	    /*step("post a fakebook to system",function(done) {
         // add a book for specific userid
     	//console.log(hasTestBook);
     	
@@ -138,7 +150,7 @@ describe('Test posting a book for sale', () => {
         	});
     	
  
-      });  
+      });  */
 });
 
 
