@@ -39,30 +39,55 @@ describe('Test getting list of For Sale Entries for current user', () => {
 		done(); 
     });
 	
-	step('Response body array should contain atleast one For Sale Entry',function(done) {
+	step('Response body array should contain at least one For Sale Entry',function(done) {
 		var numberOfForSaleEntries = Object.keys(response.body).length;
 		assert.isAbove(numberOfForSaleEntries, 0);
 		done(); 
     });
 	
-	step('All for sale entries should have a "forSaleId"',function(done) {
-		//chai.expect(response.body).to.have.all.keys('bar');
+	step('All For Sale Entries should have a "forSaleId" greater than 0',function(done) {
+		var resultIsNotNull = true;
+		var resultIsInteger = true;
+		var resultIsGreaterThanZero = true;
+		for(var i in response.body)
+		{
+			var forSaleId = response.body[i].forSaleId;
+			if(forSaleId == null)
+			{
+				resultIsNotNull = false;
+				break;
+			}
+			else if(!Number.isInteger(forSaleId))
+			{
+				resultIsInteger = false;
+				break;
+			}
+			else if(forSaleId <= 0)
+			{
+				resultIsGreaterThanZero = false;
+				break;
+			}
+		}	
+		
+		assert.isTrue(resultIsNotNull, 'All For Sale Entries should have a "forSaleId" that is not NULL');
+		assert.isTrue(resultIsInteger, 'All For Sale Entries should have a "forSaleId" that is an integer');
+		assert.isTrue(resultIsGreaterThanZero, 'All For Sale Entries should have a "forSaleId" that is greater than zero');
 		done(); 
     });
 	
-	step('All for sale entries should have a "seller_InternalUserId"',function(done) {
+	step('All For Sale Entries should have a "seller_InternalUserId"',function(done) {
 		done(); 
     });
 	
-	step('All for sale entries should have a "datePosted"',function(done) {
+	step('All For Sale Entries should have a "datePosted"',function(done) {
 		done(); 
     });
 	
-	step('All for sale entries should have a "status"',function(done) {
+	step('All For Sale Entries should have a "status"',function(done) {
 		done(); 
     });
 	
-	step('All for sale entries should have a "isbn"',function(done) {
+	step('All For Sale Entries should have a "isbn"',function(done) {
 		done(); 
     });
 });
@@ -92,7 +117,13 @@ describe('Test getting list of For Sale Entries for a specified ISBN', () => {
 		done(); 
     });
 	
-	step("get books of specific isbn",function(done) {
+	step('Response body array should contain at least one For Sale Entry',function(done) {
+		var numberOfForSaleEntries = Object.keys(response.body).length;
+		assert.isAbove(numberOfForSaleEntries, 0);
+		done(); 
+    });
+	
+	/*step("get books of specific isbn",function(done) {
     	chai.request(host)
     	    .get('/forSaleEntries/isbn/'+isbn_13_test)
     	    .set('authorization', token)
@@ -123,7 +154,7 @@ describe('Test getting list of For Sale Entries for a specified ISBN', () => {
     	    });
 
  
-      });
+      });*/
 	
 
 	  
@@ -154,7 +185,7 @@ describe('Test posting a book for sale', () => {
 });
 
 
-describe('Get a list of possible conditions', () => {
+describe('Test getting list of possible conditions', () => {
 	var hasTestBook=false;
     step("get books condition standard",function(done) {
     	  chai.request(host)
