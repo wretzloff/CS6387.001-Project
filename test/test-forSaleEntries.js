@@ -102,7 +102,7 @@ describe('Get a list of books for sale for current userid', () => {
 	
 
 	  
-	});
+});
 
 
 
