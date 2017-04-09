@@ -18,17 +18,17 @@ describe('Successful authentication with valid username: ' + validUser_Username,
 	var response;
     step('HTTP response should be 200',function(done) {
     	chai.request(host)
-		.post('/Authenticate')
-		.send({
-			username: validUser_Username,
-			password: password
-		})
-		.end((err, res) => {
-			should.not.exist(err);
-			response = res;
-			response.should.have.status(200);			
-			done();
-		}); 
+			.post('/Authenticate')
+			.send({
+				username: validUser_Username,
+				password: password
+			})
+			.end((err, res) => {
+				should.not.exist(err);
+				response = res;
+				response.should.have.status(200);			
+				done();
+			}); 
     });
 
 	step('Response type should be: application/json',function(done) {
@@ -109,7 +109,7 @@ describe('Unsuccessful authentication with invalid username: ' + invalidUser_Use
     });
 	
 	step('Response body should include: "msg"',function(done) {
-		response.body.should.include.keys('success');
+		response.body.should.include.keys('msg');
 		done(); 
     });
 	
