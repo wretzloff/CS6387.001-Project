@@ -34,7 +34,11 @@ describe('Test posting a book for sale', () => {
 				description: test_description
 			})
 			.end((err, res) => {
-				should.not.exist(err);
+				if(res.status != 200)
+				{
+					console.log('\tsuccess: ' + res.body.success);
+					console.log('\tmsg: ' + res.body.msg);
+				}
 				response = res;
 				response.should.have.status(200);			
 				done();
@@ -85,7 +89,11 @@ describe('Test getting list of For Sale Entries for current user', () => {
     	    .get('/forSaleEntries/userId/'+validUser_InternalUserId)
     	    .set('authorization', token)
     	    .end((err, res) => {
-				should.not.exist(err);
+				if(res.status != 200)
+				{
+					console.log('\tsuccess: ' + res.body.success);
+					console.log('\tmsg: ' + res.body.msg);
+				}
 				response = res;
 				response.should.have.status(200);
 				done();
@@ -231,7 +239,11 @@ describe('Test getting list of For Sale Entries for a specified ISBN', () => {
     	    .get('/forSaleEntries/isbn/'+test_isbn)
     	    .set('authorization', token)
     	    .end((err, res) => {
-				should.not.exist(err);
+				if(res.status != 200)
+				{
+					console.log('\tsuccess: ' + res.body.success);
+					console.log('\tmsg: ' + res.body.msg);
+				}
 				response = res;
 				response.should.have.status(200);
 				done();
@@ -376,7 +388,11 @@ describe('Test getting list of possible conditions', () => {
     	chai.request(host)
     	    .get('/forSaleEntries/condition')
     	    .end((err, res) => {
-				should.not.exist(err);
+				if(res.status != 200)
+				{
+					console.log('\tsuccess: ' + res.body.success);
+					console.log('\tmsg: ' + res.body.msg);
+				}
 				response = res;
 				response.should.have.status(200);
 				done();

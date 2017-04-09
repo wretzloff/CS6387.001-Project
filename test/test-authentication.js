@@ -23,7 +23,11 @@ describe('Successful authentication with valid username: ' + validUser_Username,
 				password: password
 			})
 			.end((err, res) => {
-				should.not.exist(err);
+				if(res.status != 200)
+				{
+					console.log('success: ' + res.body.success);
+					console.log('msg: ' + res.body.msg);
+				}
 				response = res;
 				response.should.have.status(200);			
 				done();

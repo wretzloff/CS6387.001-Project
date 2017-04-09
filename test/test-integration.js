@@ -23,7 +23,11 @@ describe('User ' + validUser_Username + ' logs in, browses for books, and reserv
 				password: password
 			})
 			.end((err, res) => {
-				should.not.exist(err);
+				if(res.status != 200)
+				{
+					console.log('success: ' + res.body.success);
+					console.log('msg: ' + res.body.msg);
+				}
 				validUser_InternalUserId = res.body.userId;
 				validUser_Token = res.body.token;
 				res.should.have.status(200);			
@@ -36,7 +40,11 @@ describe('User ' + validUser_Username + ' logs in, browses for books, and reserv
 			.get('/my-books/'+validUser_InternalUserId+'/stub')
 			.set('authorization', validUser_Token)
 			.end((err, res) => {
-				should.not.exist(err);
+				if(res.status != 200)
+				{
+					console.log('success: ' + res.body.success);
+					console.log('msg: ' + res.body.msg);
+				}
 				res.should.have.status(200);
 				assert.isAbove(Object.keys(res.body[0].classbooks).length, 0);
 				textbook = res.body[0].classbooks[0];
@@ -49,12 +57,37 @@ describe('User ' + validUser_Username + ' logs in, browses for books, and reserv
 			.get('/forSaleEntries/isbn/'+textbook.bookISBN)
 			.set('authorization', validUser_Token)
 			.end((err, res) => {
-				should.not.exist(err);
+				if(res.status != 200)
+				{
+					console.log('success: ' + res.body.success);
+					console.log('msg: ' + res.body.msg);
+				}
 				res.should.have.status(200);
 				assert.isAbove(Object.keys(res.body[0]).length, 0);
 				forSaleEntry = res.body[0];
 				done();
 			});
+    });
+	
+	step('User reserves one of those For Sale Entries',function(done) {
+		chai.request(host)
+			.post('/transactions')
+			.set('authorization',validUser_Token)
+			.set('content-type', 'application/x-www-form-urlencoded')
+			.type('form')
+			.send({
+				forSaleId: forSaleEntry.forSaleId
+			})
+			.end((err, res) => {
+				if(res.status != 200)
+				{
+					console.log('\tsuccess: ' + res.body.success);
+					console.log('\tmsg: ' + res.body.msg);
+				}
+				res.should.have.status(200);			
+				done();
+			});
+		
     });
 
 });
