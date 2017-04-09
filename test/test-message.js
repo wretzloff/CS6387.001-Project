@@ -4,7 +4,6 @@ chai.use(chaiHttp);
 var assert = require('chai').assert;
 var should = chai.should();
 require('mocha-steps');
-//var request = require('request');
 
 var config = require('./testConfig.json');
 var host = config.host;
