@@ -80,7 +80,6 @@ describe('Test posting a book for sale', () => {
 
 describe('Test getting list of For Sale Entries for current user', () => {
 	var response;
-	
 	step("HTTP response should be 200",function(done) {
     	//this.timeout(5000);
 		chai.request(host)
@@ -228,7 +227,6 @@ describe('Test getting list of For Sale Entries for current user', () => {
 
 describe('Test getting list of For Sale Entries for a specified ISBN', () => {
 	var response;
-	
 	step("HTTP response should be 200",function(done) {
     	chai.request(host)
     	    .get('/forSaleEntries/isbn/'+test_isbn)
@@ -371,63 +369,80 @@ describe('Test getting list of For Sale Entries for a specified ISBN', () => {
 		assert.isTrue(resultIsLength13, 'All For Sale Entries should have a "isbn" of length 13');
 		done(); 
     });
-	
-	/*step("get books of specific isbn",function(done) {
-    	chai.request(host)
-    	    .get('/forSaleEntries/isbn/'+test_isbn)
-    	    .set('authorization', token)
-    	    .end((err, res) => {
-      		  var data=res.body;
-    		  var isFound=false;
-        	 //console.log("data",typeof data);
-        		for(var i=0;i<data.length;i++){
-        			for(var key in data[i]){
-        				if(key==='isbn'){
-        					//console.log(typeof data[i][key]);
-            				if(data[i][key]===test_isbn){
-            					//console.log( data[i][key]);
-            					isFound=true;
-                				done();
-                				return;
-            				} 
-            			}
-        			}
-        			
-        		}
-    	      should.not.exist(err);
-    	      res.status.should.eql(200);
-    	      res.type.should.eql('application/json');
-        	  assert.isTrue(isFound,"book get failed");
-        	  console.log(isFound);
-        		done(err);
-    	    });
-
- 
-      });*/
-	
-
-	  
 });
 
-
-
-
 describe('Test getting list of possible conditions', () => {
-	var hasTestBook=false;
-    step("get books condition standard",function(done) {
-    	  chai.request(host)
+    var response;
+	step("HTTP response should be 200",function(done) {
+    	chai.request(host)
     	    .get('/forSaleEntries/condition')
     	    .end((err, res) => {
-    	      should.not.exist(err);
-    	      res.status.should.eql(200);
-    	      res.type.should.eql('application/json');
-    	      //console.log(typeof res.body);
-    		  var data=res.body;
-    		  var len=data.length;
-        	  len.should.eql(5);
-    		  done();
+				should.not.exist(err);
+				response = res;
+				response.should.have.status(200);
+				done();
     	    });
-
- 
-      });	  
+    });
+	
+	step('Response type should be: application/json',function(done) {
+    	response.type.should.eql('application/json');
+		done(); 
+    });
+	
+	step('Response body should be an array',function(done) {
+		response.body.should.be.a('array');
+		done(); 
+    });
+	
+	step('Response body array should contain at least one record',function(done) {
+		var numberOfRecords = Object.keys(response.body).length;
+		assert.isAbove(numberOfRecords, 0);
+		done(); 
+    });
+	
+		step('All records should have a "id" of 0 or greater',function(done) {
+		var resultIsNotNull = true;
+		var resultIsInteger = true;
+		var resultIsGreaterThanOrEqualToZero = true;
+		for(var i in response.body)
+		{
+			var id = response.body[i].id;
+			if(id == null)
+			{
+				resultIsNotNull = false;
+				break;
+			}
+			else if(!Number.isInteger(id))
+			{
+				resultIsInteger = false;
+				break;
+			}
+			else if(id < 0)
+			{
+				resultIsGreaterThanOrEqualToZero = false;
+				break;
+			}
+		}	
+		
+		assert.isTrue(resultIsNotNull, 'All records should have a "id" that is not NULL');
+		assert.isTrue(resultIsInteger, 'All records should have a "id" that is an integer');
+		assert.isTrue(resultIsGreaterThanOrEqualToZero, 'All records should have a "id" of 0 or greater');
+		done(); 
+    });
+	
+		step('All records should have a "description"',function(done) {
+		var resultIsNotNull = true;
+		for(var i in response.body)
+		{
+			var description = response.body[i].description;
+			if(description == null || description == '')
+			{
+				resultIsNotNull = false;
+				break;
+			}
+		}	
+		
+		assert.isTrue(resultIsNotNull, 'All records should have a "description" that is not NULL');
+		done(); 
+    });
 });
