@@ -259,7 +259,7 @@
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/conditionTypeRecord"
+                            "$ref": "#/definitions/200forSaleEntryConditionResult"
                         }
                     },
                     "500": {
@@ -938,6 +938,12 @@
 						  "format": "int",
 						  "default": 265
 				      }
+			     }
+		},
+		"200forSaleEntryConditionResult": {
+			    "type": "array",
+			    "items": {
+				      "$ref": "#/definitions/conditionTypeRecord"
 			     }
 		},
 		"200buyBookResult": {
