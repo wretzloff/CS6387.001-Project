@@ -194,3 +194,21 @@ describe('User ' + buyer_Username + ' logs in, chooses a book from the My Books 
     });
 
 });
+
+describe('User ' + seller_Username + ' sees a new message in inbox, sees an automated message that the textbook has been bought, and responds to the buyer', () => {
+    step('User gets list of conversations',function(done) {
+    	chai.request(host)
+			.get('/messages/conversations/'+seller_InternalUserId)
+			.set('authorization', seller_Token)
+			.end((err, res) => {
+				if(res.status != 200)
+				{
+					console.log('\tsuccess: ' + res.body.success);
+					console.log('\tmsg: ' + res.body.msg);
+				}
+				res.should.have.status(200);
+				done();
+			});
+    });
+});
+	
