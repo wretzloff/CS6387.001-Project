@@ -33,40 +33,6 @@ describe('Get transactions successful test case', () => {
 
  
       });
-    
-    //create a saleobject
-    step("check fake book existance",function(done) {
-        // add a book for specific userid
-    	var request = require('request');
-    	request.get({
-    	  headers:{'authorization':token},
-    	  url:     host+'/forSaleEntries/isbn/'+isbn_13_test,    	  
-    	}, function(error, response, body){
-    		//console.log(typeof response);
-    		var data=JSON.parse(response.body);
-    		//console.log("data",data);
-    		for(var i=data.length-1;i>=0;i--){
-    			var obj=data[i];
-    			//console.log("obj",typeof obj);
-    			for(var key in obj){
-    				if(key==='isbn'){
-        				var value=obj[key];
-        				//console.log("isbn", value);
-        				if(value===isbn_13_test){
-        					//console.log("saleid",obj['forSaleId']);
-        					new_forSaleId=obj['forSaleId'];
-        					hasTestBook=true;    				
-            				done();  
-            				return;
-        				}    					
-        			}
-    			}
-    			
-    		}
-    		done();
-    	});
-   
-      });
 	
     step("post a fakebook to system",function(done) {
         // add a book for specific userid    	 	
@@ -85,11 +51,13 @@ describe('Get transactions successful test case', () => {
              .send('condition=1')
              .send('description=test')
              .end(function(error, response, body) {
+            	 //console.log(response.body.forSaleId);
                  if (error) {
                      done(error);
                  } else {
                 	 response.status.should.eql(200);
                	     response.type.should.eql('application/json');
+               	     new_forSaleId=response.body.forSaleId;
                      done();
                  }
              }); 
@@ -102,24 +70,24 @@ describe('Get transactions successful test case', () => {
     step("buying the new posted fake book",function(done) {
         // add a book for specific userid
     	//console.log("saleid",new_forSaleId);
-        	var request = require('request');
-        	request.post({
-        	  headers:{'authorization':willToken},
-        	  url:     host+'/transactions',
-        	  form:    {forSaleId:new_forSaleId}
-        	}, function(error, response, body){
-        		//console.log(JSON.parse(response.body));
-        		if(error){
-        			//console.log("post book failed");
-        			done();
-        		}else{        			
-        			new_TransactionId=JSON.parse(response.body)['transactionId']
-        			done();
-        		}
-        	
-        	});
-    	
- 
+     	 chai
+         .request(host)
+         .post('/transactions')
+         .set('authorization',willToken)
+         .type('form')
+         .send('forSaleId='+new_forSaleId)
+         .end(function(error, response, body) {
+        	 //console.log(response.body.forSaleId);
+             if (error) {
+                 done(error);
+             } else {
+            	 response.status.should.eql(200);
+           	     response.type.should.eql('application/json');
+           	     new_TransactionId=response.body.transactionId;
+                 done();
+             }
+         }); 
+
       });
     
     
@@ -168,89 +136,63 @@ describe('create transactions,get transaction, then cancel', () => {
 	var hasTestBook=false;
 	var new_forSaleId="";
 	var new_TransactionId="";
-	
-   
-    //create a saleobject
-    step("check fake book existance",function(done) {
-        // add a book for specific userid
-    	var request = require('request');
-    	request.get({
-    	  headers:{'authorization':token},
-    	  url:     host+'/forSaleEntries/isbn/'+isbn_13_test,    	  
-    	}, function(error, response, body){
-    		//console.log(typeof response);
-    		var data=JSON.parse(response.body);
-    		//console.log("data",data);
-    		for(var i=data.length-1;i>=0;i--){
-    			var obj=data[i];
-    			//console.log("obj",typeof obj);
-    			for(var key in obj){
-    				if(key==='isbn'){
-        				var value=obj[key];
-        				//console.log("isbn", value);
-        				if(value===isbn_13_test){
-        					//console.log("saleid",obj['forSaleId']);
-        					new_forSaleId=obj['forSaleId'];
-        					hasTestBook=true;    				
-            				done();  
-            				return;
-        				}    					
-        			}
-    			}
-    			
-    		}
-    		done();
-    	});
-   
-      });
-	
+
+
     step("post a fakebook to system",function(done) {
         // add a book for specific userid    	 	
     	//console.log(hasTestBook);
     	if(!hasTestBook){
-        	var request = require('request');
-        	request.post({
-        	  headers:{'authorization':token},
-        	  url:     host+'/forSaleEntries',
-        	  form:    { title: "testbook-112",isbn:isbn_13_test,author:"tester",price:'99',condition:"1",description:"test none" }
-        	}, function(error, response, body){
-        		if(error){
-        			//console.log("post book failed");
-        			done();
-        		}else{
-        			//console.log("post book successed");
-        			var data=response;
-        			//console.log(typeof data);
-        			new_forSaleId=data['forSaleId'];
-        			done();
-        		}
-        	
-        	});
-    	}else{
-    		done();
-    	}
+         	 chai
+            .request(host)
+            .post('/forSaleEntries')
+            .set('content-type', 'application/x-www-form-urlencoded')
+            .set('authorization',token)
+            .type('form')
+            .send('title=testbook-112')
+            .send('isbn='+isbn_13_test)
+            .send('author=tester')
+            .send('price=98')
+            .send('condition=1')
+            .send('description=test')
+            .end(function(error, response, body) {
+           	 //console.log(response.body.forSaleId);
+                if (error) {
+                    done(error);
+                } else {
+               	 response.status.should.eql(200);
+              	     response.type.should.eql('application/json');
+              	     new_forSaleId=response.body.forSaleId;
+                    done();
+                }
+            }); 
+   	}else{
+   		done();
+   	}
  
       });
+   
+    
     //create a transaction by buying a book
     step("buying the new posted fake book",function(done) {
         // add a book for specific userid
     	//console.log("saleid",new_forSaleId);
-        	var request = require('request');
-        	request.post({
-        	  headers:{'authorization':willToken},
-        	  url:     host+'/transactions',
-        	  form:    {forSaleId:new_forSaleId}
-        	}, function(error, response, body){
-        		//console.log(JSON.parse(response.body));
-        		if(error){
-        			//console.log("post book failed");
-        			done();
-        		}else{        			
-        			new_TransactionId=JSON.parse(response.body)['transactionId']
-        			done();
-        		}
-        	
-        	});
+     	 chai
+         .request(host)
+         .post('/transactions')
+         .set('authorization',willToken)
+         .type('form')
+         .send('forSaleId='+new_forSaleId)
+         .end(function(error, response, body) {
+        	 //console.log(response.body.forSaleId);
+             if (error) {
+                 done(error);
+             } else {
+            	 response.status.should.eql(200);
+           	     response.type.should.eql('application/json');
+           	     new_TransactionId=response.body.transactionId;
+                 done();
+             }
+         });
     	
  
       });
