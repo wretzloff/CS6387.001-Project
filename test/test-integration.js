@@ -117,6 +117,26 @@ describe('User ' + seller_Username + ' logs in, chooses a book from the My Books
 				done();
 			});
     });
+	
+	step("User checks their For Sale screen to verify that the textbook has been posted for sale",function(done) {
+    	console.log('\tFor Sale ID: ' + test_forSaleId);
+		chai.request(host)
+    	    .get('/forSaleEntries/userId/'+seller_InternalUserId)
+    	    .set('authorization', seller_Token)
+    	    .end((err, res) => {
+				var forSaleEntryFound = false;
+				for(var i in res.body)
+				{
+					if(res.body[i].forSaleId == test_forSaleId)
+					{
+						forSaleEntryFound = true;
+						break;
+					}
+				}	
+				assert.isTrue(forSaleEntryFound, 'Book that user just posted for sale should be seen on the For Sale list.');
+				done();
+    	    });
+    });
 });
 
 describe('User ' + buyer_Username + ' logs in, chooses a book from the My Books list, and reserves one of the For Sale Entries for the book', () => {
