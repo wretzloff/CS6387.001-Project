@@ -350,7 +350,7 @@ describe('Buyer ' + buyer_Username + ' locates the transaction and marks it as c
 			});
     });
 
-	/*step('Buyer views transaction details of the pending transaction, and sees that the seller has already marked \n\tthe transaction complete from their end',function(done) {
+	step('Buyer views transaction details of the pending transaction, and sees that the seller has already marked \n\tthe transaction complete from their end',function(done) {
     	chai.request(host)
 			.get('/transactions/transaction/'+test_transactionId)
 			.set('authorization', buyer_Token)
@@ -361,7 +361,78 @@ describe('Buyer ' + buyer_Username + ' locates the transaction and marks it as c
 					console.log('\tmsg: ' + res.body.msg);
 				}
 				res.should.have.status(200);
+				res.body.status.should.eql('Completed by Seller');
 				done();
 			});
-    })*/;
+    });
+	
+	step('Buyer marks the transaction as completed',function(done) {
+		chai.request(host)
+			.post('/transactions/transaction/'+test_transactionId+'/complete')
+			.set('authorization', buyer_Token)
+			.set('content-type', 'application/x-www-form-urlencoded')
+			.type('form')
+			.end((err, res) => {
+				if(res.status != 200)
+				{
+					console.log('\tsuccess: ' + res.body.success);
+					console.log('\tmsg: ' + res.body.msg);
+				}
+				res.should.have.status(200);			
+				done();
+			});
+    });
+	
+	step('Buyer observes that the transaction is now marked as Completed',function(done) {
+    	chai.request(host)
+			.get('/transactions/transaction/'+test_transactionId)
+			.set('authorization', buyer_Token)
+			.end((err, res) => {
+				if(res.status != 200)
+				{
+					console.log('\tsuccess: ' + res.body.success);
+					console.log('\tmsg: ' + res.body.msg);
+				}
+				res.should.have.status(200);
+				res.body.status.should.eql('Completed');
+				done();
+			});
+    });
+});
+
+describe('Seller ' + seller_Username + ' observes that the transaction is now marked as Completed and this book no longer shows \n\ton the For Sale screen.', () => {
+	step('Seller observes that the transaction is now marked as Completed',function(done) {
+    	chai.request(host)
+			.get('/transactions/transaction/'+test_transactionId)
+			.set('authorization', seller_Token)
+			.end((err, res) => {
+				if(res.status != 200)
+				{
+					console.log('\tsuccess: ' + res.body.success);
+					console.log('\tmsg: ' + res.body.msg);
+				}
+				res.should.have.status(200);
+				res.body.status.should.eql('Completed');
+				done();
+			});
+    });
+	
+	step("Seller checks their For Sale screen and observes that this book is no longer present",function(done) {
+		chai.request(host)
+    	    .get('/forSaleEntries/userId/'+seller_InternalUserId)
+    	    .set('authorization', seller_Token)
+    	    .end((err, res) => {
+				var forSaleEntryFound = false;
+				for(var i in res.body)
+				{
+					if(res.body[i].forSaleId == test_forSaleId)
+					{
+						forSaleEntryFound = true;
+						break;
+					}
+				}	
+				assert.isFalse(forSaleEntryFound, 'For Sale Entry should no longer be seen on the For Sale list.');
+				done();
+    	    });
+    });
 });
