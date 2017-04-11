@@ -295,7 +295,7 @@ describe('Seller ' + seller_Username + ' sees a new message in inbox, sees an au
 			});
     });
 	
-	step('After delivering the book in person, seller goes to the Transactions screen to look up this pending transaction',function(done) {
+	step('After delivering the book in person, seller goes to the Transactions screen to view this pending transaction',function(done) {
 		chai.request(host)
 			.get('/transactions/userId/' + seller_InternalUserId)
 			.set('authorization', seller_Token)
@@ -327,9 +327,6 @@ describe('Seller ' + seller_Username + ' sees a new message in inbox, sees an au
 			.set('authorization', seller_Token)
 			.set('content-type', 'application/x-www-form-urlencoded')
 			.type('form')
-			/*.send({
-				transactionId: test_transactionId
-			})*/
 			.end((err, res) => {
 				if(res.status != 200)
 				{
@@ -342,3 +339,29 @@ describe('Seller ' + seller_Username + ' sees a new message in inbox, sees an au
     });
 });
 	
+describe('Buyer ' + buyer_Username + ' locates the transaction and marks it as complete', () => {
+	step('After receiving the book, buyer goes to the Transactions screen to view this pending transaction',function(done) {
+		chai.request(host)
+			.get('/transactions/userId/' + buyer_InternalUserId)
+			.set('authorization', buyer_Token)
+			.end((err, res) => {
+				res.status.should.eql(200);
+				done();
+			});
+    });
+
+	/*step('Buyer views transaction details of the pending transaction, and sees that the seller has already marked \n\tthe transaction complete from their end',function(done) {
+    	chai.request(host)
+			.get('/transactions/transaction/'+test_transactionId)
+			.set('authorization', buyer_Token)
+			.end((err, res) => {
+				if(res.status != 200)
+				{
+					console.log('\tsuccess: ' + res.body.success);
+					console.log('\tmsg: ' + res.body.msg);
+				}
+				res.should.have.status(200);
+				done();
+			});
+    })*/;
+});
