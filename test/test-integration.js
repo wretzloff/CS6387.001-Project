@@ -23,8 +23,9 @@ var test_price = 32.99;
 var test_condition = 1;
 var test_description = 'Unused. Still in original packaging.';
 var test_forSaleId;
+var test_conversation;
 
-describe('User ' + seller_Username + ' logs in, chooses a book from the My Books list, and lists that book for sale', () => {
+describe('User ' + seller_Username + ' logs in, chooses a book from the My Books screen, and lists that book for sale', () => {
     step('User logs in successfully',function(done) {
     	chai.request(host)
 			.post('/Authenticate')
@@ -193,6 +194,7 @@ describe('User ' + buyer_Username + ' logs in, chooses a book from the My Books 
     });
 	
 	step('User reserves one of those For Sale Entries',function(done) {
+		console.log('\tReserving For Sale ID ' + test_forSaleId);
 		chai.request(host)
 			.post('/transactions')
 			.set('authorization', buyer_Token)
@@ -227,6 +229,48 @@ describe('User ' + seller_Username + ' sees a new message in inbox, sees an auto
 					console.log('\tmsg: ' + res.body.msg);
 				}
 				res.should.have.status(200);
+				
+				var latestConversation;
+				for(var i in res.body)
+				{
+					if(latestConversation == null || res.body[i].latestMessage.messageDateTime > latestConversation.latestMessage.messageDateTime)
+					{
+						latestConversation=res.body[i];
+					}
+				}
+				
+				test_conversation = latestConversation;
+				done();
+			});
+    });
+	
+	step('User opens the conversation with the new message',function(done) {
+		chai.request(host)
+			.get('/messages/'+test_conversation.conversationId+'/limit/'+5+'/before/'+test_conversation.latestMessage.messageId)
+			.set('authorization', seller_Token)
+			.end((err, res) => {
+				res.status.should.eql(200);
+				done();
+			});
+    });
+	
+	step('User sends a response, arranging a meeting date and time',function(done) {
+		chai.request(host)
+			.post('/messages')
+			.set('authorization', seller_Token)
+			.set('content-type', 'application/x-www-form-urlencoded')
+			.type('form')
+			.send({
+				conversationId: test_conversation.conversationId,
+				message: 'Let\'s meet in the Student Union at 4pm.'
+			})
+			.end((err, res) => {
+				if(res.status != 200)
+				{
+					console.log('\tsuccess: ' + res.body.success);
+					console.log('\tmsg: ' + res.body.msg);
+				}
+				res.should.have.status(200);			
 				done();
 			});
     });
