@@ -423,6 +423,7 @@ function convertTransactionRowToJson(row, internalUserId)
 	jsonRow.transactionDateTime = row.formattedPostedDateTime;
 	jsonRow.status = row.description;
 	jsonRow.conversationId = row.conversationId;
+	jsonRow.forSaleId = row.forSaleId;
 	jsonRow.title = row.title;
 	jsonRow.isbn = row.isbn;
 	jsonRow.author = row.author;

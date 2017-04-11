@@ -489,7 +489,7 @@
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/transactionStatusRecord"
+                            "$ref": "#/definitions/200transactionStatusResult"
                         }
                     },
                     "500": {
@@ -946,6 +946,12 @@
 				      "$ref": "#/definitions/conditionTypeRecord"
 			     }
 		},
+		"200transactionStatusResult": {
+			    "type": "array",
+			    "items": {
+				      "$ref": "#/definitions/transactionStatusRecord"
+			     }
+		},
 		"200buyBookResult": {
 			    "type": "object",
 			    "properties": {
@@ -1228,6 +1234,11 @@
 					    "type": "integer",
 					    "format": "int",
 						"default": 87
+				    },
+					"forSaleId": {
+					    "type": "integer",
+					    "format": "int",
+						"default": 109
 				    },
 					"title": {
 					    "type": "string",
