@@ -238,7 +238,7 @@ describe('Buyer ' + buyer_Username + ' logs in, chooses a book from the My Books
     });
 });
 
-describe('Seller ' + seller_Username + ' sees a new message in inbox, sees an automated message that the textbook has been bought, and responds to the buyer', () => {
+describe('Seller ' + seller_Username + ' sees a new message in inbox, sees an automated message that the textbook has been bought, and \n\tresponds to the buyer. Seller then exchanges the book and marks the transaction complete.', () => {
     step('Seller gets list of conversations',function(done) {
     	chai.request(host)
 			.get('/messages/conversations/'+seller_InternalUserId)
@@ -317,6 +317,26 @@ describe('Seller ' + seller_Username + ' sees a new message in inbox, sees an au
 					console.log('\tmsg: ' + res.body.msg);
 				}
 				res.should.have.status(200);
+				done();
+			});
+    });
+	
+	step('Seller marks the transaction as completed',function(done) {
+		chai.request(host)
+			.post('/transactions/transaction/'+test_transactionId+'/complete')
+			.set('authorization', seller_Token)
+			.set('content-type', 'application/x-www-form-urlencoded')
+			.type('form')
+			/*.send({
+				transactionId: test_transactionId
+			})*/
+			.end((err, res) => {
+				if(res.status != 200)
+				{
+					console.log('\tsuccess: ' + res.body.success);
+					console.log('\tmsg: ' + res.body.msg);
+				}
+				res.should.have.status(200);			
 				done();
 			});
     });
