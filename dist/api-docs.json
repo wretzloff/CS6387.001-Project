@@ -1106,7 +1106,7 @@
 					      "type": "string",
 						    "default": "Programming Fundamentals"
 				      },
-				      "classBooks": {
+				      "classbooks": {
 				        "type": "array",
 				        "items": {
 				          "$ref": "#/definitions/classBook" 
@@ -1362,21 +1362,13 @@
     "200bookCoverResult": {
 	    "type": "object",
 		"properties": {
-			"isbn": {
-				"type": "string",
-				"default": "9780133778816"
-			},
-			"smallPic": {
+			"SmallImage": {
 				"type": "object",
 				"properties": {
-					"url": {
+					"URL": {
 						"type": "string",
 						"default": "https://images-na.ssl-images-amazon.com/images/ihefeufe.jpg"
 					},
-					"units": {
-						"type": "string",
-						"default": "pixels"
-					},
 					"height": {
 						"type": "integer",
 						"format": "int",
@@ -1389,17 +1381,13 @@
 					}
 				}
 			},
-			"mediumPic": {
+			"MediumImage": {
 				"type": "object",
 				"properties": {
-					"url": {
+					"URL": {
 						"type": "string",
 						"default": "https://images-na.ssl-images-amazon.com/images/kjwdnwqjnd.jpg"
 					},
-					"units": {
-						"type": "string",
-						"default": "pixels"
-					},
 					"height": {
 						"type": "integer",
 						"format": "int",
@@ -1412,16 +1400,12 @@
 					}
 				}
 			},
-			"largePic": {
+			"LargeImage": {
 				"type": "object",
 				"properties": {
-					"url": {
+					"URL": {
 						"type": "string",
 						"default": "https://images-na.ssl-images-amazon.com/images/oifebflkn.jpg"
-					},
-					"units": {
-						"type": "string",
-						"default": "pixels"
 					},
 					"height": {
 						"type": "integer",
