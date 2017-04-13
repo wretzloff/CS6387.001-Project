@@ -10,8 +10,7 @@ var host = config.host;
 var validUser_Username = 'xxt150630';
 var validUser_InternalUserId = 6;
 var token = 'JWT eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.Ng.Br3DB77C4acCJ7vdYG-0Lx55oCn80KR4gzV-lPYlvz4';
-var wrongtoken='JWT eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.Ng.Br3DB77C4acCJ7vdYG-0Lx55oCn80KR4gzV-lPYlvz3';
-var isbn_13='9780133778816';
+var test_isbn='9780133778816';
 
 describe('Get user\'s textbooks', () => {
 	var response;
@@ -96,22 +95,87 @@ describe('Get user\'s textbooks', () => {
     });
 });
 
-
-
-describe('my-books : get book cover', () => {
-	  it('successful use case', (done) => {
-		    chai.request(host)
-		    .get('/my-books/cover/isbn/'+isbn_13)
-		    .set('authorization', token)
-		    .end((err, res) => {
-		      should.not.exist(err);
-		      res.should.have.status(200); 
-		      res.type.should.eql('application/json');
-		      res.body.should.be.an('object');
-		      res.body.should.have.property('LargeImage');
-		      res.body.should.have.property('SmallImage');
-		      res.body.should.have.property('MediumImage');
-		      done();
-		    });
-		  });
+describe('Get a books\'s cover', () => {
+	var response;
+	step("HTTP response should be 200",function(done) {
+		chai.request(host)
+    	    .get('/my-books/cover/isbn/'+test_isbn)
+    	    .set('authorization', token)
+    	    .end((err, res) => {
+				if(res.status != 200)
+				{
+					console.log('\tsuccess: ' + res.body.success);
+					console.log('\tmsg: ' + res.body.msg);
+				}
+				response = res;
+				response.should.have.status(200);
+				done();
+    	    });
+    });
+	  
+	step('Response type should be: application/json',function(done) {
+    	response.type.should.eql('application/json');
+		done(); 
+    });
+	
+	step('Response body should include: "SmallImage"',function(done) {
+		response.body.should.include.keys('SmallImage');
+		done(); 
+    });
+	
+	step('Response body should include: "SmallImage.URL"',function(done) {
+		response.body.SmallImage.should.include.keys('URL');
+		done(); 
+    });
+	
+	step('Response body should include: "SmallImage.height"',function(done) {
+		response.body.SmallImage.should.include.keys('height');
+		done(); 
+    });
+	
+	step('Response body should include: "SmallImage.width"',function(done) {
+		response.body.SmallImage.should.include.keys('width');
+		done(); 
+    });
+	
+	step('Response body should include: "MediumImage"',function(done) {
+		response.body.should.include.keys('MediumImage');
+		done(); 
+    });
+	
+	step('Response body should include: "MediumImage.URL"',function(done) {
+		response.body.MediumImage.should.include.keys('URL');
+		done(); 
+    });
+	
+	step('Response body should include: "MediumImage.height"',function(done) {
+		response.body.MediumImage.should.include.keys('height');
+		done(); 
+    });
+	
+	step('Response body should include: "MediumImage.width"',function(done) {
+		response.body.MediumImage.should.include.keys('width');
+		done(); 
+    });
+	
+	step('Response body should include: "LargeImage"',function(done) {
+		response.body.should.include.keys('LargeImage');
+		done(); 
+    });
+	
+	step('Response body should include: "LargeImage.URL"',function(done) {
+		response.body.LargeImage.should.include.keys('URL');
+		done(); 
+    });
+	
+	step('Response body should include: "LargeImage.height"',function(done) {
+		response.body.LargeImage.should.include.keys('height');
+		done(); 
+    });
+	
+	step('Response body should include: "LargeImage.width"',function(done) {
+		response.body.LargeImage.should.include.keys('width');
+		done(); 
+    });
 });
+
