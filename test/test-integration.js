@@ -140,7 +140,7 @@ describe('Seller ' + seller_Username + ' logs in, chooses a book from the My Boo
 				done();
     	    });
     });
-});
+})/*.timeout(5000)*/;
 
 describe('Buyer ' + buyer_Username + ' logs in, chooses a book from the My Books list, and reserves one of the For Sale Entries for the book', () => {
     step('Buyer logs in successfully',function(done) {

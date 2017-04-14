@@ -84,7 +84,6 @@ describe('Test posting a book for sale', () => {
 describe('Test getting list of For Sale Entries for current user', () => {
 	var response;
 	step("HTTP response should be 200",function(done) {
-    	//this.timeout(5000);
 		chai.request(host)
     	    .get('/forSaleEntries/userId/'+validUser_InternalUserId)
     	    .set('authorization', token)
