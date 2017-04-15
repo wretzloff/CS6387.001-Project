@@ -75,7 +75,6 @@ describe('Seller ' + seller_Username + ' logs in, chooses a book from the My Boo
 					console.log('\tmsg: ' + res.body.msg);
 				}
 				res.should.have.status(200);
-				assert.isAbove(Object.keys(res.body[0]).length, 0);
 				done();
 			});
     });
