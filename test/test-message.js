@@ -71,7 +71,7 @@ describe('Message endpoint  test case', () => {
          .set('content-type', 'application/x-www-form-urlencoded')
          .set('authorization',token)
          .type('form')
-         .send('conversationId=4')
+         .send('conversationId=1')
          .send('message=test-message')
          .end(function(error, response, body) {
              if (error) {
