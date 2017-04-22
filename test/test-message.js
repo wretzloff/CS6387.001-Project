@@ -318,7 +318,7 @@ describe('Buyer ' + buyer_Username + ' sees the message from the seller and resp
          .set('content-type', 'application/x-www-form-urlencoded')
          .set('authorization',token)
          .type('form')
-         .send('conversationId=4')
+         .send('conversationId=1')
          .send('message=test-message')
          .end(function(error, response, body) {
              if (error) {
